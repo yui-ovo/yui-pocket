@@ -1,0 +1,24 @@
+{
+  "name": "yui-pocket",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "原创 Tavern Helper 小手机 · v0.1 无 AI 内存演示",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "build": "node scripts/build.mjs",
+    "test:artifact": "node --test tests/artifact.test.mjs",
+    "test:browser": "playwright test",
+    "test": "npm run typecheck && npm run build && npm run test:artifact && npm run test:browser",
+    "preview": "node scripts/preview.mjs",
+    "deliver": "node scripts/deliver.mjs"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.63.0",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2"
+  }
+}

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>yui-pocket · 模拟宿主</title>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #f5f1ed; color: #77696a; font: 15px/1.9 system-ui,sans-serif; }
+  header { padding: 24px 6vw; border-bottom: 1px solid #e4dcd5; display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  main { max-width: 650px; padding: 6vh 26px; margin: auto; }
+  h1 { font: 500 30px Georgia,serif; letter-spacing: 1px; color: #59464d; margin: 0 0 8px; }
+  p { margin: 0 0 22px; }
+  .tag { font-size: 11px; letter-spacing: 2px; color: #9b7b85; }
+  button { border: 1px solid #d4c8c5; border-radius: 8px; background: #fffaf5; color: #745f67; padding: 8px 12px; cursor: pointer; }
+  .controls { display: flex; flex-wrap: wrap; gap: 8px; }
+  #host-input { position: fixed; bottom: 20px; left: 5%; width: 90%; padding: 12px; border: 1px solid #ddd0c9; border-radius: 12px; background: #fffdf9; }
+  #host-probe { display: block; margin: 20px 0; }
+  @media (max-width: 600px) { main { padding-top: 25px; } }
+</style>
+<header><span>yui-pocket / studio</span><span class="tag">LOCAL MOCK HOST · v0.1</span></header>
+<main>
+  <p class="tag">A LITTLE PHONE, A LITTLE STORY</p>
+  <h1>把小日常，装进口袋。</h1>
+  <p>此页只用于开发测试，不是 SillyTavern。<br>右侧的小入口里，住着一段虚构的示例聊天。</p>
+  <article id="host-story"><p>下午的光落在窗台上。她收起书本，把一枚粉色书签夹在还没读完的那页。</p><p>街角的花店刚刚开门，门口的小铃轻轻响了一声。</p></article>
+  <div class="controls"><button id="reload">模拟重新加载</button><button id="disable">模拟禁用</button><button id="enable">模拟启用</button></div>
+  <button id="host-probe">宿主按钮：0</button>
+  <p class="tag">演示数据不会写入任何聊天存档</p>
+</main>
+<input id="host-input" placeholder="模拟酒馆主输入框（用来检查是否仍可点击）">
+<script>
+  const frames = [];
+  window.boot = async () => {
+    const payload = await (await fetch('/yui.v0.1.json')).json();
+    const frame = document.createElement('iframe');
+    frame.hidden = true;
+    frame.dataset.mockRunner = '';
+    frame.srcdoc = '<!doctype html><body><script>window.$ = callback => callback();<\/script><script type="module">' + payload.content.replace(/<\/script/gi, '<\\/script') + '<\/script>';
+    frames.push(frame);
+    document.body.append(frame);
+    await new Promise(resolve => frame.addEventListener('load', resolve, { once: true }));
+  };
+  window.disable = () => { for (const frame of frames.splice(0)) frame.remove(); };
+  document.querySelector('#reload').onclick = async () => { window.disable(); await window.boot(); };
+  document.querySelector('#enable').onclick = window.boot;
+  document.querySelector('#disable').onclick = window.disable;
+  let clicks = 0;
+  document.querySelector('#host-probe').onclick = event => { event.target.textContent = '宿主按钮：' + ++clicks; };
+  window.boot();
+</script>
+</html>

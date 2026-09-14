@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Yui 扩展 · 模拟宿主</title>
+<body>
+<p>这是本地扩展加载与生命周期模拟，不是真实酒馆。</p>
+<p id="story">虚构正文保持原样。</p>
+<button id="probe" onclick="this.textContent='可点击'">宿主按钮</button>
+<script>
+  window.pendingReady = [];
+  window.$ = new URLSearchParams(location.search).has('delay')
+    ? callback => window.pendingReady.push(callback) : callback => callback();
+  window.calls = [];
+  for (const key of ['fetch', 'XMLHttpRequest', 'WebSocket', 'EventSource']) {
+    window[key] = function () { window.calls.push(key); throw new Error('Forbidden runtime network'); };
+  }
+  for (const method of ['setItem', 'getItem', 'removeItem', 'clear']) {
+    Storage.prototype[method] = function () { window.calls.push(method); throw new Error('Forbidden storage'); };
+  }
+  window.ownListeners = [];
+  const add = EventTarget.prototype.addEventListener;
+  const remove = EventTarget.prototype.removeEventListener;
+  EventTarget.prototype.addEventListener = function (type, listener, options) {
+    // Exclude Playwright's injected helpers and the fixture itself.
+    if (new Error().stack?.includes('/extension.js')) window.ownListeners.push({ target: this, type, listener });
+    return add.call(this, type, listener, options);
+  };
+  EventTarget.prototype.removeEventListener = function (type, listener, options) {
+    window.ownListeners = window.ownListeners.filter(item => item.target !== this || item.type !== type || item.listener !== listener);
+    return remove.call(this, type, listener, options);
+  };
+</script>
+<script type="module">
+  window.extension = await import('/extension.js');
+  window.fixtureReady = true;
+</script>
+</body>
+</html>
