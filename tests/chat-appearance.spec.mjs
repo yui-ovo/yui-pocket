@@ -5,7 +5,7 @@ async function setup(page){
   await page.addInitScript({content:await readFile('tests/profile-mock.js','utf8')});
   await page.route('**/api/users/me',route=>route.fulfill({json:{handle:'test-user'}}));
   await page.route('**/thumbnail?**',route=>route.fulfill({contentType:'image/png',path:'src/assets/stickers/rabbit.png'}));
-  await page.goto('/');await b(page,'打开 Yui 演示手机').click();await b(page,'打开联系人').click();
+  await page.goto('/');await b(page,'打开 Yui 演示手机').click();await b(page,'打开信息').click();await b(page,'通讯录').click();
 }
 async function add(page,name){
   await b(page,'添加人物').click();await b(page,'从当前角色卡带入').click();await page.getByLabel('人物名字',{exact:true}).fill(name);await page.getByLabel('开局关系').selectOption('friend');
@@ -50,7 +50,7 @@ test('message preview geometry, avatar hiding removes its space, and list/profil
   const wider=await page.locator('.reading-preview .friend .bubble').boundingBox();expect(wider.width).toBeGreaterThan(friendBubble.width);
   await page.screenshot({path:'outputs/preview-chat-appearance.png'});
   await b(page,'保存聊天外观').click();await returnChat(page);expect((await page.locator('.workspace-page:visible .chat-header').boundingBox()).height).toBe(header.height);await expect(b(page,'打开聊天设置')).toBeVisible();
-  await b(page,'Home · 返回主屏幕').click();await b(page,'打开联系人').click();expect((await page.locator('.friend-list .profile-avatar').boundingBox()).width).toBe(listAvatar.width);
+  await b(page,'Home · 返回主屏幕').click();await b(page,'打开信息').click();await b(page,'通讯录').click();expect((await page.locator('.friend-list .profile-avatar').boundingBox()).width).toBe(listAvatar.width);
   await page.locator('.friend-list .contact-row').click();await expect(page.locator('.profile-avatar-editor .profile-avatar')).toHaveCSS('width','72px');
 });
 
@@ -64,6 +64,7 @@ test('legacy preferences migrate on explicit save; demo draft survives more/sett
   const saved=await page.evaluate(()=>localStorage.getItem('yui-pocket.reading.v2'));expect(saved).not.toContain('仅草稿');expect(saved).not.toContain('小花店');
   await appearance(page);await b(page,'恢复聊天外观默认').click();await b(page,'保存聊天外观').click();await returnChat(page);
   await page.locator('.chat-page .messages').evaluate(el=>el.scrollTop=0);
+  await page.getByLabel('演示消息输入框').fill('');await page.getByLabel('演示消息输入框').evaluate(el=>el.blur());
   await page.locator('.phone').screenshot({path:'outputs/preview-baby-pink-chat.png'});
 });
 

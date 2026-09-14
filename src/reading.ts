@@ -3,7 +3,7 @@ import { messageView, type MessageIdentity } from './message-view';
 export type Reading = { version: 1; showAvatar: boolean; avatarSize: number; radius: number; fontSize: number; lineHeight: number };
 export type ReadingTarget = { key: string; identity: MessageIdentity; active(): boolean };
 type Settings = { version: 2; global: Reading; contacts: Record<string,Reading> };
-const defaults = (): Reading => ({ version: 1, showAvatar: true, avatarSize: 36, radius: 22, fontSize: 14, lineHeight: 1.65 });
+const defaults = (): Reading => ({ version: 1, showAvatar: true, avatarSize: 36, radius: 50, fontSize: 14, lineHeight: 1.65 });
 const KEY='yui-pocket.reading.v2', LEGACY='yui-pocket.reading.v1';
 function normalize(raw: Partial<Reading>): Reading {
   const next=defaults();if(!raw||raw.version!==1)return next;

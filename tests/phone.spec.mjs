@@ -261,7 +261,7 @@ test('Yui Dock opens contacts first; back/Home preserve draft and message previe
   expect(alpha.corner).toBe(0);
   expect(alpha.transparent).toBeGreaterThan(1000);
   expect(alpha.opaque).toBeGreaterThan(1000);
-  await expect(page.locator('.dock .app-icon')).toHaveCount(3);
+  await expect(page.locator('.dock .app-icon')).toHaveCount(2);
   for (const img of await page.locator('.sticker-image').all()) {
     expect(await img.getAttribute('src')).toMatch(/^data:image\/png;base64,/);
     expect(await img.evaluate(node => node.complete && node.naturalWidth > 0)).toBe(true);
@@ -287,7 +287,7 @@ test('Yui Dock opens contacts first; back/Home preserve draft and message previe
   await expect(input).toHaveValue('保留这份草稿');
   await page.getByRole('button', { name: '发送', exact: true }).click();
   await expect(page.locator('.message')).toHaveCount(4);
-  await page.getByRole('button', { name: '返回联系人列表', exact: true }).click();
+  await page.getByRole('button', { name: '返回信息列表', exact: true }).click();
   await expect(page.locator('.contacts-page')).toBeVisible();
   await expect(page.locator('.contact-preview')).toHaveText('我：保留这份草稿');
   await page.getByRole('button', { name: '返回主屏幕', exact: true }).click();

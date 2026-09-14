@@ -3,22 +3,37 @@ import { displayName, newAccount, newPerson, validateAccount, type Person } from
 import { editProfile } from './profile-editor';
 import type { ProfileHost, ProfileSession } from './profile-host';
 import type { ReadingTarget } from './reading';
+import { createChatControls } from './chat-controls';
 
 export function createDirectory(document: Document, host: ProfileHost, options: {
   home(): void; demo(): void; demoPreview(): string; reading(back: () => void, target?: ReadingTarget): void; useReading(target?: ReadingTarget): void;
 }) {
   const {el,button,field}=ui(document);
   const page=el('section','workspace-page contacts-page');page.hidden=true;
-  let session:ProfileSession|undefined, revision=0, mode:'contacts'|'messages'='contacts', dead=false;
+  let session:ProfileSession|undefined, revision=0, mode:'contacts'|'messages'|'me'='messages', dead=false;
+  const queries={contacts:'',messages:''};
   let controller=new AbortController();
   const failedImages=new Set<string>();
   function cancelPending(){revision++;controller.abort();controller=new AbortController();}
   function active(ticket:number){return !dead&&!page.hidden&&revision===ticket;}
   function base(title:string,back:()=>void=options.home){
-    cancelPending();page.replaceChildren();page.setAttribute('aria-label',title);
+    cancelPending();page.replaceChildren();page.classList.remove('directory-root');page.setAttribute('aria-label',title);
     const header=el('header','contact workspace-header'), returnButton=button('‹ 返回',back,'back');
     if(back===options.home)returnButton.setAttribute('aria-label','返回主屏幕');header.append(returnButton,el('h2','',title));
     const scroll=el('div','profile-scroll');page.append(header,scroll);return {header,scroll};
+  }
+  function rootView(){
+    const title=mode==='contacts'?'通讯录':mode==='me'?'我':'信息';
+    const view=base(title);page.classList.add('directory-root');
+    view.header.classList.add('directory-header');
+    const heart=el('span','header-heart','♥');heart.setAttribute('aria-hidden','true');view.header.append(heart);
+    const nav=el('nav','directory-tabs');nav.setAttribute('aria-label','信息应用导航');
+    for(const [key,label] of [['messages','信息'],['contacts','通讯录'],['me','我']] as const){
+      const tab=button('',()=>{if(mode!==key)void enter(key);},'directory-tab');tab.setAttribute('aria-label',label);
+      if(mode===key)tab.setAttribute('aria-current','page');
+      const heart=el('span','tab-heart','♥');heart.setAttribute('aria-hidden','true');tab.append(heart,el('span','',label));nav.append(tab);
+    }
+    page.append(nav);return view;
   }
   function avatar(person:Person){
     const wrap=el('span','profile-avatar',displayName(person).slice(0,1));
@@ -28,9 +43,9 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
     }return wrap;
   }
   async function enter(next:typeof mode){
-    mode=next;page.hidden=false;session=undefined;const {scroll}=base(next==='contacts'?'联系人':'信息');
+    mode=next;page.hidden=false;session=undefined;const {scroll}=rootView();
     scroll.append(el('p','empty-state','正在读取本存档资料…'));const ticket=revision;
-    try{session=await host.load(controller.signal);if(active(ticket))list();}
+    try{const loaded=await host.load(controller.signal);if(active(ticket)){session=loaded;list();}}
     catch(error){if(!active(ticket))return;scroll.replaceChildren(el('p','empty-state',(error as Error).message));
       if(next==='messages')demoEntry(scroll);
     }
@@ -42,26 +57,42 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
     row.append(el('span','list-avatar','桃'),copy,el('span','chevron','›'));scroll.append(row);
   }
   function list(){
-    const {header,scroll}=base(mode==='contacts'?'联系人':'信息');
+    const {header,scroll}=rootView();
     if(!session)return;
+    if(mode==='me'){
+      const card=button('',myCard,'my-card-link'),copy=el('span','contact-copy');
+      copy.append(el('strong','','我的名片'),el('span','contact-preview',session.book.self.account||'设置本存档的虚构账号'));
+      card.setAttribute('aria-label','我的名片');card.append(el('span','self-card-avatar','我'),copy,el('span','chevron','›'));
+      scroll.append(el('p','me-kicker','a little space for me'),card,el('p','beauty-hint','本聊天专属的名片。头像暂用“我”占位。'),el('p','empty-state','把自己放进这一段故事里 ♡'));
+      return;
+    }
     if(mode==='contacts'){
       const add=button('＋',addMenu,'back');add.setAttribute('aria-label','添加人物');header.append(add);
-      scroll.append(button('我的名片',myCard));
+      header.querySelector('.header-heart')?.remove();
     }
-    scroll.append(el('p','beauty-hint','本聊天专属 · 资料保存在本机；不保存真实消息'));
+    const queryMode=mode;
+    const searchLabel=el('label','directory-search'),heart=el('span','','♡'),search=el('input');heart.setAttribute('aria-hidden','true');
+    search.type='search';search.placeholder='搜索备注或人物名字';search.setAttribute('aria-label','筛选本页人物');search.value=queries[queryMode];
+    searchLabel.append(heart,search);scroll.append(searchLabel,el('p','directory-caption','本聊天专属 · 不保存真实消息'));
+    const rows=el('div','directory-results');scroll.append(rows);
     const friends=session.book.people.filter(p=>p.relation.friend), pending=session.book.people.filter(p=>!p.relation.friend);
     function section(title:string,people:Person[],setup:boolean){
       const group=el('section',setup?'people-setup':'friend-list');group.setAttribute('aria-label',title);group.append(el('h3','section-title',title));
-      if(!people.length)group.append(el('p','empty-state',setup?'尚未登记其他人物':'暂无好友；可以在联系人中录入人物'));
+      if(!people.length)group.append(el('p','empty-state',queries[queryMode]?'没有匹配的人物':setup?'尚未登记其他人物':'暂无好友；可以在通讯录中录入人物'));
       for(const person of people){
         const row=button('',()=>mode==='messages'?chat(person.id):edit(person.id,()=>list()),'contact-row');row.dataset.personId=person.id;
         const copy=el('span','contact-copy');copy.append(el('strong','person-name',displayName(person)),el('span','contact-preview',setup?(person.relation.known?'认识 · 未加好友':'尚不认识 · 玩家设置'):'暂无消息 · 聊天尚未接入'));
         row.append(avatar(person),copy,el('span','chevron','›'));group.append(row);
-      }scroll.append(group);
+      }rows.append(group);
     }
-    section(mode==='messages'?'好友会话':'已有好友',friends,false);
-    if(mode==='contacts'){section('人物设置 · 仅玩家可见',pending,true);scroll.append(el('p','beauty-hint','登记人物不代表你已认识或知道对方账号。'));}
-    else demoEntry(scroll);
+    function results(){
+      rows.replaceChildren();const query=queries[queryMode].trim().toLocaleLowerCase();
+      const match=(person:Person)=>!query||`${person.name}\n${person.remark}`.toLocaleLowerCase().includes(query);
+      section(mode==='messages'?'好友会话':'已有好友',friends.filter(match),false);
+      if(mode==='contacts'){section('人物设置 · 仅玩家可见',pending.filter(match),true);rows.append(el('p','beauty-hint','登记人物不代表你已认识或知道对方账号。'));}
+      else if(!query||'小桃 演示'.includes(query))demoEntry(rows);
+    }
+    search.oninput=()=>{queries[queryMode]=search.value;results();};results();
   }
   function addMenu(){
     const {scroll}=base('添加人物',list);
@@ -90,8 +121,7 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
     const more=button('⋯',()=>chatSettings(id),'chat-more');more.setAttribute('aria-label','打开聊天设置');
     header.append(name,more);options.useReading(readingTarget(person));scroll.classList.add('messages');
     scroll.append(el('p','empty-state','暂无消息。此联系人的聊天功能尚未接入，不会产生回复或历史记录。'));
-    const form=el('div','composer'),input=el('textarea','message-input');input.disabled=true;input.placeholder='聊天功能尚未接入';input.setAttribute('aria-label','联系人消息输入框');
-    const send=button('发送',()=>{},'send');send.disabled=true;form.append(input,send);page.append(form);
+    page.append(createChatControls(document,false).container);
   }
   function readingTarget(person:Person):ReadingTarget {
     const captured=session!;
@@ -118,7 +148,7 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
     });scroll.append(account.label,button('生成我的虚构账号',()=>{account.input.value=newAccount();}),el('p','beauty-hint','仅在本存档使用，不提供真实通讯服务。保存后账号固定；不会发出申请。'));
     const actions=el('div','beauty-actions');actions.append(save);page.append(actions,status);
   }
-  const unsubscribe=host.subscribe(()=>{cancelPending();session=undefined;if(!page.hidden)void enter(mode);});
+  const unsubscribe=host.subscribe(()=>{cancelPending();session=undefined;queries.contacts=queries.messages='';if(!page.hidden)void enter(mode);});
   return {page,enter,leave(){cancelPending();page.hidden=true;},dispose(){dead=true;cancelPending();unsubscribe();page.remove();},
     demoSettings(back:()=>void){page.hidden=false;settingsView(undefined,back,()=>this.demoProfile(()=>this.demoSettings(back)),()=>options.reading(()=>this.demoSettings(back)));},
     demoProfile(back:()=>void){page.hidden=false;const {scroll}=base('演示人物资料',back);scroll.append(el('p','empty-state','小桃是独立演示人物，不属于本存档通讯录；示例资料不保存。'));},

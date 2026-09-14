@@ -10,6 +10,7 @@ import { createProfileHost } from './profile-host';
 import { createDirectory } from './directory';
 import { createReading } from './reading';
 import { messageView } from './message-view';
+import { createChatControls } from './chat-controls';
 
 export function mountPhone(document: Document, root: HTMLElement): () => void {
   const shadow = root.attachShadow({ mode: 'open' });
@@ -129,13 +130,10 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     const beautyImage = element('img', 'envelope-icon'); beautyImage.src = beautyIcon; beautyImage.alt = ''; beautyImage.draggable = false;
     beautyApp.append(beautyImage, element('span', 'app-label', '美化'));
     dock.append(beautyApp);
-    const peopleApp = button('app-icon', '', '打开联系人');
-    peopleApp.append(element('span', 'people-icon', '♧'), element('span', 'app-label', '联系人'));
-    dock.insertBefore(peopleApp, beautyApp);
     homePage.append(wallpaperArt, element('div', 'page-dots', '●'), dock);
     const chatPage = element('div', 'chat-page');
     chatPage.hidden = true;
-    const back = button('back', '‹ 信息', '返回联系人列表');
+    const back = button('back', '‹ 信息', '返回信息列表');
     const header = element('header', 'contact chat-header');
     const more = button('chat-more', '⋯', '打开聊天设置');
     const identity = button('identity profile-name', '', '打开演示人物资料');
@@ -150,27 +148,13 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     log.append(element('p', 'day-label', '一段虚构的小日常'));
     function renderMessage(message: DemoMessage) {
       const meta = message.sample ? `${message.sender === 'self' ? '我' : '小桃'} · 预置示例` : '我 · 仅本次演示';
-      const row = messageView(document,message.sender,message.text,{name:message.sender==='self'?'我':'小桃'},meta);
+      const row = messageView(document,message.sender,message.text,{name:message.sender==='self'?'我':'小桃'},meta,message.time);
       row.dataset.messageId = message.id;
       log.append(row);
     }
     demo.list().forEach(renderMessage);
-    const form = element('form', 'composer');
-    const label = element('label', 'sr-only', '演示消息输入框');
-    label.htmlFor = 'rp-message-input';
-    const input = element('textarea', 'message-input');
-    input.id = 'rp-message-input';
-    input.rows = 2;
-    input.maxLength = 2000;
-    input.placeholder = '写一条小消息…';
-    input.setAttribute('enterkeyhint', 'enter');
-    const send = element('button', 'send', '发送');
-    send.type = 'submit';
-    send.disabled = true;
-    form.append(label, input, send);
-    const status = element('p', 'status', '只添加你的气泡，不会产生回复');
-    status.setAttribute('role', 'status');
-    chatPage.append(header, log, form, status);
+    const { container, form, input, send, status } = createChatControls(document, true);
+    chatPage.append(header, log, container);
     const beauty = createBeautify(document, {
       get: () => appearance,
       change: value => { appearance = value; applyAppearance(); },
@@ -234,9 +218,6 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     panelLife.listen(home, 'click', showHome);
     panelLife.listen(back, 'click', showContacts);
     panelLife.listen(messagesApp, 'click', showContacts);
-    panelLife.listen(peopleApp, 'click', () => {
-      homePage.hidden=chatPage.hidden=beauty.page.hidden=true;reading.cancelPreview();void directory.enter('contacts');
-    });
     const showDemoProfile=()=>{chatPage.hidden=true;directory.demoProfile(showMessages);};
     panelLife.listen(more,'click',()=>{chatPage.hidden=true;directory.demoSettings(showMessages);});panelLife.listen(identity,'click',showDemoProfile);
     panelLife.listen(beautyApp, 'click', () => {

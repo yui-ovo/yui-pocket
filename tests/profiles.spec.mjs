@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 const key='yui-pocket.contacts.v1:test-user';
 const button=(page,name)=>page.getByRole('button',{name,exact:true});
-async function open(page,app='联系人') { await button(page,'打开 Yui 演示手机').click();await button(page,`打开${app}`).click();await expect(button(page,'添加人物')).toBeVisible(); }
+async function open(page,app='信息') { await button(page,'打开 Yui 演示手机').click();await button(page,`打开${app}`).click();await button(page,'通讯录').click();await expect(button(page,'添加人物')).toBeVisible(); }
 async function add(page,name,{source=true,relation='friend',remark=''}={}){
   await button(page,'添加人物').click();await button(page,source?'从当前角色卡带入':'手动创建人物').click();
   await page.getByLabel('人物名字',{exact:true}).fill(name);await page.getByLabel('手机备注',{exact:true}).fill(remark);
@@ -69,10 +69,10 @@ test('relation presets and known account are independent, my card is fixed and d
   await page.getByLabel('开局已经知道对方账号').check();await page.getByLabel('人物虚构账号').fill('flower_123');await save(page);await list(page);
   await expect(page.locator('.friend-list .contact-row')).toHaveCount(0);
   expect(Object.values((await books(page)).books)[0].people[0].relation).toEqual({known:true,accountKnown:true,friend:false});
-  await button(page,'我的名片').click();await page.getByLabel('我的虚构账号').fill('FLOWER_123');await button(page,'保存我的名片').click();
+  await button(page,'我').click();await button(page,'我的名片').click();await page.getByLabel('我的虚构账号').fill('FLOWER_123');await button(page,'保存我的名片').click();
   await expect(page.getByRole('status').filter({visible:true})).toContainText('相同账号');
   await page.getByLabel('我的虚构账号').fill('my_yui_42');await button(page,'保存我的名片').click();await expect(page.getByRole('status').filter({visible:true})).toContainText('已保存');
-  await page.reload();await open(page);await button(page,'我的名片').click();await expect(page.getByLabel('我的虚构账号')).toHaveValue('my_yui_42');
+  await page.reload();await open(page);await button(page,'我').click();await button(page,'我的名片').click();await expect(page.getByLabel('我的虚构账号')).toHaveValue('my_yui_42');
 });
 
 test('avatar upload and explicit URL, failure fallback, and defaults never change the source card',async({page})=>{
@@ -93,7 +93,7 @@ test('avatar upload and explicit URL, failure fallback, and defaults never chang
 });
 
 test('no valid chat cannot save to a shared fallback; pending save is invalid after switching',async({page})=>{
-  await page.evaluate(()=>profileMock.switch('0',null));await button(page,'打开 Yui 演示手机').click();await button(page,'打开联系人').click();
+  await page.evaluate(()=>profileMock.switch('0',null));await button(page,'打开 Yui 演示手机').click();await button(page,'打开信息').click();await button(page,'通讯录').click();
   await expect(page.locator('.empty-state:visible')).toContainText('先打开有效聊天');await expect(button(page,'添加人物')).toHaveCount(0);expect(await books(page)).toBeNull();
   await page.evaluate(()=>profileMock.switch('0','chat-A'));await expect(button(page,'添加人物')).toBeVisible();await add(page,'不能写入B');
   let release;await page.route('**/api/users/me',async route=>{await new Promise(resolve=>release=resolve);await route.fulfill({json:{handle:'test-user'}}).catch(()=>{});},{times:1});

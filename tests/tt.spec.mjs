@@ -7,7 +7,7 @@ async function launch(page,path='/tt') {
   await page.route('**/thumbnail?**',route=>route.fulfill({contentType:'image/png',path:'src/assets/stickers/rabbit.png'}));
   await page.goto(path);await page.waitForFunction(()=>window.fixtureReady);
 }
-async function open(page) {await button(page,'打开 Yui 演示手机').click();await button(page,'打开联系人').click();await expect(button(page,'添加人物')).toBeVisible();}
+async function open(page) {await button(page,'打开 Yui 演示手机').click();await button(page,'打开信息').click();await button(page,'通讯录').click();await expect(button(page,'添加人物')).toBeVisible();}
 async function add(page,name) {
   await button(page,'添加人物').click();await button(page,'从当前角色卡带入').click();
   await page.getByLabel('人物名字',{exact:true}).fill(name);await page.getByLabel('开局关系',{exact:true}).selectOption('friend');
@@ -44,7 +44,7 @@ test('TT native profiles persist, copied integrity stays isolated, rename migrat
 });
 
 test('TT unavailable API or failed native storage fails closed',async({page})=>{
-  await launch(page);await page.evaluate(()=>delete __TAURITAVERN__.api.chat);await button(page,'打开 Yui 演示手机').click();await button(page,'打开联系人').click();
+  await launch(page);await page.evaluate(()=>delete __TAURITAVERN__.api.chat);await button(page,'打开 Yui 演示手机').click();await button(page,'打开信息').click();await button(page,'通讯录').click();
   await expect(page.locator('.workspace-page:visible')).toContainText('请更新 TauriTavern');
   await page.reload();await open(page);await add(page,'不能保存');
   await page.evaluate(()=>ttMock.fail=true);await button(page,'保存联系人').click();
