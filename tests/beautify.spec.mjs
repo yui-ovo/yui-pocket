@@ -42,16 +42,73 @@ test('explicit appearance save survives reload, reset owns one key and contains 
   await page.evaluate(() => localStorage.setItem('host-setting-test','keep'));
   await open(page);
   await page.getByRole('button',{name:'蜡笔爱心',exact:true}).click();
-  await page.getByLabel('大小',{exact:true}).fill('120');
+  await page.getByLabel('大小',{exact:true}).fill('20');
+  await page.getByLabel('左右位置',{exact:true}).fill('-12');
+  await page.getByLabel('上下位置',{exact:true}).fill('16');
   await page.getByRole('button',{name:'保存外观',exact:true}).click();
   const saved=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
   expect(Object.keys(saved).sort()).toEqual(['corners','strap','version']);
-  expect(saved.corners['top-left']).toEqual({image:'heart',size:120,angle:0});
+  expect(saved.corners['top-left']).toEqual({image:'heart',size:20,angle:0,offsetX:-12,offsetY:16});
   await page.reload(); await open(page);
   await expect(page.locator('[data-corner="top-left"]')).toHaveAttribute('data-asset','heart');
+  await expect(page.getByLabel('大小',{exact:true})).toHaveValue('20');
+  await expect(page.getByLabel('左右位置',{exact:true})).toHaveValue('-12');
+  await expect(page.getByLabel('上下位置',{exact:true})).toHaveValue('16');
   await page.getByRole('button',{name:'恢复默认',exact:true}).click();
   expect(await page.evaluate(k=>localStorage.getItem(k),key)).toBeNull();
   expect(await page.evaluate(()=>localStorage.getItem('host-setting-test'))).toBe('keep');
+});
+
+test('sticker offsets use screen axes, scale down to 10%, and do not affect the strap', async ({page}) => {
+  await open(page);
+  for (const corner of ['top-left','top-right','bottom-left','bottom-right']) {
+    await page.getByLabel('装饰位置',{exact:true}).selectOption(corner);
+    await page.getByRole('button',{name:'蜡笔爱心',exact:true}).click();
+    await page.getByLabel('旋转',{exact:true}).fill('15');
+    const node=page.locator(`[data-corner="${corner}"]`), before=await node.boundingBox();
+    await page.getByLabel('左右位置',{exact:true}).fill('-20');
+    await page.getByLabel('上下位置',{exact:true}).fill('-15');
+    const after=await node.boundingBox();
+    expect(after.x-before.x).toBeCloseTo(-20, 1);
+    expect(after.y-before.y).toBeCloseTo(-15, 1);
+    await expect(page.getByLabel('大小',{exact:true})).toHaveAttribute('max','100');
+    await page.getByLabel('大小',{exact:true}).fill('10');
+    const tiny=await node.boundingBox();
+    expect(tiny.width/after.width).toBeCloseTo(.1, 2);
+  }
+  await page.getByLabel('装饰位置',{exact:true}).selectOption('strap');
+  await expect(page.getByLabel('左右位置',{exact:true})).toBeHidden();
+  await expect(page.getByLabel('上下位置',{exact:true})).toBeHidden();
+  await expect(page.getByLabel('大小',{exact:true})).toHaveAttribute('min','60');
+  for (const angle of ['45','-45']) {
+    await page.getByLabel('旋转',{exact:true}).fill(angle);
+    await page.getByRole('button',{name:'保存外观',exact:true}).click();
+    await page.reload(); await open(page);
+    await page.getByLabel('装饰位置',{exact:true}).selectOption('strap');
+    await expect(page.getByLabel('旋转',{exact:true})).toHaveValue(angle);
+    expect(await page.locator('.charm').evaluate(el=>el.style.getPropertyValue('--strap-angle'))).toBe(`${angle}deg`);
+    const saved=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
+    expect(saved.strap).not.toHaveProperty('offsetX');
+    for (const corner of Object.values(saved.corners)) expect(corner).toMatchObject({size:10,offsetX:-20,offsetY:-15});
+  }
+});
+
+test('old preferences keep images and positions while oversized stickers respect the new limit', async ({page}) => {
+  await page.evaluate(k=>localStorage.setItem(k,JSON.stringify({version:1,corners:{
+    'bottom-right':{image:'rabbit',size:74,angle:3},
+    'top-left':{image:'heart',size:130,angle:9,offsetX:999,offsetY:-999}
+  },strap:{image:'default-strap',size:100,angle:4,side:'left'}})),key);
+  await page.reload(); await open(page);
+  await page.getByLabel('装饰位置',{exact:true}).selectOption('bottom-right');
+  await expect(page.getByLabel('大小',{exact:true})).toHaveValue('74');
+  await expect(page.getByLabel('左右位置',{exact:true})).toHaveValue('0');
+  await expect(page.getByLabel('上下位置',{exact:true})).toHaveValue('0');
+  await page.getByRole('button',{name:'保存外观',exact:true}).click();
+  const saved=await page.evaluate(k=>JSON.parse(localStorage.getItem(k)),key);
+  expect(saved.corners['bottom-right']).toEqual({image:'rabbit',size:74,angle:3,offsetX:0,offsetY:0});
+  expect(saved.corners['top-left']).toEqual({image:'heart',size:100,angle:9,offsetX:40,offsetY:-40});
+  expect(saved.strap.angle).toBe(4);
+  expect(saved.corners['bottom-left'].angle).toBe(-7);
 });
 
 test('local upload is raster-only, persists sanitized pixels and makes no outbound requests', async ({ page }) => {

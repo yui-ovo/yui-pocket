@@ -37,18 +37,27 @@ export function createBeautify(document: Document, options: {
   const upload = el('input', ''); upload.type = 'file'; upload.accept = 'image/png,image/jpeg,image/webp'; upload.setAttribute('aria-label', '导入装饰图片');
   uploadLabel.append(upload);
   const sliders: HTMLInputElement[] = [];
-  function slider(name: string, key: 'size' | 'angle', min: string, max: string) {
+  type Field = 'size' | 'angle' | 'offsetX' | 'offsetY';
+  function slider(name: string, key: Field, min: string, max: string) {
     const label = el('label', 'beauty-label', name);
     const value = el('output', '');
     const input = el('input', 'beauty-range'); input.type = 'range'; input.min = min; input.max = max; input.setAttribute('aria-label', name); input.dataset.field = key;
     label.append(value, input); sliders.push(input);
     life.listen(input, 'input', () => {
       revision++;
-      selected()[key] = Number(input.value); options.change(options.get()); sync();
+      if (key === 'offsetX' || key === 'offsetY') {
+        if (target.value === 'strap') return;
+        options.get().corners[target.value as Corner][key] = Number(input.value);
+      } else selected()[key] = Number(input.value);
+      options.change(options.get()); sync();
     });
     return label;
   }
-  const size = slider('大小', 'size', '60', '130'), angle = slider('旋转', 'angle', '-25', '25');
+  const size = slider('大小', 'size', '10', '100'), angle = slider('旋转', 'angle', '-25', '25');
+  const horizontal = slider('左右位置', 'offsetX', '-40', '40');
+  const vertical = slider('上下位置', 'offsetY', '-40', '40');
+  const positionHint = el('p', 'beauty-hint', '负值向左 / 向上，正值向右 / 向下；0 为原位置。');
+  const strapHint = el('p', 'beauty-hint', '向外旋：左侧用正角度，右侧用负角度。窄屏大角度可能越出边缘，可同时缩小挂绳。');
   const sideLabel = el('label', 'beauty-label', '挂点方向');
   const side = el('select', 'beauty-select'); side.setAttribute('aria-label', '挂点方向');
   for (const [value, text] of [['left', '左侧挂孔'], ['right', '右侧挂孔']]) { const o = el('option', '', text); o.value = value; side.append(o); }
@@ -56,18 +65,25 @@ export function createBeautify(document: Document, options: {
   const status = el('p', 'beauty-status', '仅保存外观，不保存聊天；不上传图片。'); status.setAttribute('role', 'status');
   const actions = el('div', 'beauty-actions');
   const save = button('保存外观'), reset = button('恢复默认'); actions.append(save, reset);
-  scroll.append(hint, targetLabel, size, angle, sideLabel, uploadLabel, el('p', 'beauty-hint', '透明 PNG / WebP 效果最好 · 单张不超过 2 MB'), gallery);
+  scroll.append(hint, targetLabel, size, angle, horizontal, vertical, positionHint, sideLabel, strapHint, uploadLabel, el('p', 'beauty-hint', '透明 PNG / WebP 效果最好 · 单张不超过 2 MB'), gallery);
   page.append(header, scroll, actions, status);
   function selected() { return target.value === 'strap' ? options.get().strap : options.get().corners[target.value as Corner]; }
   function sync() {
     const value = selected();
     for (const input of sliders) {
-      const key = input.dataset.field as 'size' | 'angle';
-      input.min = key === 'size' ? '60' : target.value === 'strap' ? '-4' : '-25';
-      input.max = key === 'size' ? target.value === 'strap' ? '120' : '130' : target.value === 'strap' ? '4' : '25';
-      input.value = String(value[key]);
-      input.previousElementSibling!.textContent = input.value + (key === 'size' ? '%' : '°');
+      const key = input.dataset.field as Field;
+      if (key === 'offsetX' || key === 'offsetY') {
+        input.value = String(target.value === 'strap' ? 0 : options.get().corners[target.value as Corner][key]);
+        input.previousElementSibling!.textContent = input.value + ' px';
+      } else {
+        input.min = key === 'size' ? target.value === 'strap' ? '60' : '10' : target.value === 'strap' ? '-45' : '-25';
+        input.max = key === 'size' ? target.value === 'strap' ? '120' : '100' : target.value === 'strap' ? '45' : '25';
+        input.value = String(value[key]);
+        input.previousElementSibling!.textContent = input.value + (key === 'size' ? '%' : '°');
+      }
     }
+    horizontal.hidden = vertical.hidden = positionHint.hidden = target.value === 'strap';
+    strapHint.hidden = target.value !== 'strap';
     sideLabel.hidden = target.value !== 'strap'; side.value = options.get().strap.side;
     for (const b of gallery.querySelectorAll<HTMLButtonElement>('button')) {
       b.hidden = b.dataset.asset === (target.value === 'strap' ? 'halo' : 'default-strap');

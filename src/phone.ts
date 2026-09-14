@@ -79,7 +79,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
       corners.forEach((corner, i) => {
         const value = appearance.corners[corner], node = cornerNodes[i];
         node.replaceChildren(); node.hidden = value.image === 'none'; node.dataset.asset = value.image.startsWith('data:') ? 'custom' : value.image;
-        node.style.transform = `rotate(${value.angle}deg) scale(${value.size / 100})`;
+        node.style.transform = `translate(${value.offsetX}px, ${value.offsetY}px) rotate(${value.angle}deg) scale(${value.size / 100})`;
         if (value.image === 'halo') node.append(sticker('corner-halo'));
         else {
           const source = imageSource(value.image);

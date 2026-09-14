@@ -4,7 +4,8 @@ import defaultStrap from './assets/strap-cutout.png';
 export const corners = ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as const;
 export type Corner = typeof corners[number];
 export type Decoration = { image: string; size: number; angle: number };
-export type Appearance = { version: 1; corners: Record<Corner, Decoration>; strap: Decoration & { side: 'left' | 'right' } };
+export type StickerDecoration = Decoration & { offsetX: number; offsetY: number };
+export type Appearance = { version: 1; corners: Record<Corner, StickerDecoration>; strap: Decoration & { side: 'left' | 'right' } };
 export const APPEARANCE_KEY = 'yui-pocket.appearance.v1';
 export const MAX_IMAGE_LENGTH = 380000;
 const isRecord = (x: unknown): x is Record<string, unknown> => !!x && typeof x === 'object' && !Array.isArray(x);
@@ -16,10 +17,10 @@ export function imageSource(id: string): string | undefined {
 }
 export function defaults(): Appearance {
   return { version: 1, corners: {
-    'top-left': { image: 'none', size: 100, angle: 0 },
-    'top-right': { image: 'none', size: 100, angle: 0 },
-    'bottom-left': { image: 'halo', size: 100, angle: -7 },
-    'bottom-right': { image: 'none', size: 100, angle: 0 },
+    'top-left': { image: 'none', size: 100, angle: 0, offsetX: 0, offsetY: 0 },
+    'top-right': { image: 'none', size: 100, angle: 0, offsetX: 0, offsetY: 0 },
+    'bottom-left': { image: 'halo', size: 100, angle: -7, offsetX: 0, offsetY: 0 },
+    'bottom-right': { image: 'none', size: 100, angle: 0, offsetX: 0, offsetY: 0 },
   }, strap: { image: 'default-strap', size: 100, angle: 0, side: 'left' } };
 }
 function decoration(raw: unknown, fallback: Decoration): Decoration {
@@ -32,8 +33,17 @@ export function normalizeAppearance(raw: unknown): Appearance {
   const result = defaults();
   if (!isRecord(raw) || raw.version !== 1) return result;
   const slots = isRecord(raw.corners) ? raw.corners : {};
-  for (const corner of corners) result.corners[corner] = decoration(slots[corner], result.corners[corner]);
-  if (isRecord(raw.strap)) result.strap = { ...decoration(raw.strap, result.strap), size: clamp(raw.strap.size,60,120,100), angle: clamp(raw.strap.angle,-4,4,0), side: raw.strap.side === 'right' ? 'right' : 'left' };
+  for (const corner of corners) {
+    const slot = isRecord(slots[corner]) ? slots[corner] : {};
+    result.corners[corner] = {
+      ...decoration(slots[corner], result.corners[corner]),
+      size: clamp(slot.size, 10, 100, 100),
+      // Existing v1 preferences have no offsets and retain their original position.
+      offsetX: clamp(slot.offsetX, -40, 40, 0),
+      offsetY: clamp(slot.offsetY, -40, 40, 0),
+    };
+  }
+  if (isRecord(raw.strap)) result.strap = { ...decoration(raw.strap, result.strap), size: clamp(raw.strap.size,60,120,100), angle: clamp(raw.strap.angle,-45,45,0), side: raw.strap.side === 'right' ? 'right' : 'left' };
   return result;
 }
 

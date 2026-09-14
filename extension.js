@@ -282,10 +282,10 @@ function imageSource(id) {
 }
 function defaults() {
   return { version: 1, corners: {
-    "top-left": { image: "none", size: 100, angle: 0 },
-    "top-right": { image: "none", size: 100, angle: 0 },
-    "bottom-left": { image: "halo", size: 100, angle: -7 },
-    "bottom-right": { image: "none", size: 100, angle: 0 }
+    "top-left": { image: "none", size: 100, angle: 0, offsetX: 0, offsetY: 0 },
+    "top-right": { image: "none", size: 100, angle: 0, offsetX: 0, offsetY: 0 },
+    "bottom-left": { image: "halo", size: 100, angle: -7, offsetX: 0, offsetY: 0 },
+    "bottom-right": { image: "none", size: 100, angle: 0, offsetX: 0, offsetY: 0 }
   }, strap: { image: "default-strap", size: 100, angle: 0, side: "left" } };
 }
 function decoration(raw, fallback) {
@@ -298,8 +298,17 @@ function normalizeAppearance(raw) {
   const result = defaults();
   if (!isRecord(raw) || raw.version !== 1) return result;
   const slots = isRecord(raw.corners) ? raw.corners : {};
-  for (const corner of corners) result.corners[corner] = decoration(slots[corner], result.corners[corner]);
-  if (isRecord(raw.strap)) result.strap = { ...decoration(raw.strap, result.strap), size: clamp(raw.strap.size, 60, 120, 100), angle: clamp(raw.strap.angle, -4, 4, 0), side: raw.strap.side === "right" ? "right" : "left" };
+  for (const corner of corners) {
+    const slot = isRecord(slots[corner]) ? slots[corner] : {};
+    result.corners[corner] = {
+      ...decoration(slots[corner], result.corners[corner]),
+      size: clamp(slot.size, 10, 100, 100),
+      // Existing v1 preferences have no offsets and retain their original position.
+      offsetX: clamp(slot.offsetX, -40, 40, 0),
+      offsetY: clamp(slot.offsetY, -40, 40, 0)
+    };
+  }
+  if (isRecord(raw.strap)) result.strap = { ...decoration(raw.strap, result.strap), size: clamp(raw.strap.size, 60, 120, 100), angle: clamp(raw.strap.angle, -45, 45, 0), side: raw.strap.side === "right" ? "right" : "left" };
   return result;
 }
 function appearanceStorage(host) {
@@ -432,13 +441,20 @@ function createBeautify(document, options) {
     sliders.push(input);
     life.listen(input, "input", () => {
       revision++;
-      selected()[key] = Number(input.value);
+      if (key === "offsetX" || key === "offsetY") {
+        if (target.value === "strap") return;
+        options.get().corners[target.value][key] = Number(input.value);
+      } else selected()[key] = Number(input.value);
       options.change(options.get());
       sync();
     });
     return label;
   }
-  const size = slider("大小", "size", "60", "130"), angle = slider("旋转", "angle", "-25", "25");
+  const size = slider("大小", "size", "10", "100"), angle = slider("旋转", "angle", "-25", "25");
+  const horizontal = slider("左右位置", "offsetX", "-40", "40");
+  const vertical = slider("上下位置", "offsetY", "-40", "40");
+  const positionHint = el("p", "beauty-hint", "负值向左 / 向上，正值向右 / 向下；0 为原位置。");
+  const strapHint = el("p", "beauty-hint", "向外旋：左侧用正角度，右侧用负角度。窄屏大角度可能越出边缘，可同时缩小挂绳。");
   const sideLabel = el("label", "beauty-label", "挂点方向");
   const side = el("select", "beauty-select");
   side.setAttribute("aria-label", "挂点方向");
@@ -453,7 +469,7 @@ function createBeautify(document, options) {
   const actions = el("div", "beauty-actions");
   const save = button("保存外观"), reset = button("恢复默认");
   actions.append(save, reset);
-  scroll.append(hint, targetLabel, size, angle, sideLabel, uploadLabel, el("p", "beauty-hint", "透明 PNG / WebP 效果最好 · 单张不超过 2 MB"), gallery);
+  scroll.append(hint, targetLabel, size, angle, horizontal, vertical, positionHint, sideLabel, strapHint, uploadLabel, el("p", "beauty-hint", "透明 PNG / WebP 效果最好 · 单张不超过 2 MB"), gallery);
   page.append(header, scroll, actions, status);
   function selected() {
     return target.value === "strap" ? options.get().strap : options.get().corners[target.value];
@@ -462,11 +478,18 @@ function createBeautify(document, options) {
     const value = selected();
     for (const input of sliders) {
       const key = input.dataset.field;
-      input.min = key === "size" ? "60" : target.value === "strap" ? "-4" : "-25";
-      input.max = key === "size" ? target.value === "strap" ? "120" : "130" : target.value === "strap" ? "4" : "25";
-      input.value = String(value[key]);
-      input.previousElementSibling.textContent = input.value + (key === "size" ? "%" : "°");
+      if (key === "offsetX" || key === "offsetY") {
+        input.value = String(target.value === "strap" ? 0 : options.get().corners[target.value][key]);
+        input.previousElementSibling.textContent = input.value + " px";
+      } else {
+        input.min = key === "size" ? target.value === "strap" ? "60" : "10" : target.value === "strap" ? "-45" : "-25";
+        input.max = key === "size" ? target.value === "strap" ? "120" : "100" : target.value === "strap" ? "45" : "25";
+        input.value = String(value[key]);
+        input.previousElementSibling.textContent = input.value + (key === "size" ? "%" : "°");
+      }
     }
+    horizontal.hidden = vertical.hidden = positionHint.hidden = target.value === "strap";
+    strapHint.hidden = target.value !== "strap";
     sideLabel.hidden = target.value !== "strap";
     side.value = options.get().strap.side;
     for (const b of gallery.querySelectorAll("button")) {
@@ -603,7 +626,7 @@ function mountPhone(document, root) {
         node.replaceChildren();
         node.hidden = value2.image === "none";
         node.dataset.asset = value2.image.startsWith("data:") ? "custom" : value2.image;
-        node.style.transform = `rotate(${value2.angle}deg) scale(${value2.size / 100})`;
+        node.style.transform = `translate(${value2.offsetX}px, ${value2.offsetY}px) rotate(${value2.angle}deg) scale(${value2.size / 100})`;
         if (value2.image === "halo") node.append(sticker("corner-halo"));
         else {
           const source2 = imageSource(value2.image);
