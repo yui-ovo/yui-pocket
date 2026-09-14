@@ -1,4 +1,5 @@
 import { newBook, validateBook, type AddressBook, type Person } from './contacts';
+import { ttHost, ttStore, sameStoredJson, type TTStore } from './tt-host';
 
 // Verified subset of SillyTavern 1.18.0 getContext; indices are used only to read the selected card.
 type Context = {
@@ -11,7 +12,7 @@ type Context = {
   eventSource: { on(event: string, fn: (...args: any[]) => void): void; removeListener(event: string, fn: (...args: any[]) => void): void };
 };
 type Snapshot = { locator: string; source?: { name: string; avatarFile: string } };
-export type ProfileSession = { account: string; snapshot: Snapshot; book: AddressBook };
+export type ProfileSession = { account: string; snapshot: Snapshot; book: AddressBook; nativeStore?: TTStore };
 type Registry = { version: 1; books: Record<string, AddressBook> };
 export function createProfileHost(host: Window) {
   let dead = false, generation = 0;
@@ -66,6 +67,12 @@ export function createProfileHost(host: Window) {
     }
     bind('CHAT_CHANGED', changed);
     bind('CHAT_RENAMED', async (event: { avatarId?: string; groupId?: string; oldFileName: string; newFileName: string }) => {
+      if (ttHost(host)) {
+        try {
+          if (!dead) await ttStore(host, event.newFileName, !!event.groupId, event.avatarId).moveFrom(event.oldFileName);
+        } catch { warning = 'TT 聊天重命名资料迁移未确认，请改回原名检查；已停止覆盖保存。'; }
+        if (!dead) changed(); return;
+      }
       try {
         const account = await accountHandle(lifecycle.signal);
         if (!dead) {
@@ -92,6 +99,15 @@ export function createProfileHost(host: Window) {
       if (warning) throw new Error(warning);
       const selected = snapshot(), epoch = generation;
       if (!selected) throw new Error('请先打开有效聊天，再使用本存档通讯录');
+      if (ttHost(host)) {
+        const ctx = context()!;
+        const nativeStore = ttStore(host, ctx.chatId!, !!ctx.groupId, selected.source?.avatarFile);
+        const session: ProfileSession = { account: 'tt-native-store', snapshot: selected, book: newBook(), nativeStore };
+        const saved = await nativeStore.getJson({ namespace: 'yui-pocket', key: 'contacts-v1' });
+        ensure(session, epoch, signal);
+        if (saved !== null && saved !== undefined) session.book = structuredClone(saved) as AddressBook;
+        validateBook(session.book); return session;
+      }
       const handle = await accountHandle(signal);
       const session = { account: handle, snapshot: selected, book: newBook() };
       ensure(session, epoch, signal);
@@ -101,6 +117,24 @@ export function createProfileHost(host: Window) {
     async save(session: ProfileSession, book: AddressBook, signal: AbortSignal) {
       const epoch = generation; ensure(session, epoch, signal); validateBook(book);
       if (warning) throw new Error(warning);
+      if (session.nativeStore) {
+        const store = session.nativeStore, options = { namespace: 'yui-pocket', key: 'contacts-v1' };
+        try {
+          const previous = await store.getJson(options) as AddressBook | null;
+          ensure(session, epoch, signal);
+          if (previous && (previous.id !== session.book.id || previous.revision !== session.book.revision)) throw new Error('通讯录已被修改，请返回列表重新读取');
+          const next = structuredClone(book); next.revision = session.book.revision + 1;
+          // The handle is bound to the original chat. In-flight native writes cannot be aborted.
+          await store.setJson({ ...options, value: next }, () => ensure(session, epoch, signal));
+          const confirmed = await store.getJson(options);
+          ensure(session, epoch, signal);
+          if (!sameStoredJson(confirmed, next)) throw new Error('TT 写入后的资料确认失败');
+          session.book = next; return;
+        } catch (error) {
+          ensure(session, epoch, signal);
+          throw new Error(`TT 资料保存未确认，请返回重读后再试：${error instanceof Error ? error.message : '宿主存储失败'}`);
+        }
+      }
       const handle = await accountHandle(signal);
       ensure(session, epoch, signal);
       if (handle !== session.account) throw new Error('宿主账号已变化，请重新打开通讯录');

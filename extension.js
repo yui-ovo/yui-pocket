@@ -16,6 +16,60 @@ function createLifetime() {
   };
 }
 
+// src/tt-host.ts
+var ttHost = (host) => host.__TAURITAVERN__;
+var ttReady = (host) => ttHost(host)?.ready ?? host.__TAURITAVERN_MAIN_READY__;
+function ttStore(host, chatId, group, avatar) {
+  const api = ttHost(host)?.api?.chat;
+  if (!api?.open) throw new Error("此 TT 版本未提供独立聊天资料接口，请更新 TauriTavern；未保存资料");
+  const fileName = chatId.replace(/\.jsonl$/, "");
+  if (!fileName.trim()) throw new Error("请先打开有效聊天");
+  if (!group && (!avatar?.endsWith(".png") || /[\\/\u0000-\u001f?<>:*|"]/u.test(avatar))) throw new Error("TT 未提供有效的来源角色文件身份");
+  const handle = api.open(group ? { kind: "group", chatId: fileName } : { kind: "character", characterId: avatar.slice(0, -4), fileName });
+  const store = handle?.store;
+  if (!store?.getJson || !store.setJson || !store.listKeys || !store.renameKey) throw new Error("TT 聊天资料接口不完整，未保存资料");
+  async function entry(chat) {
+    const digest = await host.crypto.subtle.digest("SHA-256", new TextEncoder().encode(chat.replace(/\.jsonl$/, "")));
+    return "contacts-v1-" + Array.from(new Uint8Array(digest), (byte) => byte.toString(16).padStart(2, "0")).join("");
+  }
+  async function keys(namespace) {
+    const result = await store.listKeys({ namespace });
+    if (!Array.isArray(result) || !result.every((key) => typeof key === "string")) throw new Error("TT 资料索引格式不支持");
+    return result;
+  }
+  return {
+    async getJson({ namespace }) {
+      const key = await entry(fileName);
+      return (await keys(namespace)).includes(key) ? store.getJson({ namespace, key }) : null;
+    },
+    async setJson({ namespace, value }, guard) {
+      const key = await entry(fileName);
+      guard?.();
+      return store.setJson({ namespace, key, value });
+    },
+    async moveFrom(oldChatId) {
+      const namespace = "yui-pocket", key = await entry(oldChatId), newKey = await entry(fileName);
+      const existing = await keys(namespace);
+      if (key === newKey || !existing.includes(key)) return;
+      if (existing.includes(newKey)) throw new Error("TT 重命名目标已有通讯录，未覆盖");
+      await store.renameKey({ namespace, key, newKey });
+    }
+  };
+}
+function ttFrame(snapshot) {
+  if (snapshot?.version !== 1) return;
+  const frame = snapshot.safeFrame, keyboard = snapshot.ime?.keyboardOffset;
+  if (!frame || ![frame.left, frame.top, frame.width, frame.height, keyboard].every((value) => Number.isFinite(value) && value >= 0)) return;
+  if (!frame.width || !frame.height) return;
+  return { ...frame, height: Math.max(1, frame.height - keyboard) };
+}
+function sameStoredJson(a, b) {
+  if (a === b) return true;
+  if (!a || !b || typeof a !== "object" || typeof b !== "object" || Array.isArray(a) !== Array.isArray(b)) return false;
+  const left = a, right = b;
+  return Object.keys(left).length === Object.keys(right).length && Object.keys(left).every((key) => Object.hasOwn(right, key) && sameStoredJson(left[key], right[key]));
+}
+
 // src/host.ts
 var ROOT_ID = "yui-pocket-root";
 var INSTANCE = /* @__PURE__ */ Symbol.for("ruru-pocket.instance.v0.1");
@@ -27,11 +81,13 @@ function startInHost(source, mount, target = source.parent) {
   let started = false;
   let root;
   let unmount;
+  let unsubscribeLayout;
   const instance = { dispose: dispose2 };
   function dispose2() {
     if (dead) return;
     dead = true;
     lifetime.dispose();
+    unsubscribeLayout?.();
     unmount?.();
     root?.remove();
     if (host[INSTANCE] === instance) delete host[INSTANCE];
@@ -46,7 +102,7 @@ function startInHost(source, mount, target = source.parent) {
       if (!document.body) throw new Error("宿主 body 尚不可用");
       root = document.createElement("div");
       root.id = ROOT_ID;
-      root.dataset.version = "0.1.0";
+      root.dataset.version = "0.2-step1";
       const properties = {
         all: "initial",
         position: "fixed",
@@ -61,15 +117,39 @@ function startInHost(source, mount, target = source.parent) {
       for (const [name, value] of Object.entries(properties)) root.style.setProperty(name, value, "important");
       document.body.append(root);
       unmount = mount(document, root);
+      let nativeFrame;
       const updateViewport = () => {
         const viewport = host.visualViewport;
-        root?.toggleAttribute("data-compact", (viewport?.height ?? host.innerHeight) < 530);
-        root?.style.setProperty("--rp-vh", `${viewport?.height ?? host.innerHeight}px`);
-        root?.style.setProperty("--rp-vw", `${viewport?.width ?? host.innerWidth}px`);
-        root?.style.setProperty("--rp-top", `${viewport?.offsetTop ?? 0}px`);
-        root?.style.setProperty("--rp-left", `${viewport?.offsetLeft ?? 0}px`);
+        const height = nativeFrame?.height ?? viewport?.height ?? host.innerHeight;
+        root?.toggleAttribute("data-compact", height < 530);
+        root?.style.setProperty("--rp-vh", `${height}px`);
+        root?.style.setProperty("--rp-vw", `${nativeFrame?.width ?? viewport?.width ?? host.innerWidth}px`);
+        root?.style.setProperty("--rp-top", `${nativeFrame?.top ?? viewport?.offsetTop ?? 0}px`);
+        root?.style.setProperty("--rp-left", `${nativeFrame?.left ?? viewport?.offsetLeft ?? 0}px`);
       };
       updateViewport();
+      const layout = ttHost(host)?.api?.layout;
+      if (layout?.subscribe) {
+        root.dataset.ttLayout = "true";
+        try {
+          void Promise.resolve(layout.subscribe((snapshot) => {
+            if (dead) return;
+            nativeFrame = ttFrame(snapshot);
+            updateViewport();
+          })).then((remove) => {
+            if (dead) remove();
+            else unsubscribeLayout = remove;
+          }).catch(() => {
+            if (!dead) {
+              nativeFrame = void 0;
+              updateViewport();
+            }
+          });
+        } catch {
+          nativeFrame = void 0;
+          updateViewport();
+        }
+      }
       lifetime.listen(host, "resize", updateViewport);
       if (host.visualViewport) {
         lifetime.listen(host.visualViewport, "resize", updateViewport);
@@ -81,8 +161,15 @@ function startInHost(source, mount, target = source.parent) {
     }
   }
   lifetime.listen(source, "pagehide", dispose2);
-  if (typeof source.$ === "function") source.$(start);
-  else start();
+  const ready = () => {
+    const nativeReady = ttReady(host);
+    if (nativeReady) void Promise.resolve(nativeReady).then(start).catch(() => {
+      if (!dead) console.error("[yui-pocket] TT 宿主未准备好，未挂载；请更新 TT 或刷新重试。");
+    });
+    else start();
+  };
+  if (typeof source.$ === "function") source.$(ready);
+  else ready();
   return dispose2;
 }
 
@@ -661,6 +748,15 @@ function createProfileHost(host) {
     var bind = bind2;
     bind2("CHAT_CHANGED", changed);
     bind2("CHAT_RENAMED", async (event) => {
+      if (ttHost(host)) {
+        try {
+          if (!dead) await ttStore(host, event.newFileName, !!event.groupId, event.avatarId).moveFrom(event.oldFileName);
+        } catch {
+          warning = "TT 聊天重命名资料迁移未确认，请改回原名检查；已停止覆盖保存。";
+        }
+        if (!dead) changed();
+        return;
+      }
       try {
         const account = await accountHandle(lifecycle.signal);
         if (!dead) {
@@ -694,6 +790,16 @@ function createProfileHost(host) {
       if (warning) throw new Error(warning);
       const selected = snapshot(), epoch = generation;
       if (!selected) throw new Error("请先打开有效聊天，再使用本存档通讯录");
+      if (ttHost(host)) {
+        const ctx2 = context();
+        const nativeStore = ttStore(host, ctx2.chatId, !!ctx2.groupId, selected.source?.avatarFile);
+        const session2 = { account: "tt-native-store", snapshot: selected, book: newBook(), nativeStore };
+        const saved = await nativeStore.getJson({ namespace: "yui-pocket", key: "contacts-v1" });
+        ensure(session2, epoch, signal);
+        if (saved !== null && saved !== void 0) session2.book = structuredClone(saved);
+        validateBook(session2.book);
+        return session2;
+      }
       const handle = await accountHandle(signal);
       const session = { account: handle, snapshot: selected, book: newBook() };
       ensure(session, epoch, signal);
@@ -706,6 +812,25 @@ function createProfileHost(host) {
       ensure(session, epoch, signal);
       validateBook(book);
       if (warning) throw new Error(warning);
+      if (session.nativeStore) {
+        const store = session.nativeStore, options = { namespace: "yui-pocket", key: "contacts-v1" };
+        try {
+          const previous2 = await store.getJson(options);
+          ensure(session, epoch, signal);
+          if (previous2 && (previous2.id !== session.book.id || previous2.revision !== session.book.revision)) throw new Error("通讯录已被修改，请返回列表重新读取");
+          const next2 = structuredClone(book);
+          next2.revision = session.book.revision + 1;
+          await store.setJson({ ...options, value: next2 }, () => ensure(session, epoch, signal));
+          const confirmed = await store.getJson(options);
+          ensure(session, epoch, signal);
+          if (!sameStoredJson(confirmed, next2)) throw new Error("TT 写入后的资料确认失败");
+          session.book = next2;
+          return;
+        } catch (error) {
+          ensure(session, epoch, signal);
+          throw new Error(`TT 资料保存未确认，请返回重读后再试：${error instanceof Error ? error.message : "宿主存储失败"}`);
+        }
+      }
       const handle = await accountHandle(signal);
       ensure(session, epoch, signal);
       if (handle !== session.account) throw new Error("宿主账号已变化，请重新打开通讯录");

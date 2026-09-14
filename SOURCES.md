@@ -98,3 +98,17 @@ SillyTavern：访问[官方仓库](https://github.com/SillyTavern/SillyTavern)�
 本轮无新增依赖，无新增助手业务 API；继续使用上文已经核实的导入结构、同源挂载和 pagehide 生命周期。
 
 工作目录 work/official 是此次平台接口核实的临时证据，不属于运行产物或交付源码包；交付保留以上固定 commit 链接便于复核。
+
+## 2026-09-15 · TauriTavern 专用适配核实
+
+官方仓库 Darkatse/TauriTavern，package.json 版本2.2.0，固定 commit `9693a4ec47cd4552f90878bccab453f176de0f18`。本轮下载阅读以下官方文档/源码，未运行其应用，也未读取其他小手机实现。
+
+- [ExtensionDEV.md](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/ExtensionDEV.md) 与 [bootstrap.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/bootstrap.js)：公开 ready、api.chat、api.layout ABI；等待宿主就绪。
+- [st-context.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/scripts/st-context.js)、[script.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/script.js) 和 [asset-path-helpers.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/context/asset-path-helpers.js)：当前卡/聊天/事件接口及相对 /thumbnail 地址。保持本源头像规则，无额外远程资源放行。
+- [routes/index.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/routes/index.js)、[user-routes.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/routes/user-routes.js)：这一版路由未注册 /api/users/me；不凭 currentUser 的默认字符串建立共享资料档。
+- [Chat.md](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/docs/API/Chat.md)、[api/chat.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/api/chat.js)、[character-identity.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/services/characters/character-identity.js)：只用 open(ref).store 的 listKeys/getJson/setJson/renameKey；characterId 为精确 PNG 文件名主体。current.handle() 经 active-chat-ref 读取消息数组，故不调用它。
+- [extension_store.rs](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src-tauri/crates/tt-adapter-storage-core/src/repositories/file_chat_repository/extension_store.rs)：不存在的 getJson 会抛错，listKeys 对不存在目录返回空数组；字段只接受 ASCII 字母数字及 _-.。角色存储目录按 integrity，群聊按聊天ID；因此 Yui 额外使用文件名SHA-256键，避免同 integrity 复制档共用条目。宿主内部为定位资料读取聊天头，这不是 Yui 读取或保存正文；Yui 只收发联系人对象。原生setJson没有AbortSignal接口，迟到写入限制明确记录。
+- [Layout.md](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/docs/API/Layout.md)、[api/layout.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/api/layout.js)：version1 safeFrame/ime.keyboardOffset，subscribe立即推送并返回可延迟执行的取消函数。
+- [mobile-ime-surface-controller.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/compat/mobile/mobile-ime-surface-controller.js)：focus处理使用event.target而非composedPath。Yui保留Shadow DOM隔离，因此真机键盘识别不能只凭布局快照模拟声称通过；没有调用私有insets桥或改宿主DOM。
+
+ExtensionDEV 的部分历史说明与当前 Chat.md 对完整消息数组的表述不一致。本补丁以实际源码为准且不读取消息数组，不将旧说明作为消息阶段的依据。TT 模拟只覆盖上述 ABI 子集；真实安装、设备与原生文件行为仍待验证。

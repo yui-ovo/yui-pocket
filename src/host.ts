@@ -1,4 +1,5 @@
 import { createLifetime } from './lifetime';
+import { ttHost, ttReady, ttFrame } from './tt-host';
 
 export const ROOT_ID = 'yui-pocket-root';
 // Preserve the old private key so upgrading from the previous name disposes that instance.
@@ -15,12 +16,14 @@ export function startInHost(source: ScriptWindow, mount: (document: Document, ro
   let started = false;
   let root: HTMLElement | undefined;
   let unmount: (() => void) | undefined;
+  let unsubscribeLayout: (() => void) | undefined;
   const instance = { dispose };
 
   function dispose() {
     if (dead) return;
     dead = true;
     lifetime.dispose();
+    unsubscribeLayout?.();
     unmount?.();
     root?.remove();
     // An older iframe unloading must never dispose its replacement.
@@ -38,7 +41,7 @@ export function startInHost(source: ScriptWindow, mount: (document: Document, ro
       if (!document.body) throw new Error('宿主 body 尚不可用');
       root = document.createElement('div');
       root.id = ROOT_ID;
-      root.dataset.version = '0.1.0';
+      root.dataset.version = '0.2-step1';
       // Restrict the host hit area to zero; only the visible controls receive pointers.
       const properties: Record<string, string> = {
         all: 'initial', position: 'fixed', top: '0', left: '0', width: '0', height: '0',
@@ -47,15 +50,29 @@ export function startInHost(source: ScriptWindow, mount: (document: Document, ro
       for (const [name, value] of Object.entries(properties)) root.style.setProperty(name, value, 'important');
       document.body.append(root);
       unmount = mount(document, root);
+      let nativeFrame: ReturnType<typeof ttFrame>;
       const updateViewport = () => {
         const viewport = host.visualViewport;
-        root?.toggleAttribute('data-compact', (viewport?.height ?? host.innerHeight) < 530);
-        root?.style.setProperty('--rp-vh', `${viewport?.height ?? host.innerHeight}px`);
-        root?.style.setProperty('--rp-vw', `${viewport?.width ?? host.innerWidth}px`);
-        root?.style.setProperty('--rp-top', `${viewport?.offsetTop ?? 0}px`);
-        root?.style.setProperty('--rp-left', `${viewport?.offsetLeft ?? 0}px`);
+        const height = nativeFrame?.height ?? viewport?.height ?? host.innerHeight;
+        root?.toggleAttribute('data-compact', height < 530);
+        root?.style.setProperty('--rp-vh', `${height}px`);
+        root?.style.setProperty('--rp-vw', `${nativeFrame?.width ?? viewport?.width ?? host.innerWidth}px`);
+        root?.style.setProperty('--rp-top', `${nativeFrame?.top ?? viewport?.offsetTop ?? 0}px`);
+        root?.style.setProperty('--rp-left', `${nativeFrame?.left ?? viewport?.offsetLeft ?? 0}px`);
       };
       updateViewport();
+      const layout = ttHost(host)?.api?.layout;
+      if (layout?.subscribe) {
+        root.dataset.ttLayout = 'true';
+        try {
+          void Promise.resolve(layout.subscribe(snapshot => {
+            if (dead) return;
+            nativeFrame = ttFrame(snapshot); updateViewport();
+          })).then(remove => { if (dead) remove(); else unsubscribeLayout = remove; }).catch(() => {
+            if (!dead) { nativeFrame = undefined; updateViewport(); }
+          });
+        } catch { nativeFrame = undefined; updateViewport(); }
+      }
       lifetime.listen(host, 'resize', updateViewport);
       if (host.visualViewport) {
         lifetime.listen(host.visualViewport, 'resize', updateViewport);
@@ -69,7 +86,14 @@ export function startInHost(source: ScriptWindow, mount: (document: Document, ro
 
   lifetime.listen(source, 'pagehide', dispose);
   // Helper docs require jQuery ready, not DOMContentLoaded, for script initialization.
-  if (typeof source.$ === 'function') source.$(start);
-  else start(); // The isolated local test harness has no jQuery; no host readiness APIs are assumed.
+  const ready = () => {
+    const nativeReady = ttReady(host);
+    if (nativeReady) void Promise.resolve(nativeReady).then(start).catch(() => {
+      if (!dead) console.error('[yui-pocket] TT 宿主未准备好，未挂载；请更新 TT 或刷新重试。');
+    });
+    else start();
+  };
+  if (typeof source.$ === 'function') source.$(ready);
+  else ready();
   return dispose;
 }
