@@ -16,7 +16,10 @@
     window[key] = function () { window.calls.push(key); throw new Error('Forbidden runtime network'); };
   }
   for (const method of ['setItem', 'getItem', 'removeItem', 'clear']) {
-    Storage.prototype[method] = function () { window.calls.push(method); throw new Error('Forbidden storage'); };
+    Storage.prototype[method] = function (key) {
+      if (method === 'getItem' && key === 'yui-pocket.appearance.v1') return null;
+      window.calls.push(method); throw new Error('Forbidden storage');
+    };
   }
   window.ownListeners = [];
   const add = EventTarget.prototype.addEventListener;

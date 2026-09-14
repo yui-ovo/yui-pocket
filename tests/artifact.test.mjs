@@ -38,3 +38,14 @@ test('extension manifest points to bundled local module and verified lifecycle e
   assert.ok(Object.keys(meta.inputs).every(path => path.startsWith('src/')));
   assert.ok(Object.values(meta.outputs).every(output => output.imports.length === 0));
 });
+
+test('appearance persistence is confined to its own adapter and key', async () => {
+  const meta = JSON.parse(await readFile('work/build-meta.json', 'utf8'));
+  for (const path of Object.keys(meta.inputs).filter(p => p.endsWith('.ts'))) {
+    const code = await readFile(path, 'utf8');
+    if (path !== 'src/appearance.ts') assert.doesNotMatch(code, /localStorage/);
+  }
+  const code = await readFile('src/appearance.ts', 'utf8');
+  assert.doesNotMatch(code, /localStorage\.clear\(/);
+  assert.match(code, /localStorage\.setItem\(APPEARANCE_KEY/);
+});

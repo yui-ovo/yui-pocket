@@ -14,8 +14,9 @@ export function validateScript(data) {
   // Policy guards for this stage. Runtime browser request interception is a separate check.
   // SVG namespace is an identifier, fragment paint servers are local, JPEG data is embedded.
   const executable = data.content.replaceAll('http://www.w3.org/2000/svg', '').replace(/url\(#rp-[a-z-]+\)/g, '');
-  assert.doesNotMatch(executable, /\b(?:fetch|XMLHttpRequest|WebSocket|EventSource|sendBeacon|importScripts|eval)\s*\(|\bimport\s*(?:\(|["'])|https?:\/\/|@import|url\s*\((?!#rp-)/i);
-  assert.doesNotMatch(data.content, /\b(?:localStorage|sessionStorage|indexedDB|TavernHelper|SillyTavern)\b/);
+  assert.doesNotMatch(executable, /\b(?:fetch|XMLHttpRequest|WebSocket|EventSource|sendBeacon|importScripts|eval)\s*\(|\bimport\s*(?:\(|["'])|https?:\/\/|@import|\burl\s*\((?!#rp-)/i);
+  assert.doesNotMatch(data.content, /\b(?:sessionStorage|indexedDB|TavernHelper|SillyTavern)\b/);
+  assert.match(data.content, /yui-pocket\.appearance\.v1/);
   assert.doesNotMatch(data.content, /innerHTML|outerHTML|insertAdjacentHTML|document\.write|setInterval|setTimeout/);
   return data;
 }

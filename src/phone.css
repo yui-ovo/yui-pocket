@@ -105,3 +105,59 @@ button:focus-visible, textarea:focus-visible, [tabindex]:focus-visible { outline
 :host([data-compact]) .wallpaper-word { font-size: 14px; }
 :host([data-compact]) .wallpaper-sub { display: none; }
 :host([data-compact]) .dock { flex-basis: 70px; }
+
+/* Foreground decoration plane: all artwork passes pointer events through. */
+.phone { isolation: isolate; }
+.screen { z-index: 1; }
+.close { z-index: 10; }
+.home { z-index: 8; }
+.decoration-layer { position: absolute; inset: 0; z-index: 6; pointer-events: none; }
+.decoration-layer * { pointer-events: none !important; }
+.strap-anchor { position: absolute; top: 22px; left: -5px; width: 10px; height: 13px; border: 2px solid #b7a4ad; border-radius: 50%; background: #f5ebf0; box-shadow: inset 1px 0 2px #775e6d88, 1px 1px 1px #fff; z-index: 2; }
+.charm { top: 28px; left: -37px; width: 78px; height: 192px; transform-origin: 50% 0; transform: rotate(var(--strap-angle, 0deg)) scale(var(--strap-scale, 1)); filter: drop-shadow(2px 3px 2px #61475d44); }
+.strap-image { object-position: center top; }
+.decoration-layer[data-side='right'] .strap-anchor { left: auto; right: -5px; }
+.decoration-layer[data-side='right'] .charm { left: auto; right: -37px; }
+/* Swing the raster as one hanging object once on opening; no background timers. */
+.strap-image { animation: yui-settle 950ms ease-out both; transform-origin: 50% 0; }
+@keyframes yui-settle { 0% { transform: rotate(-6deg); } 40% { transform: rotate(3deg); } 75% { transform: rotate(-1deg); } 100% { transform: rotate(0); } }
+@media (prefers-reduced-motion: reduce) { .strap-image { animation: none; } }
+.corner-sticker { position: absolute; width: 52px; height: 42px; display: grid; place-items: center; }
+.corner-image { display: block; width: 100%; height: 100%; object-fit: contain; }
+.corner-sticker.top-left { left: 18px; top: 8px; }
+.corner-sticker.top-right { right: 38px; top: 8px; }
+.corner-sticker.bottom-left { left: 18px; bottom: 7px; }
+.corner-sticker.bottom-right { right: 18px; bottom: 7px; }
+.corner-halo { width: 62px; height: 25px; }
+.corner-halo img { position: absolute; bottom: 0; }
+.dock { gap: 27px; }
+.beauty-app .envelope-icon { padding: 5px; background: linear-gradient(#fffafb, #eedce8); }
+.beautify-page { display: flex; flex-direction: column; flex: 1; min-height: 0; background: #fff7fb; }
+.beauty-header { justify-content: flex-start; gap: 20px; }
+.beauty-scroll { flex: 1; min-height: 0; overflow: auto; padding: 10px; overscroll-behavior: contain; }
+.beauty-hint { font-size: 11px; color: #836577; margin: 0 0 9px; }
+.beauty-label { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin: 9px 0; font-size: 12px; }
+.beauty-label output { margin-left: auto; font-size: 11px; }
+.beauty-select { flex: 1; min-width: 0; font: inherit; color: #63485a; background: #fff; border: 1px solid #d5b8cb; border-radius: 7px; padding: 6px; }
+.beauty-range { width: 100%; margin: 3px 0; accent-color: #b97e9f; }
+.beauty-upload { display: block; font-size: 12px; padding: 8px; border: 1px dashed #cda6bd; border-radius: 8px; background: #faeaf3; }
+.beauty-upload input { display: block; width: 100%; margin-top: 6px; font-size: 11px; }
+.sticker-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.sticker-choice { aspect-ratio: 1; min-width: 0; padding: 3px; border: 1px solid #e1c8d7; border-radius: 9px; background: #fff; font-size: 11px; color: #775369; }
+.sticker-choice img { width: 100%; height: 100%; object-fit: contain; }
+.sticker-choice[aria-pressed='true'] { border: 2px solid #ac6d92; background: #f4dce9; }
+.beauty-actions { display: flex; gap: 7px; flex: 0 0 auto; padding: 6px 8px; border-top: 1px solid #dcc0d1; }
+.beauty-button { flex: 1; padding: 6px; border: 1px solid #c99cb8; border-radius: 7px; font-size: 12px; color: #67485e; background: linear-gradient(#fff6fb,#ecd2e2); }
+.beauty-status { margin: 0; flex: 0 0 auto; min-height: 28px; padding: 2px 7px 5px; color: #805c73; font-size: 10px; text-align: center; }
+:host([data-compact]) .charm { top: 16px; left: -28px; width: 60px; height: 145px; }
+:host([data-compact]) .strap-anchor { top: 10px; }
+:host([data-compact]) .decoration-layer[data-side='right'] .charm { right: -28px; }
+:host([data-compact]) .corner-sticker { width: 35px; height: 22px; }
+:host([data-compact]) .corner-sticker.top-left, :host([data-compact]) .corner-sticker.top-right { top: 2px; }
+:host([data-compact]) .corner-sticker.bottom-left, :host([data-compact]) .corner-sticker.bottom-right { bottom: 5px; }
+:host([data-compact]) .corner-halo { width: 50px; height: 20px; }
+:host([data-compact]) .beauty-scroll { padding-top: 5px; }
+/* Keep room for the foreground lanyard on either side of a narrow viewport. */
+.phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 76px - env(safe-area-inset-right, 0px)), calc((var(--rp-vh, 100dvh) - 24px - env(safe-area-inset-bottom, 0px)) / 1.75)); }
+.phone[data-strap-side='right'] { left: calc(var(--rp-left, 0px) + var(--rp-vw, 100vw) - var(--phone-w) - 64px - env(safe-area-inset-right, 0px)); }
+:host([data-compact]) .phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 76px - env(safe-area-inset-right, 0px))); }

@@ -143,7 +143,7 @@ test('visual viewport shrinks/offsets independently of layout viewport; theme CS
   await expect(page.locator(root)).not.toHaveAttribute('data-compact');
 });
 
-test('product boot and interactions make zero network/storage calls (mock helper excludes upstream injected libraries)', async ({ page }) => {
+test('product makes zero network or chat-storage calls; only owned appearance read allowed', async ({ page }) => {
   await page.evaluate(() => window.disable());
   const requests = [];
   await page.route('**/*', route => { requests.push(route.request().url()); return route.abort(); });
@@ -159,7 +159,10 @@ test('product boot and interactions make zero network/storage calls (mock helper
         realm[key] = function() { window.__forbidden.push(key); throw new Error('forbidden'); };
       }
       for (const key of ['getItem', 'setItem', 'removeItem', 'clear']) {
-        realm.Storage.prototype[key] = function() { window.__forbidden.push('storage.' + key); throw new Error('forbidden'); };
+        realm.Storage.prototype[key] = function(name) {
+          if (key === 'getItem' && name === 'yui-pocket.appearance.v1') return null;
+          window.__forbidden.push('storage.' + key); throw new Error('forbidden');
+        };
       }
       realm.navigator.sendBeacon = () => { window.__forbidden.push('sendBeacon'); return false; };
     }
@@ -258,7 +261,7 @@ test('Yui Dock opens contacts first; back/Home preserve draft and message previe
   expect(alpha.corner).toBe(0);
   expect(alpha.transparent).toBeGreaterThan(1000);
   expect(alpha.opaque).toBeGreaterThan(1000);
-  await expect(page.locator('.dock .app-icon')).toHaveCount(1);
+  await expect(page.locator('.dock .app-icon')).toHaveCount(2);
   for (const img of await page.locator('.sticker-image').all()) {
     expect(await img.getAttribute('src')).toMatch(/^data:image\/png;base64,/);
     expect(await img.evaluate(node => node.complete && node.naturalWidth > 0)).toBe(true);
@@ -266,7 +269,7 @@ test('Yui Dock opens contacts first; back/Home preserve draft and message previe
   const ids = await page.locator(`${root} [id]`).evaluateAll(nodes => nodes.map(node => node.id));
   expect(new Set(ids).size).toBe(ids.length);
   await expect(page.getByRole('textbox', { name: '演示消息输入框' })).toBeHidden();
-  const icon = page.locator('.envelope-icon');
+  const icon = page.locator('.app-icon[aria-label="打开信息"] .envelope-icon');
   expect(await icon.getAttribute('src')).toMatch(/^data:image\/jpeg;base64,/);
   expect(await icon.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
   await page.getByRole('button', { name: '打开信息', exact: true }).click();

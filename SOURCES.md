@@ -1,5 +1,12 @@
 # 实际参考与依赖记录
 
+## 外观美化0.1.2（2026-09-14）
+
+- 用户新供图 `Codex 图像 2026年9月14日 22_59_58.png`（16枚）、`Codex 图像 2026年9月14日 22_59_47.png`（8枚）、`ac455bec-c3b3-46df-9259-d3455c7f1ea6.png`（12枚）。沿用用户已授权的本地像素抠图方法，逐项裁显、连通浅色背景透明化、保留白色内部填充及颗粒笔触；最长边112px的36枚PNG位于 src/assets/stickers，素材索引为 src/stickers.ts。没有调用生成服务或重绘图案，不把供图角色/图案认作本项目原创。
+- 用户两张截图仅用于定位挂绳层级和与音量键贴合的问题。新的壳体侧边挂点与阴影由CSS独立实现，不复制其他小手机；[RHINOSHIELD挂绳夹片说明](https://support.rhinoshield.io/hc/en-us/articles/16853162594073-Is-the-RHINOSHIELD-Lanyard-Card-compatible-with-all-our-cases)用于核对真实配件固定于壳体的方向，不作为4S原厂挂孔依据。
+- 本轮查阅 [MDN localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage) 的按来源持久性与SecurityError、[本地文件读取说明](https://developer.mozilla.org/en-US/docs/Web/API/FileReader/readAsDataURL)。实际上传实现使用标准 File.arrayBuffer、URL.createObjectURL、img.decode 和 canvas.toDataURL，限制PNG/JPEG/WebP并重新编码；本地Blob URL随处理结束释放。没有新增助手业务API或依赖。
+- 外观持久化仅使用专用键 yui-pocket.appearance.v1，源码和模拟测试限制其他存储访问。用户在运行界面导入的私有图片不随源码上传GitHub；公开仓库只含用户此次为项目提供的预置贴纸。
+
 ## GitHub 扩展发行依据（2026-09-14）
 
 - 用户明确要求改为酒馆“安装扩展”，并选择新建公开仓库 yui-ovo/yui-pocket（包含当前供图）。因此增加扩展入口，保留原自包含 JSON；未新增依赖，也未使用其他小手机实现。
