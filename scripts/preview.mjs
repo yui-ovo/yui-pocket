@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 // Explicit allowlist; this fixture server never exposes workspace files or real chat data.
 const routes = {
   '/': ['tests/host.html', 'text/html; charset=utf-8'],
-  '/yui.v0.1.json': ['dist/yui.v0.1.json', 'application/json; charset=utf-8'],
+  '/yui.v0.2-step1.json': ['dist/yui.v0.2-step1.json', 'application/json; charset=utf-8'],
   '/extension': ['tests/extension-host.html', 'text/html; charset=utf-8'],
   '/extension.js': ['extension.js', 'text/javascript; charset=utf-8'],
 };

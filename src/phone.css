@@ -161,3 +161,35 @@ button:focus-visible, textarea:focus-visible, [tabindex]:focus-visible { outline
 .phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 76px - env(safe-area-inset-right, 0px)), calc((var(--rp-vh, 100dvh) - 24px - env(safe-area-inset-bottom, 0px)) / 1.75)); }
 .phone[data-strap-side='right'] { left: calc(var(--rp-left, 0px) + var(--rp-vw, 100vw) - var(--phone-w) - 64px - env(safe-area-inset-right, 0px)); }
 :host([data-compact]) .phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 76px - env(safe-area-inset-right, 0px))); }
+
+/* Profile and reading controls are confined to the existing phone screen. */
+.dock { gap: 12px; padding-inline: 8px; }
+.people-icon { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 13px; font: 32px Georgia,serif; color: #956e85; background: linear-gradient(#fffafa,#ead4e2); box-shadow: 0 2px 3px #68536766,0 0 0 1px #fff9fd; }
+.workspace-page { display: flex; flex: 1; flex-direction: column; min-height: 0; overflow: hidden; background: #fff7fb; }
+.workspace-page > .workspace-page { flex: 1; }
+.workspace-header { flex: 0 0 auto; gap: 5px; min-height: 42px; padding: 5px; }
+.workspace-header h2 { font-size: 15px; margin: 0; flex: 1; }
+.profile-scroll { flex: 1; min-height: 0; overflow: auto; padding: 8px; overscroll-behavior: contain; overflow-wrap: anywhere; }
+.profile-scroll > .beauty-button { display: block; width: 100%; margin: 8px 0; }
+.profile-label { display: flex; flex-direction: column; gap: 4px; margin: 10px 0; font-size: 12px; }
+.profile-label input, .profile-label select { width: 100%; min-width: 0; padding: 7px; font: inherit; color: #63485a; background: white; border: 1px solid #d5b8cb; border-radius: 7px; }
+.profile-label input[type='checkbox'] { width: 20px; height: 20px; accent-color: #b97e9f; }
+.profile-source { font-size: 10px; white-space: pre-wrap; color: #886c80; }
+.section-title { font-size: 12px; margin: 14px 0 6px; color: #87667b; }
+.empty-state { font-size: 12px; line-height: 1.65; padding: 12px 3px; }
+.profile-avatar { position: relative; flex: 0 0 auto; display: inline-grid; place-items: center; width: var(--reading-avatar,36px); height: var(--reading-avatar,36px); padding: 0; overflow: hidden; border-radius: var(--reading-radius,22%); color: #8d677f; background: #efd8e6; }
+.profile-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }
+.profile-avatar-button { border: 0; padding: 0; background: none; flex: 0 0 auto; }
+.profile-name { border: 0; background: none; color: inherit; min-width: 0; overflow-wrap: anywhere; }
+.phone[data-show-avatar='false'] [data-top-avatar] { display: none; }
+.bubble, .reading-bubble { font-size: var(--reading-size,14px); line-height: var(--reading-line,1.65); }
+.reading-bubble { white-space: pre-wrap; padding: 8px; background: #f5e5f0; border-radius: 9px; }
+.reading-status { margin: 0; padding: 4px; font-size: 10px; text-align: center; }
+.reading-preview { border: 1px dashed #d5b8cb; border-radius: 8px; padding: 8px; }
+.people-setup { margin-top: 16px; border-top: 1px dashed #d5b8cb; }
+.profile-avatar-editor { display: flex; align-items: center; gap: 8px; margin: 10px 0; }
+.workspace-page .beauty-actions { flex-wrap: wrap; }
+.workspace-page .beauty-actions button { min-width: 50px; }
+.contact-row .profile-avatar { width: 32px; height: 32px; }
+.workspace-page .contact-row { width: 100%; }
+:host([data-compact]) .dock .people-icon { width: 48px; height: 48px; }

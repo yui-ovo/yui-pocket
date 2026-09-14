@@ -1,5 +1,16 @@
 # 实际参考与依赖记录
 
+## 通讯录第一步0.2.0-alpha.1（2026-09-15）
+
+- 查阅[官方扩展文档 getContext](https://docs.sillytavern.app/for-contributors/writing-extensions/)，确认 `SillyTavern.getContext()` 全局入口。实际接口逐项以既有固定基线 SillyTavern 1.18.0、commit `8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8` 核实；没有读取其他小手机实现。本轮没有新增依赖、供图或模型请求。
+- [public/scripts/st-context.js](https://github.com/SillyTavern/SillyTavern/blob/8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8/public/scripts/st-context.js) 的 getContext 返回 characters、characterId、groupId、chatId、chatMetadata、getRequestHeaders、getThumbnailUrl、eventSource、eventTypes。characterId只作瞬时读取当前卡，不用于人物或存档永久身份；卡来源绑定头像文件名，人物另用UUID。
+- [public/script.js](https://github.com/SillyTavern/SillyTavern/blob/8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8/public/script.js)：getThumbnailUrl返回本源thumbnail路径；getChat读取header.chat_metadata并在缺少integrity时建立UUID；saveMetadata调用saveChatConditional，会保存真实聊天，因此本轮不使用。renameGroupOrCharacterChat成功后发送CHAT_RENAMED，其payload为avatarId、groupId、带.jsonl的oldFileName/newFileName，且当前聊天重载/CHAT_CHANGED可能先发生。
+- [public/scripts/events.js](https://github.com/SillyTavern/SillyTavern/blob/8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8/public/scripts/events.js) 确认CHAT_CHANGED与CHAT_RENAMED；实际注册使用context.eventTypes，不凭记忆硬编码宿主事件值。禁用时removeListener清理。
+- [public/scripts/user.js](https://github.com/SillyTavern/SillyTavern/blob/8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8/public/scripts/user.js) 和 [src/endpoints/users-private.js](https://github.com/SillyTavern/SillyTavern/blob/8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8/src/endpoints/users-private.js) 核实同源GET `/api/users/me`，返回已登录账号handle。仅使用handle，不记录其他返回字段、不访问密钥；失败无默认用户回退。
+- 同时检查[AccountStorage.js](https://github.com/SillyTavern/SillyTavern/blob/8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8/public/scripts/util/AccountStorage.js)，发现setItem会触发整套设置的防抖保存且无单条持久化确认，因此没有采用。改为浏览器本机专用资料键与同步读回校验；不改宿主预设。本步的本机存储与迁移选择是项目设计，不声称官方提供了Yui永久存档ID。
+- 用户本轮明确授权头像图片URL、来源卡头像与资料/阅读保存。构建守卫仅对profile-host中的已核实身份GET放行；上传仍沿用原栅格检查和重新编码。外链仅通过img显示，禁止HTML执行和任意fetch。测试另拦截网络并检查路径/方法。
+- 本轮文档和mock验证不代表真实SillyTavern或TauriTavern运行通过。群组可手动建人物；群组事件、各WebView、离线文件重命名、无integrity宿主与跨设备迁移仍需验证。
+
 ## 外观美化0.1.2（2026-09-14）
 
 - 用户新供图 `Codex 图像 2026年9月14日 22_59_58.png`（16枚）、`Codex 图像 2026年9月14日 22_59_47.png`（8枚）、`ac455bec-c3b3-46df-9259-d3455c7f1ea6.png`（12枚）。沿用用户已授权的本地像素抠图方法，逐项裁显、连通浅色背景透明化、保留白色内部填充及颗粒笔触；最长边112px的36枚PNG位于 src/assets/stickers，素材索引为 src/stickers.ts。没有调用生成服务或重绘图案，不把供图角色/图案认作本项目原创。

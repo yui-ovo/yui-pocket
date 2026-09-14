@@ -83,7 +83,7 @@ test('actual iframe removal clears own listeners and all nodes, with no mask or 
     };
     window.__instrument(window);
   });
-  const { content } = JSON.parse(await readFile('dist/yui.v0.1.json', 'utf8'));
+  const { content } = JSON.parse(await readFile('dist/yui.v0.2-step1.json', 'utf8'));
   await page.evaluate(code => {
     const frame = document.createElement('iframe');
     frame.id = 'instrumented';
@@ -147,7 +147,7 @@ test('product makes zero network or chat-storage calls; only owned appearance re
   await page.evaluate(() => window.disable());
   const requests = [];
   await page.route('**/*', route => { requests.push(route.request().url()); return route.abort(); });
-  const { content } = JSON.parse(await readFile('dist/yui.v0.1.json', 'utf8'));
+  const { content } = JSON.parse(await readFile('dist/yui.v0.2-step1.json', 'utf8'));
   await page.evaluate(code => {
     window.__forbidden = [];
     const frame = document.createElement('iframe');
@@ -160,7 +160,7 @@ test('product makes zero network or chat-storage calls; only owned appearance re
       }
       for (const key of ['getItem', 'setItem', 'removeItem', 'clear']) {
         realm.Storage.prototype[key] = function(name) {
-          if (key === 'getItem' && name === 'yui-pocket.appearance.v1') return null;
+          if (key === 'getItem' && ['yui-pocket.appearance.v1','yui-pocket.reading.v1'].includes(name)) return null;
           window.__forbidden.push('storage.' + key); throw new Error('forbidden');
         };
       }
@@ -181,7 +181,7 @@ test('product makes zero network or chat-storage calls; only owned appearance re
 
 test('same-frame double execution and ready callback arriving after disable are safe', async ({ page }) => {
   await page.evaluate(() => window.disable());
-  const { content } = JSON.parse(await readFile('dist/yui.v0.1.json', 'utf8'));
+  const { content } = JSON.parse(await readFile('dist/yui.v0.2-step1.json', 'utf8'));
   await page.evaluate(code => {
     const frame = document.createElement('iframe'); frame.id = 'double'; frame.hidden = true; document.body.append(frame);
     for (let i = 0; i < 2; i++) { const script = frame.contentDocument.createElement('script'); script.textContent = code; frame.contentDocument.body.append(script); }
@@ -261,7 +261,7 @@ test('Yui Dock opens contacts first; back/Home preserve draft and message previe
   expect(alpha.corner).toBe(0);
   expect(alpha.transparent).toBeGreaterThan(1000);
   expect(alpha.opaque).toBeGreaterThan(1000);
-  await expect(page.locator('.dock .app-icon')).toHaveCount(2);
+  await expect(page.locator('.dock .app-icon')).toHaveCount(3);
   for (const img of await page.locator('.sticker-image').all()) {
     expect(await img.getAttribute('src')).toMatch(/^data:image\/png;base64,/);
     expect(await img.evaluate(node => node.complete && node.naturalWidth > 0)).toBe(true);

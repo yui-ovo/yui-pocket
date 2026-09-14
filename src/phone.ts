@@ -6,11 +6,15 @@ import bandageSticker from './assets/lace-bandage.png';
 import { appearanceStorage, corners, imageSource } from './appearance';
 import { createBeautify } from './beautify';
 import beautyIcon from './assets/stickers/bow.png';
+import { createProfileHost } from './profile-host';
+import { createDirectory } from './directory';
+import { createReading } from './reading';
 
 export function mountPhone(document: Document, root: HTMLElement): () => void {
   const shadow = root.attachShadow({ mode: 'open' });
   const lifetime = createLifetime();
   const demo = createDemo();
+  const profiles = createProfileHost(document.defaultView!);
   const storage = appearanceStorage(document.defaultView!);
   let appearance = storage.load();
   let closePanel: (() => void) | undefined;
@@ -124,28 +128,17 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     const beautyImage = element('img', 'envelope-icon'); beautyImage.src = beautyIcon; beautyImage.alt = ''; beautyImage.draggable = false;
     beautyApp.append(beautyImage, element('span', 'app-label', '美化'));
     dock.append(beautyApp);
+    const peopleApp = button('app-icon', '', '打开联系人');
+    peopleApp.append(element('span', 'people-icon', '♧'), element('span', 'app-label', '联系人'));
+    dock.insertBefore(peopleApp, beautyApp);
     homePage.append(wallpaperArt, element('div', 'page-dots', '●'), dock);
-    const contactsPage = element('div', 'contacts-page');
-    contactsPage.setAttribute('aria-label', '联系人列表');
-    contactsPage.hidden = true;
-    const contactsHeader = element('header', 'contact contacts-header');
-    const contactsBack = button('back', '‹ 主屏', '返回主屏幕');
-    contactsHeader.append(contactsBack, element('h2', '', '信息'));
-    const contactList = element('div', 'contact-list');
-    const contactRow = button('contact-row', '', '打开与小桃的聊天');
-    const contactCopy = element('span', 'contact-copy');
-    const preview = element('span', 'contact-preview');
-    contactCopy.append(element('strong', '', '小桃'), preview);
-    contactRow.append(element('span', 'list-avatar', '桃'), contactCopy, element('span', 'contact-meta', '示例'), element('span', 'chevron', '›'));
-    contactList.append(contactRow);
-    contactsPage.append(contactsHeader, contactList, element('p', 'contacts-footnote', '1 位虚构联系人'));
     const chatPage = element('div', 'chat-page');
     chatPage.hidden = true;
     const back = button('back', '‹ 信息', '返回联系人列表');
     const header = element('header', 'contact');
-    const avatar = element('div', 'avatar', '桃');
-    avatar.setAttribute('aria-hidden', 'true');
-    const identity = element('div', 'identity');
+    const avatar = button('avatar profile-avatar', '桃', '打开演示人物头像资料');
+    avatar.dataset.topAvatar = '';
+    const identity = button('identity profile-name', '', '打开演示人物资料');
     identity.append(element('h2', '', '小桃'), element('p', '', '虚构联系人 · 示例聊天'));
     header.append(back, identity, avatar);
     const log = element('div', 'messages');
@@ -184,7 +177,14 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
       change: value => { appearance = value; applyAppearance(); },
       save: () => storage.save(appearance), reset: () => storage.clear(), back: showHome,
     });
-    screen.append(brand, notice, homePage, contactsPage, chatPage, beauty.page);
+    let readingBack: () => void = showHome;
+    const reading = createReading(document, panel, () => { reading.page.hidden = true; directory.page.hidden = false; readingBack(); });
+    const directory = createDirectory(document, profiles, {
+      home: showHome, demo: showMessages,
+      demoPreview: () => { const latest=demo.list().at(-1);return latest ? `${latest.sender==='self'?'我：':''}${latest.text}` : '暂无演示消息'; },
+      reading: back => { readingBack=back; directory.leave(); chatPage.hidden=true; reading.open(); },
+    });
+    screen.append(brand, notice, homePage, chatPage, beauty.page, directory.page, reading.page);
     const bottom = element('div', 'shell-bottom');
     const home = button('home', '', 'Home · 返回主屏幕');
     home.append(element('span', 'home-square'));
@@ -197,6 +197,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     function closeNow(restoreFocus = true) {
       panelLife.dispose();
       beauty.dispose();
+      directory.dispose();
       panel.remove();
       closePanel = undefined;
       launcher.hidden = false;
@@ -205,25 +206,23 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     }
     closePanel = () => closeNow(false);
     function showHome() {
+      directory.leave(); reading.cancelPreview();
       beauty.page.hidden = true;
       chatPage.hidden = true;
-      contactsPage.hidden = true;
       homePage.hidden = false;
       messagesApp.focus({ preventScroll: true });
     }
     function showContacts() {
+      directory.leave(); reading.cancelPreview();
       beauty.page.hidden = true;
       homePage.hidden = true;
       chatPage.hidden = true;
-      contactsPage.hidden = false;
-      const latest = demo.list().at(-1);
-      preview.textContent = latest ? `${latest.sender === 'self' ? '我：' : ''}${latest.text}` : '暂无演示消息';
-      contactRow.focus({ preventScroll: true });
+      void directory.enter('messages');
     }
     function showMessages() {
+      directory.leave(); reading.cancelPreview();
       beauty.page.hidden = true;
       homePage.hidden = true;
-      contactsPage.hidden = true;
       chatPage.hidden = false;
       back.focus({ preventScroll: true });
       log.scrollTop = log.scrollHeight;
@@ -231,13 +230,17 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     panelLife.listen(close, 'click', () => closeNow());
     panelLife.listen(home, 'click', showHome);
     panelLife.listen(back, 'click', showContacts);
-    panelLife.listen(contactsBack, 'click', showHome);
     panelLife.listen(messagesApp, 'click', showContacts);
+    panelLife.listen(peopleApp, 'click', () => {
+      homePage.hidden=chatPage.hidden=beauty.page.hidden=true;reading.cancelPreview();void directory.enter('contacts');
+    });
+    const showDemoProfile=()=>{chatPage.hidden=true;directory.demoProfile(showMessages);};
+    panelLife.listen(avatar,'click',showDemoProfile);panelLife.listen(identity,'click',showDemoProfile);
     panelLife.listen(beautyApp, 'click', () => {
-      homePage.hidden = contactsPage.hidden = chatPage.hidden = true;
+      directory.leave(); reading.cancelPreview();
+      homePage.hidden = chatPage.hidden = true;
       beauty.page.hidden = false; beauty.focus();
     });
-    panelLife.listen(contactRow, 'click', showMessages);
     panelLife.listen(panel, 'keydown', (event) => {
       if ((event as KeyboardEvent).key === 'Escape') {
         event.preventDefault();
@@ -266,6 +269,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     if (disposed) return;
     disposed = true;
     closePanel?.();
+    profiles.dispose();
     lifetime.dispose();
     demo.clear();
     shadow.replaceChildren();

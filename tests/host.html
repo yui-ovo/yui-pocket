@@ -31,7 +31,7 @@
 <script>
   const frames = [];
   window.boot = async () => {
-    const payload = await (await fetch('/yui.v0.1.json')).json();
+    const payload = await (await fetch('/yui.v0.2-step1.json')).json();
     const frame = document.createElement('iframe');
     frame.hidden = true;
     frame.dataset.mockRunner = '';

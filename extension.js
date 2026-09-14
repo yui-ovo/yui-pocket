@@ -110,7 +110,7 @@ function createDemo() {
 }
 
 // src/phone.css
-var phone_default = ":host { color-scheme: light; --rp-ink: #604852; --rp-muted: #826b74; }\n*, *::before, *::after { box-sizing: border-box; }\nbutton, textarea { font: inherit; }\nbutton { cursor: pointer; -webkit-tap-highlight-color: transparent; }\nbutton:focus-visible, textarea:focus-visible, [tabindex]:focus-visible { outline: 2px solid #9d6684; outline-offset: 3px; }\n[hidden] { display: none !important; }\n.launcher, .phone { font: 14px/1.5 'Microsoft YaHei', system-ui, sans-serif; color: var(--rp-ink); pointer-events: auto; }\n.launcher { position: fixed; left: calc(var(--rp-left, 0px) + var(--rp-vw, 100vw) - 62px - env(safe-area-inset-right, 0px)); top: calc(var(--rp-top, 0px) + var(--rp-vh, 100dvh) * .3); width: 52px; min-height: 66px; padding: 7px 8px 5px; border: 1px solid #dfb9c5; border-radius: 14px 6px 6px 14px; background: linear-gradient(145deg, #fffdfa, #f9e5ed); box-shadow: 0 3px 12px #6b34402b, inset 0 0 0 3px #fff8f8; }\n.mini-phone { display: block; margin: 0 auto; width: 22px; height: 36px; border: 1px solid #b09ca4; border-radius: 4px; background: #f0dae7; color: #ad7c95; line-height: 27px; box-shadow: inset 0 5px #fff, inset 0 -6px #fff; }\n.launcher-label { display: block; font-size: 10px; letter-spacing: 1px; line-height: 17px; }\n.phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 62px - env(safe-area-inset-right, 0px)), calc((var(--rp-vh, 100dvh) - 24px - env(safe-area-inset-bottom, 0px)) / 1.75)); --phone-h: calc(var(--phone-w) * 1.75); position: fixed; left: calc(var(--rp-left, 0px) + var(--rp-vw, 100vw) - var(--phone-w) - 12px - env(safe-area-inset-right, 0px)); top: calc(var(--rp-top, 0px) + max(12px, (var(--rp-vh, 100dvh) - var(--phone-h)) / 2)); width: var(--phone-w); height: var(--phone-h); padding: 0 12px; display: flex; flex-direction: column; border: 2px solid #c7c3c4; border-radius: 36px; background: radial-gradient(circle at 1px 1px, #eacbd333 .7px, transparent 1px) 0 0 / 7px 7px, linear-gradient(115deg, #fff, #faf9f8 60%, #f7eef3); box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 4px #eae6e8, 2px 0 0 #9e969d, -2px 0 0 #e8dce3, 0 14px 42px #5d394a30; }\n.phone::before { content: ''; position: absolute; height: 3px; width: 40px; right: 37px; top: -4px; border: 1px solid #b7acb1; background: #ddd5db; border-radius: 2px 2px 0 0; }\n.side-keys { position: absolute; top: 66px; left: -5px; display: flex; flex-direction: column; gap: 20px; pointer-events: none; }\n.side-keys i { display: block; width: 3px; height: 18px; border: 1px solid #aca4ab; background: linear-gradient(90deg,#fff,#b8b0b7); border-radius: 2px; }\n.side-keys .mute { height: 25px; margin-bottom: 1px; }\n.shell-top { position: relative; flex: 0 0 calc(var(--phone-w) * .19); }\n.sensor { position: absolute; left: calc(50% - 12px); top: 29%; width: 24px; height: 5px; border-radius: 4px; background: #7b7379; box-shadow: inset 0 1px 2px #4e4e57; }\n.camera { position: absolute; left: calc(50% - 53px); top: 51%; height: 10px; width: 10px; border-radius: 50%; background: radial-gradient(circle at 45% 45%, #799caf 1px, #223849 2px, #46444b 4px, #b8b5ba 5px); box-shadow: 0 0 0 1px #d0c8cd; }\n.speaker { position: absolute; left: calc(50% - 24px); top: 51%; width: 49px; height: 7px; border: 1px solid #ada6aa; border-radius: 6px; background: repeating-linear-gradient(90deg, #4c494c 0 1px, #767077 1px 2px); box-shadow: 0 1px 2px #ddd; }\n.ornament { display: block; width: 100%; height: 100%; overflow: visible; pointer-events: none; }\n.lace-sticker { display: block; position: relative; overflow: hidden; mix-blend-mode: multiply; pointer-events: none; }\n.sticker-image { display: block; width: 100%; height: auto; max-width: none; }\n.charm { position: absolute; top: 57px; left: -48px; width: 77px; height: 205px; pointer-events: none; }\n.strap-image { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }\n.close { position: absolute; top: 7px; right: 7px; width: 27px; height: 27px; padding: 0; line-height: 22px; border: 1px solid #d5c7d0; border-radius: 50%; background: #fffafce8; color: #927282; font-size: 22px; z-index: 2; }\n.screen { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; border: 2px solid #393238; border-radius: 2px; background: #f5e9f0; box-shadow: 0 0 0 1px #ada0a9; position: relative; }\n.brand { flex: 0 0 20px; display: flex; align-items: center; justify-content: space-between; padding: 0 6px; background: linear-gradient(#b8a7b4, #8e7c8d); color: white; text-shadow: 0 1px #6d5c6f; font: 11px/20px Arial,sans-serif; position: relative; }\n.clock { position: absolute; left: 50%; transform: translateX(-50%); font-weight: bold; }\n.battery { width: 20px; height: 9px; border: 1px solid white; padding: 1px; border-radius: 1px; position: relative; }\n.battery::before { content: ''; display: block; height: 5px; background: #f9f8fa; }\n.battery::after { content: ''; position: absolute; right: -3px; top: 2px; width: 2px; height: 3px; background: white; }\n.demo-notice { flex: 0 0 auto; margin: 0; padding: 4px 2px; text-align: center; font-size: 10px; color: #775a6a; background: #fff7fbe8; border-bottom: 1px solid #e0c6d5; white-space: nowrap; }\n.home-page { flex: 1; min-height: 0; position: relative; display: flex; flex-direction: column; background: repeating-linear-gradient(0deg, #ffffff00 0 15px, #ffffff44 15px 16px), repeating-linear-gradient(90deg,#ffffff00 0 15px,#ffffff44 15px 16px), radial-gradient(ellipse at 45% 40%, #fffaff, #ead3e2 80%); }\n.home-page::before { content: ''; position: absolute; inset: 11px; border: 1px dashed #fffafec2; pointer-events: none; }\n.app-icon { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 0; border: 0; background: none; min-width: 0; color: #614859; }\n.envelope-icon { width: 58px; max-width: 100%; aspect-ratio: 1; border-radius: 13px; box-shadow: 0 2px 4px #68536745, 0 0 0 1px #fff9fd; }\n.app-label { font-size: 11px; font-weight: 600; text-shadow: 0 1px #fff; }\n.wallpaper-art { position: absolute; width: 78%; left: 11%; top: 22%; text-align: center; pointer-events: none; color: #ae87a0; }\n.wallpaper-sticker { width: 142px; height: 49px; margin: 0 auto 20px; opacity: .7; }\n.wallpaper-sticker img { position: absolute; bottom: 0; }\n.wallpaper-word { display: block; font: italic 22px/1.6 Georgia,serif; text-shadow: 0 1px white; }\n.wallpaper-sub { font-size: 9px; letter-spacing: 2px; opacity: .8; }\n.page-dots { margin-top: auto; text-align: center; color: white; text-shadow: 0 1px 2px #9c8495; font-size: 9px; padding: 7px 0 9px; }\n.dock { position: relative; flex: 0 0 94px; display: flex; align-items: center; justify-content: center; padding: 5px 20px 7px; background: linear-gradient(#b9a3b56b,#a391a1a0); border-top: 1px solid #fff8fc90; box-shadow: inset 0 1px 2px #fff6fa88; }\n.dock::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 39%; background: linear-gradient(#fff7fd55,#d9cbd877); border-top: 1px solid #fff6fc70; pointer-events: none; }\n.dock .app-icon { position: relative; width: 67px; z-index: 1; }\n.dock .app-label { color: #fff; font-size: 12px; text-shadow: 0 1px 2px #66535f, 0 0 2px #685360; }\n.dock .envelope-icon { width: 58px; box-shadow: 0 2px 3px #68536766,0 0 0 1px #fff9fd; }\n.contacts-page { display: flex; flex-direction: column; flex: 1; min-height: 0; background: repeating-linear-gradient(90deg,#f0e8ef 0 3px,#ece4ed 3px 6px); }\n.contacts-header { position: relative; }\n.contacts-header h2 { position: absolute; left: 50%; transform: translateX(-50%); margin: 0; font-size: 17px; text-shadow: 0 1px white; }\n.contact-list { overflow: auto; min-height: 0; }\n.contact-row { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; padding: 16px 10px; border: 0; border-bottom: 1px solid #d8cbd5; background: #fffafde8; color: #614c5a; box-shadow: 0 1px #fff; }\n.contact-row:active { background: #e9d4e2; }\n.list-avatar { display: grid; place-items: center; flex: 0 0 38px; height: 38px; border-radius: 7px; border: 1px solid #d5b6c9; background: linear-gradient(#fff7fb,#e4c9d9); font-size: 17px; }\n.contact-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }\n.contact-copy strong { font-size: 15px; }\n.contact-preview { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; color: #8c7986; }\n.contact-meta { color: #9e879b; font-size: 9px; }\n.chevron { font: 26px/1 Arial,sans-serif; color: #b5a3b2; }\n.contacts-footnote { margin: 15px; text-align: center; color: #978292; font-size: 10px; }\n.chat-page { display: flex; flex-direction: column; flex: 1; min-height: 0; background: #f7eef4; }\n.contact { flex: 0 0 49px; display: flex; gap: 6px; align-items: center; padding: 5px 7px; border-bottom: 1px solid #bca0b1; background: linear-gradient(#eee2eb 0%, #d4bccd 49%, #cdb2c5 50%, #ddc6d6); box-shadow: inset 0 1px #fff8fc; }\n.back { padding: 3px 8px; background: linear-gradient(#f9edf4,#d7bace); color: #6e5066; border: 1px solid #b794aa; border-radius: 5px; height: 29px; font-size: 11px; text-shadow: 0 1px white; box-shadow: inset 0 1px #fff; }\n.avatar { width: 30px; height: 30px; flex: 0 0 30px; border-radius: 7px; border: 1px solid #faf1f5; background: linear-gradient(#fff9fa,#eacddb); display: grid; place-items: center; font-size: 14px; color: #81505e; }\n.identity { flex: 1; min-width: 0; text-align: center; }\n.identity h2 { margin: 0; font-size: 15px; color: #684d60; text-shadow: 0 1px #fff; }\n.identity p { margin: 0; font-size: 8px; color: #745d6c; }\n.messages { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 12px 10px; scrollbar-width: thin; scrollbar-color: #deb9c7 transparent; background: repeating-linear-gradient(90deg,#fbf7fa 0 3px,#f7f0f6 3px 6px); }\n.day-label { text-align: center; margin: 0 0 15px; color: #947685; font-size: 10px; }\n.message { margin-bottom: 12px; display: flex; align-items: flex-start; flex-direction: column; }\n.message.self { align-items: flex-end; }\n.message-meta { font-size: 9px; margin: 0 4px 4px; color: var(--rp-muted); }\n.bubble { max-width: 91%; margin: 0; padding: 8px 11px; border: 1px solid #d7c7d2; border-radius: 13px; background: linear-gradient(#fffefd, #efe7ec); box-shadow: inset 0 1px white, 0 1px 1px #ad8ba022; color: #614b58; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; line-height: 1.7; }\n.self .bubble { background: linear-gradient(#faeaf3, #e8c9db); border-color: #cfa8c0; }\n.composer { flex: 0 0 auto; display: flex; gap: 6px; padding: 7px 6px 5px; border-top: 1px solid #c6adbc; background: linear-gradient(#f4eaf1, #deccda); align-items: center; }\n.message-input { width: 0; min-width: 0; flex: 1; resize: none; border: 1px solid #bba7b4; border-radius: 13px; padding: 5px 9px; background: #fffafc; box-shadow: inset 0 1px 3px #90768622; color: #60454d; height: 47px; font-size: 16px; line-height: 18px; }\n.message-input::placeholder { color: #997e88; font-size: 12px; }\n.send { border: 1px solid #ab7c99; border-radius: 6px; padding: 0 10px; height: 31px; background: linear-gradient(#dca9c8,#c48daf 49%,#ba80a4 50%,#cda0bc); box-shadow: inset 0 1px #f9e1ef; color: #fff; text-shadow: 0 -1px #a57491; font-size: 12px; }\n.send:disabled { background: linear-gradient(#eee1e9,#d9c3d2); border-color: #c6aebf; color: #84717e; text-shadow: 0 1px white; cursor: default; }\n.status { flex: 0 0 auto; margin: 0; text-align: center; color: #826677; background: #deccda; font-size: 9px; padding: 0 2px 5px; }\n.shell-bottom { flex: 0 0 calc(var(--phone-w) * .17); display: flex; align-items: center; justify-content: center; position: relative; }\n.home { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; padding: 0; width: 39px; height: 39px; border-radius: 50%; border: 1px solid #dfd9dd; color: #aa8a94; background: linear-gradient(130deg,#fff,#f0edf0); box-shadow: inset 0 1px 3px #ccc6cd44, 0 1px white; display: grid; place-items: center; }\n.home-square { width: 15px; height: 15px; border: 1px solid #bcb4bc; border-radius: 4px; box-shadow: 0 1px white; }\n.bottom-sticker { position: absolute; left: 2px; top: 25%; width: 66px; height: 25px; transform: rotate(-7deg); }\n.bottom-sticker img { position: absolute; bottom: 0; }\n.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }\n:host([data-compact]) .phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 62px - env(safe-area-inset-right, 0px))); --phone-h: calc(var(--rp-vh, 100dvh) - 24px - env(safe-area-inset-bottom, 0px)); border-radius: 20px; padding: 0 10px; }\n:host([data-compact]) .shell-top { flex-basis: 29px; }\n:host([data-compact]) .sensor { display: none; }\n:host([data-compact]) .camera, :host([data-compact]) .speaker { top: 10px; }\n:host([data-compact]) .close { width: 23px; height: 23px; right: 4px; top: 3px; font-size: 18px; }\n:host([data-compact]) .shell-bottom { flex-basis: 34px; }\n:host([data-compact]) .home { width: 27px; height: 27px; }\n:host([data-compact]) .home-square { width: 10px; height: 10px; border-radius: 2px; }\n:host([data-compact]) .bottom-sticker { height: 21px; width: 59px; top: 6px; }\n:host([data-compact]) .contact { flex-basis: 39px; padding: 3px 6px; }\n:host([data-compact]) .message-input { height: 35px; }\n:host([data-compact]) .composer { padding-top: 4px; }\n:host([data-compact]) .messages { padding-top: 5px; }\n:host([data-compact]) .charm { top: 31px; width: 66px; height: 167px; left: -42px; }\n:host([data-compact]) .dock .envelope-icon { width: 42px; }\n:host([data-compact]) .wallpaper-art { width: 70%; left: 15%; top: 8%; }\n:host([data-compact]) .wallpaper-sticker { width: 90px; height: 30px; margin-bottom: 5px; }\n:host([data-compact]) .wallpaper-word { font-size: 14px; }\n:host([data-compact]) .wallpaper-sub { display: none; }\n:host([data-compact]) .dock { flex-basis: 70px; }\n\n/* Foreground decoration plane: all artwork passes pointer events through. */\n.phone { isolation: isolate; }\n.screen { z-index: 1; }\n.close { z-index: 10; }\n.home { z-index: 8; }\n.decoration-layer { position: absolute; inset: 0; z-index: 6; pointer-events: none; }\n.decoration-layer * { pointer-events: none !important; }\n.strap-anchor { position: absolute; top: 22px; left: -5px; width: 10px; height: 13px; border: 2px solid #b7a4ad; border-radius: 50%; background: #f5ebf0; box-shadow: inset 1px 0 2px #775e6d88, 1px 1px 1px #fff; z-index: 2; }\n.charm { top: 28px; left: -37px; width: 78px; height: 192px; transform-origin: 50% 0; transform: rotate(var(--strap-angle, 0deg)) scale(var(--strap-scale, 1)); filter: drop-shadow(2px 3px 2px #61475d44); }\n.strap-image { object-position: center top; }\n.decoration-layer[data-side='right'] .strap-anchor { left: auto; right: -5px; }\n.decoration-layer[data-side='right'] .charm { left: auto; right: -37px; }\n/* Swing the raster as one hanging object once on opening; no background timers. */\n.strap-image { animation: yui-settle 950ms ease-out both; transform-origin: 50% 0; }\n@keyframes yui-settle { 0% { transform: rotate(-6deg); } 40% { transform: rotate(3deg); } 75% { transform: rotate(-1deg); } 100% { transform: rotate(0); } }\n@media (prefers-reduced-motion: reduce) { .strap-image { animation: none; } }\n.corner-sticker { position: absolute; width: 52px; height: 42px; display: grid; place-items: center; }\n.corner-image { display: block; width: 100%; height: 100%; object-fit: contain; }\n.corner-sticker.top-left { left: 18px; top: 8px; }\n.corner-sticker.top-right { right: 38px; top: 8px; }\n.corner-sticker.bottom-left { left: 18px; bottom: 7px; }\n.corner-sticker.bottom-right { right: 18px; bottom: 7px; }\n.corner-halo { width: 62px; height: 25px; }\n.corner-halo img { position: absolute; bottom: 0; }\n.dock { gap: 27px; }\n.beauty-app .envelope-icon { padding: 5px; background: linear-gradient(#fffafb, #eedce8); }\n.beautify-page { display: flex; flex-direction: column; flex: 1; min-height: 0; background: #fff7fb; }\n.beauty-header { justify-content: flex-start; gap: 20px; }\n.beauty-scroll { flex: 1; min-height: 0; overflow: auto; padding: 10px; overscroll-behavior: contain; }\n.beauty-hint { font-size: 11px; color: #836577; margin: 0 0 9px; }\n.beauty-label { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin: 9px 0; font-size: 12px; }\n.beauty-label output { margin-left: auto; font-size: 11px; }\n.beauty-select { flex: 1; min-width: 0; font: inherit; color: #63485a; background: #fff; border: 1px solid #d5b8cb; border-radius: 7px; padding: 6px; }\n.beauty-range { width: 100%; margin: 3px 0; accent-color: #b97e9f; }\n.beauty-upload { display: block; font-size: 12px; padding: 8px; border: 1px dashed #cda6bd; border-radius: 8px; background: #faeaf3; }\n.beauty-upload input { display: block; width: 100%; margin-top: 6px; font-size: 11px; }\n.sticker-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }\n.sticker-choice { aspect-ratio: 1; min-width: 0; padding: 3px; border: 1px solid #e1c8d7; border-radius: 9px; background: #fff; font-size: 11px; color: #775369; }\n.sticker-choice img { width: 100%; height: 100%; object-fit: contain; }\n.sticker-choice[aria-pressed='true'] { border: 2px solid #ac6d92; background: #f4dce9; }\n.beauty-actions { display: flex; gap: 7px; flex: 0 0 auto; padding: 6px 8px; border-top: 1px solid #dcc0d1; }\n.beauty-button { flex: 1; padding: 6px; border: 1px solid #c99cb8; border-radius: 7px; font-size: 12px; color: #67485e; background: linear-gradient(#fff6fb,#ecd2e2); }\n.beauty-status { margin: 0; flex: 0 0 auto; min-height: 28px; padding: 2px 7px 5px; color: #805c73; font-size: 10px; text-align: center; }\n:host([data-compact]) .charm { top: 16px; left: -28px; width: 60px; height: 145px; }\n:host([data-compact]) .strap-anchor { top: 10px; }\n:host([data-compact]) .decoration-layer[data-side='right'] .charm { right: -28px; }\n:host([data-compact]) .corner-sticker { width: 35px; height: 22px; }\n:host([data-compact]) .corner-sticker.top-left, :host([data-compact]) .corner-sticker.top-right { top: 2px; }\n:host([data-compact]) .corner-sticker.bottom-left, :host([data-compact]) .corner-sticker.bottom-right { bottom: 5px; }\n:host([data-compact]) .corner-halo { width: 50px; height: 20px; }\n:host([data-compact]) .beauty-scroll { padding-top: 5px; }\r\n/* Keep room for the foreground lanyard on either side of a narrow viewport. */\n.phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 76px - env(safe-area-inset-right, 0px)), calc((var(--rp-vh, 100dvh) - 24px - env(safe-area-inset-bottom, 0px)) / 1.75)); }\n.phone[data-strap-side='right'] { left: calc(var(--rp-left, 0px) + var(--rp-vw, 100vw) - var(--phone-w) - 64px - env(safe-area-inset-right, 0px)); }\n:host([data-compact]) .phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 76px - env(safe-area-inset-right, 0px))); }\r\n";
+var phone_default = ":host { color-scheme: light; --rp-ink: #604852; --rp-muted: #826b74; }\n*, *::before, *::after { box-sizing: border-box; }\nbutton, textarea { font: inherit; }\nbutton { cursor: pointer; -webkit-tap-highlight-color: transparent; }\nbutton:focus-visible, textarea:focus-visible, [tabindex]:focus-visible { outline: 2px solid #9d6684; outline-offset: 3px; }\n[hidden] { display: none !important; }\n.launcher, .phone { font: 14px/1.5 'Microsoft YaHei', system-ui, sans-serif; color: var(--rp-ink); pointer-events: auto; }\n.launcher { position: fixed; left: calc(var(--rp-left, 0px) + var(--rp-vw, 100vw) - 62px - env(safe-area-inset-right, 0px)); top: calc(var(--rp-top, 0px) + var(--rp-vh, 100dvh) * .3); width: 52px; min-height: 66px; padding: 7px 8px 5px; border: 1px solid #dfb9c5; border-radius: 14px 6px 6px 14px; background: linear-gradient(145deg, #fffdfa, #f9e5ed); box-shadow: 0 3px 12px #6b34402b, inset 0 0 0 3px #fff8f8; }\n.mini-phone { display: block; margin: 0 auto; width: 22px; height: 36px; border: 1px solid #b09ca4; border-radius: 4px; background: #f0dae7; color: #ad7c95; line-height: 27px; box-shadow: inset 0 5px #fff, inset 0 -6px #fff; }\n.launcher-label { display: block; font-size: 10px; letter-spacing: 1px; line-height: 17px; }\n.phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 62px - env(safe-area-inset-right, 0px)), calc((var(--rp-vh, 100dvh) - 24px - env(safe-area-inset-bottom, 0px)) / 1.75)); --phone-h: calc(var(--phone-w) * 1.75); position: fixed; left: calc(var(--rp-left, 0px) + var(--rp-vw, 100vw) - var(--phone-w) - 12px - env(safe-area-inset-right, 0px)); top: calc(var(--rp-top, 0px) + max(12px, (var(--rp-vh, 100dvh) - var(--phone-h)) / 2)); width: var(--phone-w); height: var(--phone-h); padding: 0 12px; display: flex; flex-direction: column; border: 2px solid #c7c3c4; border-radius: 36px; background: radial-gradient(circle at 1px 1px, #eacbd333 .7px, transparent 1px) 0 0 / 7px 7px, linear-gradient(115deg, #fff, #faf9f8 60%, #f7eef3); box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 4px #eae6e8, 2px 0 0 #9e969d, -2px 0 0 #e8dce3, 0 14px 42px #5d394a30; }\n.phone::before { content: ''; position: absolute; height: 3px; width: 40px; right: 37px; top: -4px; border: 1px solid #b7acb1; background: #ddd5db; border-radius: 2px 2px 0 0; }\n.side-keys { position: absolute; top: 66px; left: -5px; display: flex; flex-direction: column; gap: 20px; pointer-events: none; }\n.side-keys i { display: block; width: 3px; height: 18px; border: 1px solid #aca4ab; background: linear-gradient(90deg,#fff,#b8b0b7); border-radius: 2px; }\n.side-keys .mute { height: 25px; margin-bottom: 1px; }\n.shell-top { position: relative; flex: 0 0 calc(var(--phone-w) * .19); }\n.sensor { position: absolute; left: calc(50% - 12px); top: 29%; width: 24px; height: 5px; border-radius: 4px; background: #7b7379; box-shadow: inset 0 1px 2px #4e4e57; }\n.camera { position: absolute; left: calc(50% - 53px); top: 51%; height: 10px; width: 10px; border-radius: 50%; background: radial-gradient(circle at 45% 45%, #799caf 1px, #223849 2px, #46444b 4px, #b8b5ba 5px); box-shadow: 0 0 0 1px #d0c8cd; }\n.speaker { position: absolute; left: calc(50% - 24px); top: 51%; width: 49px; height: 7px; border: 1px solid #ada6aa; border-radius: 6px; background: repeating-linear-gradient(90deg, #4c494c 0 1px, #767077 1px 2px); box-shadow: 0 1px 2px #ddd; }\n.ornament { display: block; width: 100%; height: 100%; overflow: visible; pointer-events: none; }\n.lace-sticker { display: block; position: relative; overflow: hidden; mix-blend-mode: multiply; pointer-events: none; }\n.sticker-image { display: block; width: 100%; height: auto; max-width: none; }\n.charm { position: absolute; top: 57px; left: -48px; width: 77px; height: 205px; pointer-events: none; }\n.strap-image { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; }\n.close { position: absolute; top: 7px; right: 7px; width: 27px; height: 27px; padding: 0; line-height: 22px; border: 1px solid #d5c7d0; border-radius: 50%; background: #fffafce8; color: #927282; font-size: 22px; z-index: 2; }\n.screen { display: flex; flex-direction: column; flex: 1; min-height: 0; overflow: hidden; border: 2px solid #393238; border-radius: 2px; background: #f5e9f0; box-shadow: 0 0 0 1px #ada0a9; position: relative; }\n.brand { flex: 0 0 20px; display: flex; align-items: center; justify-content: space-between; padding: 0 6px; background: linear-gradient(#b8a7b4, #8e7c8d); color: white; text-shadow: 0 1px #6d5c6f; font: 11px/20px Arial,sans-serif; position: relative; }\n.clock { position: absolute; left: 50%; transform: translateX(-50%); font-weight: bold; }\n.battery { width: 20px; height: 9px; border: 1px solid white; padding: 1px; border-radius: 1px; position: relative; }\n.battery::before { content: ''; display: block; height: 5px; background: #f9f8fa; }\n.battery::after { content: ''; position: absolute; right: -3px; top: 2px; width: 2px; height: 3px; background: white; }\n.demo-notice { flex: 0 0 auto; margin: 0; padding: 4px 2px; text-align: center; font-size: 10px; color: #775a6a; background: #fff7fbe8; border-bottom: 1px solid #e0c6d5; white-space: nowrap; }\n.home-page { flex: 1; min-height: 0; position: relative; display: flex; flex-direction: column; background: repeating-linear-gradient(0deg, #ffffff00 0 15px, #ffffff44 15px 16px), repeating-linear-gradient(90deg,#ffffff00 0 15px,#ffffff44 15px 16px), radial-gradient(ellipse at 45% 40%, #fffaff, #ead3e2 80%); }\n.home-page::before { content: ''; position: absolute; inset: 11px; border: 1px dashed #fffafec2; pointer-events: none; }\n.app-icon { display: flex; flex-direction: column; align-items: center; gap: 5px; padding: 0; border: 0; background: none; min-width: 0; color: #614859; }\n.envelope-icon { width: 58px; max-width: 100%; aspect-ratio: 1; border-radius: 13px; box-shadow: 0 2px 4px #68536745, 0 0 0 1px #fff9fd; }\n.app-label { font-size: 11px; font-weight: 600; text-shadow: 0 1px #fff; }\n.wallpaper-art { position: absolute; width: 78%; left: 11%; top: 22%; text-align: center; pointer-events: none; color: #ae87a0; }\n.wallpaper-sticker { width: 142px; height: 49px; margin: 0 auto 20px; opacity: .7; }\n.wallpaper-sticker img { position: absolute; bottom: 0; }\n.wallpaper-word { display: block; font: italic 22px/1.6 Georgia,serif; text-shadow: 0 1px white; }\n.wallpaper-sub { font-size: 9px; letter-spacing: 2px; opacity: .8; }\n.page-dots { margin-top: auto; text-align: center; color: white; text-shadow: 0 1px 2px #9c8495; font-size: 9px; padding: 7px 0 9px; }\n.dock { position: relative; flex: 0 0 94px; display: flex; align-items: center; justify-content: center; padding: 5px 20px 7px; background: linear-gradient(#b9a3b56b,#a391a1a0); border-top: 1px solid #fff8fc90; box-shadow: inset 0 1px 2px #fff6fa88; }\n.dock::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 39%; background: linear-gradient(#fff7fd55,#d9cbd877); border-top: 1px solid #fff6fc70; pointer-events: none; }\n.dock .app-icon { position: relative; width: 67px; z-index: 1; }\n.dock .app-label { color: #fff; font-size: 12px; text-shadow: 0 1px 2px #66535f, 0 0 2px #685360; }\n.dock .envelope-icon { width: 58px; box-shadow: 0 2px 3px #68536766,0 0 0 1px #fff9fd; }\n.contacts-page { display: flex; flex-direction: column; flex: 1; min-height: 0; background: repeating-linear-gradient(90deg,#f0e8ef 0 3px,#ece4ed 3px 6px); }\n.contacts-header { position: relative; }\n.contacts-header h2 { position: absolute; left: 50%; transform: translateX(-50%); margin: 0; font-size: 17px; text-shadow: 0 1px white; }\n.contact-list { overflow: auto; min-height: 0; }\n.contact-row { display: flex; align-items: center; gap: 9px; width: 100%; text-align: left; padding: 16px 10px; border: 0; border-bottom: 1px solid #d8cbd5; background: #fffafde8; color: #614c5a; box-shadow: 0 1px #fff; }\n.contact-row:active { background: #e9d4e2; }\n.list-avatar { display: grid; place-items: center; flex: 0 0 38px; height: 38px; border-radius: 7px; border: 1px solid #d5b6c9; background: linear-gradient(#fff7fb,#e4c9d9); font-size: 17px; }\n.contact-copy { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }\n.contact-copy strong { font-size: 15px; }\n.contact-preview { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; color: #8c7986; }\n.contact-meta { color: #9e879b; font-size: 9px; }\n.chevron { font: 26px/1 Arial,sans-serif; color: #b5a3b2; }\n.contacts-footnote { margin: 15px; text-align: center; color: #978292; font-size: 10px; }\n.chat-page { display: flex; flex-direction: column; flex: 1; min-height: 0; background: #f7eef4; }\n.contact { flex: 0 0 49px; display: flex; gap: 6px; align-items: center; padding: 5px 7px; border-bottom: 1px solid #bca0b1; background: linear-gradient(#eee2eb 0%, #d4bccd 49%, #cdb2c5 50%, #ddc6d6); box-shadow: inset 0 1px #fff8fc; }\n.back { padding: 3px 8px; background: linear-gradient(#f9edf4,#d7bace); color: #6e5066; border: 1px solid #b794aa; border-radius: 5px; height: 29px; font-size: 11px; text-shadow: 0 1px white; box-shadow: inset 0 1px #fff; }\n.avatar { width: 30px; height: 30px; flex: 0 0 30px; border-radius: 7px; border: 1px solid #faf1f5; background: linear-gradient(#fff9fa,#eacddb); display: grid; place-items: center; font-size: 14px; color: #81505e; }\n.identity { flex: 1; min-width: 0; text-align: center; }\n.identity h2 { margin: 0; font-size: 15px; color: #684d60; text-shadow: 0 1px #fff; }\n.identity p { margin: 0; font-size: 8px; color: #745d6c; }\n.messages { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; padding: 12px 10px; scrollbar-width: thin; scrollbar-color: #deb9c7 transparent; background: repeating-linear-gradient(90deg,#fbf7fa 0 3px,#f7f0f6 3px 6px); }\n.day-label { text-align: center; margin: 0 0 15px; color: #947685; font-size: 10px; }\n.message { margin-bottom: 12px; display: flex; align-items: flex-start; flex-direction: column; }\n.message.self { align-items: flex-end; }\n.message-meta { font-size: 9px; margin: 0 4px 4px; color: var(--rp-muted); }\n.bubble { max-width: 91%; margin: 0; padding: 8px 11px; border: 1px solid #d7c7d2; border-radius: 13px; background: linear-gradient(#fffefd, #efe7ec); box-shadow: inset 0 1px white, 0 1px 1px #ad8ba022; color: #614b58; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 12px; line-height: 1.7; }\n.self .bubble { background: linear-gradient(#faeaf3, #e8c9db); border-color: #cfa8c0; }\n.composer { flex: 0 0 auto; display: flex; gap: 6px; padding: 7px 6px 5px; border-top: 1px solid #c6adbc; background: linear-gradient(#f4eaf1, #deccda); align-items: center; }\n.message-input { width: 0; min-width: 0; flex: 1; resize: none; border: 1px solid #bba7b4; border-radius: 13px; padding: 5px 9px; background: #fffafc; box-shadow: inset 0 1px 3px #90768622; color: #60454d; height: 47px; font-size: 16px; line-height: 18px; }\n.message-input::placeholder { color: #997e88; font-size: 12px; }\n.send { border: 1px solid #ab7c99; border-radius: 6px; padding: 0 10px; height: 31px; background: linear-gradient(#dca9c8,#c48daf 49%,#ba80a4 50%,#cda0bc); box-shadow: inset 0 1px #f9e1ef; color: #fff; text-shadow: 0 -1px #a57491; font-size: 12px; }\n.send:disabled { background: linear-gradient(#eee1e9,#d9c3d2); border-color: #c6aebf; color: #84717e; text-shadow: 0 1px white; cursor: default; }\n.status { flex: 0 0 auto; margin: 0; text-align: center; color: #826677; background: #deccda; font-size: 9px; padding: 0 2px 5px; }\n.shell-bottom { flex: 0 0 calc(var(--phone-w) * .17); display: flex; align-items: center; justify-content: center; position: relative; }\n.home { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; padding: 0; width: 39px; height: 39px; border-radius: 50%; border: 1px solid #dfd9dd; color: #aa8a94; background: linear-gradient(130deg,#fff,#f0edf0); box-shadow: inset 0 1px 3px #ccc6cd44, 0 1px white; display: grid; place-items: center; }\n.home-square { width: 15px; height: 15px; border: 1px solid #bcb4bc; border-radius: 4px; box-shadow: 0 1px white; }\n.bottom-sticker { position: absolute; left: 2px; top: 25%; width: 66px; height: 25px; transform: rotate(-7deg); }\n.bottom-sticker img { position: absolute; bottom: 0; }\n.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }\n:host([data-compact]) .phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 62px - env(safe-area-inset-right, 0px))); --phone-h: calc(var(--rp-vh, 100dvh) - 24px - env(safe-area-inset-bottom, 0px)); border-radius: 20px; padding: 0 10px; }\n:host([data-compact]) .shell-top { flex-basis: 29px; }\n:host([data-compact]) .sensor { display: none; }\n:host([data-compact]) .camera, :host([data-compact]) .speaker { top: 10px; }\n:host([data-compact]) .close { width: 23px; height: 23px; right: 4px; top: 3px; font-size: 18px; }\n:host([data-compact]) .shell-bottom { flex-basis: 34px; }\n:host([data-compact]) .home { width: 27px; height: 27px; }\n:host([data-compact]) .home-square { width: 10px; height: 10px; border-radius: 2px; }\n:host([data-compact]) .bottom-sticker { height: 21px; width: 59px; top: 6px; }\n:host([data-compact]) .contact { flex-basis: 39px; padding: 3px 6px; }\n:host([data-compact]) .message-input { height: 35px; }\n:host([data-compact]) .composer { padding-top: 4px; }\n:host([data-compact]) .messages { padding-top: 5px; }\n:host([data-compact]) .charm { top: 31px; width: 66px; height: 167px; left: -42px; }\n:host([data-compact]) .dock .envelope-icon { width: 42px; }\n:host([data-compact]) .wallpaper-art { width: 70%; left: 15%; top: 8%; }\n:host([data-compact]) .wallpaper-sticker { width: 90px; height: 30px; margin-bottom: 5px; }\n:host([data-compact]) .wallpaper-word { font-size: 14px; }\n:host([data-compact]) .wallpaper-sub { display: none; }\n:host([data-compact]) .dock { flex-basis: 70px; }\n\n/* Foreground decoration plane: all artwork passes pointer events through. */\n.phone { isolation: isolate; }\n.screen { z-index: 1; }\n.close { z-index: 10; }\n.home { z-index: 8; }\n.decoration-layer { position: absolute; inset: 0; z-index: 6; pointer-events: none; }\n.decoration-layer * { pointer-events: none !important; }\n.strap-anchor { position: absolute; top: 22px; left: -5px; width: 10px; height: 13px; border: 2px solid #b7a4ad; border-radius: 50%; background: #f5ebf0; box-shadow: inset 1px 0 2px #775e6d88, 1px 1px 1px #fff; z-index: 2; }\n.charm { top: 28px; left: -37px; width: 78px; height: 192px; transform-origin: 50% 0; transform: rotate(var(--strap-angle, 0deg)) scale(var(--strap-scale, 1)); filter: drop-shadow(2px 3px 2px #61475d44); }\n.strap-image { object-position: center top; }\n.decoration-layer[data-side='right'] .strap-anchor { left: auto; right: -5px; }\n.decoration-layer[data-side='right'] .charm { left: auto; right: -37px; }\n/* Swing the raster as one hanging object once on opening; no background timers. */\n.strap-image { animation: yui-settle 950ms ease-out both; transform-origin: 50% 0; }\n@keyframes yui-settle { 0% { transform: rotate(-6deg); } 40% { transform: rotate(3deg); } 75% { transform: rotate(-1deg); } 100% { transform: rotate(0); } }\n@media (prefers-reduced-motion: reduce) { .strap-image { animation: none; } }\n.corner-sticker { position: absolute; width: 52px; height: 42px; display: grid; place-items: center; }\n.corner-image { display: block; width: 100%; height: 100%; object-fit: contain; }\n.corner-sticker.top-left { left: 18px; top: 8px; }\n.corner-sticker.top-right { right: 38px; top: 8px; }\n.corner-sticker.bottom-left { left: 18px; bottom: 7px; }\n.corner-sticker.bottom-right { right: 18px; bottom: 7px; }\n.corner-halo { width: 62px; height: 25px; }\n.corner-halo img { position: absolute; bottom: 0; }\n.dock { gap: 27px; }\n.beauty-app .envelope-icon { padding: 5px; background: linear-gradient(#fffafb, #eedce8); }\n.beautify-page { display: flex; flex-direction: column; flex: 1; min-height: 0; background: #fff7fb; }\n.beauty-header { justify-content: flex-start; gap: 20px; }\n.beauty-scroll { flex: 1; min-height: 0; overflow: auto; padding: 10px; overscroll-behavior: contain; }\n.beauty-hint { font-size: 11px; color: #836577; margin: 0 0 9px; }\n.beauty-label { display: flex; align-items: center; flex-wrap: wrap; gap: 7px; margin: 9px 0; font-size: 12px; }\n.beauty-label output { margin-left: auto; font-size: 11px; }\n.beauty-select { flex: 1; min-width: 0; font: inherit; color: #63485a; background: #fff; border: 1px solid #d5b8cb; border-radius: 7px; padding: 6px; }\n.beauty-range { width: 100%; margin: 3px 0; accent-color: #b97e9f; }\n.beauty-upload { display: block; font-size: 12px; padding: 8px; border: 1px dashed #cda6bd; border-radius: 8px; background: #faeaf3; }\n.beauty-upload input { display: block; width: 100%; margin-top: 6px; font-size: 11px; }\n.sticker-gallery { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }\n.sticker-choice { aspect-ratio: 1; min-width: 0; padding: 3px; border: 1px solid #e1c8d7; border-radius: 9px; background: #fff; font-size: 11px; color: #775369; }\n.sticker-choice img { width: 100%; height: 100%; object-fit: contain; }\n.sticker-choice[aria-pressed='true'] { border: 2px solid #ac6d92; background: #f4dce9; }\n.beauty-actions { display: flex; gap: 7px; flex: 0 0 auto; padding: 6px 8px; border-top: 1px solid #dcc0d1; }\n.beauty-button { flex: 1; padding: 6px; border: 1px solid #c99cb8; border-radius: 7px; font-size: 12px; color: #67485e; background: linear-gradient(#fff6fb,#ecd2e2); }\n.beauty-status { margin: 0; flex: 0 0 auto; min-height: 28px; padding: 2px 7px 5px; color: #805c73; font-size: 10px; text-align: center; }\n:host([data-compact]) .charm { top: 16px; left: -28px; width: 60px; height: 145px; }\n:host([data-compact]) .strap-anchor { top: 10px; }\n:host([data-compact]) .decoration-layer[data-side='right'] .charm { right: -28px; }\n:host([data-compact]) .corner-sticker { width: 35px; height: 22px; }\n:host([data-compact]) .corner-sticker.top-left, :host([data-compact]) .corner-sticker.top-right { top: 2px; }\n:host([data-compact]) .corner-sticker.bottom-left, :host([data-compact]) .corner-sticker.bottom-right { bottom: 5px; }\n:host([data-compact]) .corner-halo { width: 50px; height: 20px; }\n:host([data-compact]) .beauty-scroll { padding-top: 5px; }\r\n/* Keep room for the foreground lanyard on either side of a narrow viewport. */\n.phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 76px - env(safe-area-inset-right, 0px)), calc((var(--rp-vh, 100dvh) - 24px - env(safe-area-inset-bottom, 0px)) / 1.75)); }\n.phone[data-strap-side='right'] { left: calc(var(--rp-left, 0px) + var(--rp-vw, 100vw) - var(--phone-w) - 64px - env(safe-area-inset-right, 0px)); }\n:host([data-compact]) .phone { --phone-w: min(330px, calc(var(--rp-vw, 100vw) - 76px - env(safe-area-inset-right, 0px))); }\n\n/* Profile and reading controls are confined to the existing phone screen. */\n.dock { gap: 12px; padding-inline: 8px; }\n.people-icon { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 13px; font: 32px Georgia,serif; color: #956e85; background: linear-gradient(#fffafa,#ead4e2); box-shadow: 0 2px 3px #68536766,0 0 0 1px #fff9fd; }\n.workspace-page { display: flex; flex: 1; flex-direction: column; min-height: 0; overflow: hidden; background: #fff7fb; }\n.workspace-page > .workspace-page { flex: 1; }\n.workspace-header { flex: 0 0 auto; gap: 5px; min-height: 42px; padding: 5px; }\n.workspace-header h2 { font-size: 15px; margin: 0; flex: 1; }\n.profile-scroll { flex: 1; min-height: 0; overflow: auto; padding: 8px; overscroll-behavior: contain; overflow-wrap: anywhere; }\n.profile-scroll > .beauty-button { display: block; width: 100%; margin: 8px 0; }\n.profile-label { display: flex; flex-direction: column; gap: 4px; margin: 10px 0; font-size: 12px; }\n.profile-label input, .profile-label select { width: 100%; min-width: 0; padding: 7px; font: inherit; color: #63485a; background: white; border: 1px solid #d5b8cb; border-radius: 7px; }\n.profile-label input[type='checkbox'] { width: 20px; height: 20px; accent-color: #b97e9f; }\n.profile-source { font-size: 10px; white-space: pre-wrap; color: #886c80; }\n.section-title { font-size: 12px; margin: 14px 0 6px; color: #87667b; }\n.empty-state { font-size: 12px; line-height: 1.65; padding: 12px 3px; }\n.profile-avatar { position: relative; flex: 0 0 auto; display: inline-grid; place-items: center; width: var(--reading-avatar,36px); height: var(--reading-avatar,36px); padding: 0; overflow: hidden; border-radius: var(--reading-radius,22%); color: #8d677f; background: #efd8e6; }\n.profile-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; }\n.profile-avatar-button { border: 0; padding: 0; background: none; flex: 0 0 auto; }\n.profile-name { border: 0; background: none; color: inherit; min-width: 0; overflow-wrap: anywhere; }\n.phone[data-show-avatar='false'] [data-top-avatar] { display: none; }\n.bubble, .reading-bubble { font-size: var(--reading-size,14px); line-height: var(--reading-line,1.65); }\n.reading-bubble { white-space: pre-wrap; padding: 8px; background: #f5e5f0; border-radius: 9px; }\n.reading-status { margin: 0; padding: 4px; font-size: 10px; text-align: center; }\n.reading-preview { border: 1px dashed #d5b8cb; border-radius: 8px; padding: 8px; }\n.people-setup { margin-top: 16px; border-top: 1px dashed #d5b8cb; }\n.profile-avatar-editor { display: flex; align-items: center; gap: 8px; margin: 10px 0; }\n.workspace-page .beauty-actions { flex-wrap: wrap; }\n.workspace-page .beauty-actions button { min-width: 50px; }\n.contact-row .profile-avatar { width: 32px; height: 32px; }\n.workspace-page .contact-row { width: 100%; }\n:host([data-compact]) .dock .people-icon { width: 48px; height: 48px; }\n";
 
 // src/assets/message-icon.jpg
 var message_icon_default = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wgARCAHyAe0DASIAAhEBAxEB/8QAGgABAQEBAQEBAAAAAAAAAAAAAAECAwQFB//EABgBAQEBAQEAAAAAAAAAAAAAAAABAgME/9oADAMBAAIQAxAAAAH9UAShBYBIaYG2C7YG2BtgbYG2BtgbYG2BtgbYG2BtgbYG2BtgbYG2BtgbYqaZGkGkFAAICCMrZnK7mJbuYLtzptiHRzHRgbYG2BtgbYG2BthG2BtgbYG2BthW2IdHMdHMdLzHWc4nZyp11y1J01z0mkqVKIhcsrMosuyZtpm7HPW6YbGGqYnQnNurhsYbGGxhsYbGGxhsYbGGxhsmJ0i5aGWhidYc51HF0ycnXKzXLVvbXPUzu5qJcrnFxbdki3SLQAAAAAAAAAAAAAAAAAAAABmawSbymeXbLeenHpdddY1ObGsLi56Ks6M2gAAAAAAAAAAAAAAAAAAAAAIM2Gd5gmsnJrDfbfPojnvmZ6c+qNWsy5yvRmG2alsFQtIVBUFQVBUFQVBUoAAIVBSFQUADNwmmbU46zGunPqc+PfzunbfPpV575yTry7ppTOcdMLz1jkem89WbQakS1BUFZpUFQVkaSGoBBQCFQUAhUGrgdGBrDlZ05cupurE6c9meHo8zp068e1OfTnE9HD0M2CM6wc+XbnXPvziei40VEVBYABBUAKACAAAAAJRABQ4mvO0XrjZu5sNY0b8vr8rprtx61efTnD0ef0MgkzYYxqVJupjV5naZ3AgsFQACFCgAgAAAABAAOVOO9GbQ1mmkF1z3HXzejzumunPpWufTnD0ef0MpSZzrJglWzSM7zGLcnS8ugWAAKlAAAIAAAIVAATiU2GoYllALA3z2vXz+jzze+nPouufTmj0efuzUJM6yYlll1nRSQlHObydHLqACLUoCABQQAIWAAk5C3YqjOsmJZQgspN42vXz+jzze+nPouufTmk9Hn9DIJM2JiXNa1nRZZAKzoc89Mpu8OpoAhUW2USolQoFggRMuZOjYUSlM6yYmsiIW50TeNr18/o883vpz6Lrn05pPR5/QyIkliYzqVdZsalgCgiUYx0wa15+bXfjvF351l669fkzMfTnzqz38+OrfB6s2z1+GM/U5cbOOus3IVQEWDOoZzYSWDWdE3ja9fP6PPN76c+i659OaT0+b0syUmc6iYlyaspqWAAAgzrBwxc3rOcXvqzRdZ1Mzl2wTctuoJzmstb7c+k4dtZ1OVFAASayZzrJJYNZ0TeNr18/o883vpz6Lrn05pPT5/QzCJIiZzrJq50agAAJYTG8W+bn243vz1LeurnUluazrKLqQVkXOsL26ce849N43ONFCFQXOsEzciCNZqt8+i9fP34N76c+i659Ocj0ef0MyWJmWJiXJrWdFAAAlGcdMHLh6eN78FXrbkaQlQqILkusMJ39Xn9E4b1NTlUVYAFxvBnOskAA3jovTh34N76c+i659Ocj0efuyliZliYzrJrWdFIUAAgzoccdeV3wnfk74F0sBAlytiJm59DPbrjrPPqkgWAAXGsmc2EAA6cui9eHfg3vpz6Lrn05yT0+b0MpYmZYmM6ya1jZYLUJYAAg59Jbxx1w3xz35O2CXSSLZCMuqPVOzg3NTnZRAABDOsmJZUABOnPovXh34Te+nPouufTmk9HDuyliZlyZiJd50FgAAAlEFueXXimNI6Y5erk68Jed3Y7s577Tj03y7OdEVFAABDOsmJc2AoE6c+i9eHfhN76c+i659OaO/DuyliYlhiahdY2llgAAAAxM0uqZz1hwz3w35/P6jpj0XblLozidMmry3GgAAAM3JnOs2A0CTpz6L14d+E3vpz6Lrn05o78O7KWJiayZiJd40algFAATnKTpNAAEmi4bSZtACUYx1yOnCnUAAEzqGM6zYli0E6c9r24d+E3vpz6Lrn05o78O7KWJnNiYlDWdGoAUMl5TZNWgAAAAQAAAlGM9IY6c4dkoBJcmc2UllVEN8+q9eHfhN76c+i659OaO/DuyliYliYIXWNGiVUwa5OhNKAAAAABAAAACUZx0yY688ndm0zrJiXJclW51GevHqvbh24ze+nPouufTmk9HDszYiYCYlya1jRqXkXF1TcoEABQAAAQAAABKCWEx0yc9sV2zkTNyQg1il68O8vXl15N66c+i659OSXtx7JCM4Ikzc1dc+Z1TpCqAA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";
@@ -551,11 +551,724 @@ function createBeautify(document, options) {
   } };
 }
 
+// src/contacts.ts
+var displayName = (person) => person.remark.trim() || person.name;
+var newBook = () => ({ version: 1, id: crypto.randomUUID(), revision: 0, people: [], self: { account: "" } });
+var newAccount = () => `yui-${crypto.randomUUID().replaceAll("-", "").slice(0, 12)}`;
+function newPerson(source, name = "") {
+  return {
+    id: crypto.randomUUID(),
+    source: source ?? { kind: "manual", name: "手动创建" },
+    name,
+    remark: "",
+    description: "",
+    avatar: { kind: "default", value: "" },
+    relation: { known: false, accountKnown: false, friend: false },
+    account: newAccount()
+  };
+}
+function validateAccount(account, book, personId) {
+  if (!/^[A-Za-z0-9_-]{3,40}$/.test(account)) throw new Error("虚构账号需为3–40位字母、数字、下划线或短横线");
+  const other = book.people.filter((p) => p.id !== personId).map((p) => p.account);
+  if (personId) other.push(book.self.account);
+  if (other.some((value) => value.toLowerCase() === account.toLowerCase())) throw new Error("本存档已有相同账号，请换一个");
+}
+function validateBook(book) {
+  if (book.version !== 1 || typeof book.id !== "string" || !Number.isInteger(book.revision) || !Array.isArray(book.people) || book.people.length > 100) throw new Error("通讯录格式不支持，已停止写入");
+  if (book.self.account) validateAccount(book.self.account, book);
+  const ids = /* @__PURE__ */ new Set();
+  for (const person of book.people) {
+    if (!person.id || ids.has(person.id) || !person.name?.trim() || person.name.length > 80 || person.remark.length > 80 || person.description.length > 1e3) throw new Error("人物资料无效或超长");
+    ids.add(person.id);
+    if (!["card", "manual"].includes(person.source.kind) || typeof person.source.name !== "string") throw new Error("人物来源无效");
+    const rel = person.relation;
+    if (![rel.known, rel.accountKnown, rel.friend].every((x) => typeof x === "boolean") || rel.friend && (!rel.known || !rel.accountKnown) || !rel.known && rel.accountKnown) throw new Error("关系设置不一致");
+    const avatar = person.avatar;
+    if (avatar.kind === "url") validateAvatarUrl(avatar.value);
+    else if (avatar.kind === "upload") {
+      if (avatar.value.length > 38e4 || !/^data:image\/(png|jpeg|webp);base64,[A-Za-z0-9+/]+=*$/.test(avatar.value)) throw new Error("头像图片无效");
+    } else if (avatar.kind !== "default") throw new Error("头像类型无效");
+    validateAccount(person.account, book, person.id);
+  }
+}
+function validateAvatarUrl(value) {
+  const url = new URL(value.trim());
+  if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || value.length > 2048) throw new Error("请输入不带账号密码的 HTTP(S) 图片地址");
+  return url.href;
+}
+
+// src/profile-host.ts
+function createProfileHost(host) {
+  let dead = false, generation = 0;
+  const lifecycle = new AbortController();
+  const subscribers = /* @__PURE__ */ new Set(), removers = [];
+  let warning = "";
+  function context() {
+    return host.SillyTavern?.getContext();
+  }
+  function snapshot() {
+    const ctx2 = context();
+    if (!ctx2?.chatId || !ctx2.eventSource || !ctx2.eventTypes?.CHAT_CHANGED || typeof ctx2.getRequestHeaders !== "function" || typeof ctx2.getThumbnailUrl !== "function") return;
+    const card = ctx2.characters?.[String(ctx2.characterId)];
+    const scope = ctx2.groupId ? `group:${ctx2.groupId}` : card?.avatar && card.avatar !== "none" ? `card:${card.avatar}` : void 0;
+    if (!scope) return;
+    return {
+      locator: JSON.stringify([scope, ctx2.chatId, ctx2.chatMetadata?.integrity ?? ""]),
+      source: !ctx2.groupId && card ? { name: card.name, avatarFile: card.avatar } : void 0
+    };
+  }
+  const key = (handle) => `yui-pocket.contacts.v1:${encodeURIComponent(handle)}`;
+  function read(handle) {
+    const raw = host.localStorage.getItem(key(handle));
+    if (!raw) return { version: 1, books: {} };
+    const value = JSON.parse(raw);
+    if (value.version !== 1 || !value.books || typeof value.books !== "object" || Array.isArray(value.books)) throw new Error("本机通讯录版本不支持，已停止写入");
+    return value;
+  }
+  function write(handle, value) {
+    const encoded = JSON.stringify(value);
+    try {
+      host.localStorage.setItem(key(handle), encoded);
+      if (host.localStorage.getItem(key(handle)) !== encoded) throw new Error();
+    } catch {
+      throw new Error("本机保存失败，请检查浏览器存储空间或设置；资料尚未保存");
+    }
+  }
+  async function accountHandle(signal) {
+    const ctx2 = context();
+    if (!ctx2) throw new Error("当前宿主不支持通讯录接口");
+    const response = await host.fetch("/api/users/me", { headers: ctx2.getRequestHeaders(), credentials: "same-origin", cache: "no-store", signal });
+    if (!response.ok) throw new Error("无法确认宿主账号，通讯录未读取或保存");
+    const value = await response.json();
+    if (typeof value.handle !== "string" || !value.handle) throw new Error("宿主未提供有效账号");
+    return value.handle;
+  }
+  function ensure(session, epoch, signal) {
+    if (dead || signal.aborted || epoch !== generation || snapshot()?.locator !== session.snapshot.locator) throw new Error("聊天已切换或面板已关闭，本次操作已取消");
+  }
+  function changed() {
+    generation++;
+    subscribers.forEach((fn) => fn());
+  }
+  const ctx = context();
+  if (ctx) {
+    let bind2 = function(name, callback) {
+      const event = ctx.eventTypes[name];
+      if (!event) return;
+      ctx.eventSource.on(event, callback);
+      removers.push(() => ctx.eventSource.removeListener(event, callback));
+    };
+    var bind = bind2;
+    bind2("CHAT_CHANGED", changed);
+    bind2("CHAT_RENAMED", async (event) => {
+      try {
+        const account = await accountHandle(lifecycle.signal);
+        if (!dead) {
+          const registry = read(account), scope = event.groupId ? `group:${event.groupId}` : `card:${event.avatarId}`;
+          let migrated = false;
+          for (const locator of Object.keys(registry.books)) {
+            const parts = JSON.parse(locator);
+            if (parts[0] !== scope || `${parts[1]}.jsonl` !== event.oldFileName) continue;
+            parts[1] = event.newFileName.replace(/\.jsonl$/, "");
+            const destination = JSON.stringify(parts);
+            if (registry.books[destination]) throw new Error("重命名目标已有通讯录，未覆盖");
+            registry.books[destination] = registry.books[locator];
+            delete registry.books[locator];
+            migrated = true;
+          }
+          if (migrated) write(account, registry);
+        }
+      } catch {
+        warning = "聊天重命名的本机通讯录迁移失败；请改回原名恢复资料，勿在新名下覆盖保存。";
+      }
+      if (!dead) changed();
+    });
+  }
+  return {
+    valid: () => !!snapshot(),
+    subscribe(fn) {
+      subscribers.add(fn);
+      return () => subscribers.delete(fn);
+    },
+    async load(signal) {
+      if (warning) throw new Error(warning);
+      const selected = snapshot(), epoch = generation;
+      if (!selected) throw new Error("请先打开有效聊天，再使用本存档通讯录");
+      const handle = await accountHandle(signal);
+      const session = { account: handle, snapshot: selected, book: newBook() };
+      ensure(session, epoch, signal);
+      session.book = structuredClone(read(handle).books[selected.locator] ?? session.book);
+      validateBook(session.book);
+      return session;
+    },
+    async save(session, book, signal) {
+      const epoch = generation;
+      ensure(session, epoch, signal);
+      validateBook(book);
+      if (warning) throw new Error(warning);
+      const handle = await accountHandle(signal);
+      ensure(session, epoch, signal);
+      if (handle !== session.account) throw new Error("宿主账号已变化，请重新打开通讯录");
+      const registry = read(handle), previous = registry.books[session.snapshot.locator];
+      if (previous && (previous.id !== session.book.id || previous.revision !== session.book.revision)) throw new Error("通讯录已在其他窗口修改，请返回列表重新读取");
+      const next = structuredClone(book);
+      next.revision = session.book.revision + 1;
+      registry.books[session.snapshot.locator] = next;
+      write(handle, registry);
+      session.book = next;
+    },
+    avatar(person) {
+      if (person.avatar.kind !== "default") return person.avatar.value;
+      const file = person.source.avatarFile, ctx2 = context();
+      if (!file || !ctx2 || !Object.values(ctx2.characters).some((card) => card.avatar === file)) return "";
+      const url = new URL(ctx2.getThumbnailUrl("avatar", file), host.location.href);
+      return url.origin === host.location.origin ? url.href : "";
+    },
+    dispose() {
+      dead = true;
+      lifecycle.abort();
+      changed();
+      subscribers.clear();
+      removers.forEach((remove) => remove());
+    }
+  };
+}
+
+// src/ui.ts
+function ui(document) {
+  function el(tag, className = "", text) {
+    const node = document.createElement(tag);
+    node.className = className;
+    if (text !== void 0) node.textContent = text;
+    return node;
+  }
+  function button(text, action, className = "beauty-button") {
+    const node = el("button", className, text);
+    node.type = "button";
+    node.onclick = action;
+    return node;
+  }
+  function field(name, value, maxLength = 80) {
+    const label = el("label", "profile-label", name), input = el("input");
+    input.value = value;
+    input.maxLength = maxLength;
+    input.setAttribute("aria-label", name);
+    label.append(input);
+    return { label, input };
+  }
+  return { el, button, field };
+}
+
+// src/profile-editor.ts
+function editProfile(document, host, original, options) {
+  const { el, button, field } = ui(document), draft = structuredClone(original);
+  const page = el("section", "workspace-page"), header = el("header", "contact workspace-header");
+  header.append(button("‹ 返回", options.back, "back"), el("strong", "", "联系人资料"));
+  const scroll = el("div", "profile-scroll");
+  scroll.append(el("p", "beauty-hint", "人物设置由玩家编辑，不代表剧情中的你已知道这些资料。"));
+  const provenance = el("p", "profile-source", `人物 ID：${draft.id}
+来源：${draft.source.kind === "card" ? "角色卡" : "手动"} · ${draft.source.name}`);
+  scroll.append(provenance);
+  const name = field("人物名字", draft.name), remark = field("手机备注", draft.remark), description = field("简短设定（可选）", draft.description, 1e3), account = field("人物虚构账号", draft.account, 40);
+  scroll.append(name.label, remark.label, description.label, account.label, button("生成虚构账号", () => {
+    account.input.value = newAccount();
+  }));
+  const presetLabel = el("label", "profile-label", "开局关系"), preset = el("select");
+  preset.setAttribute("aria-label", "开局关系");
+  [["friend", "已经是好友"], ["known", "认识，但还没有加好友"], ["stranger", "尚不认识，跟随剧情发展"]].forEach(([v, t]) => {
+    const o = el("option", "", t);
+    o.value = v;
+    preset.append(o);
+  });
+  preset.value = draft.relation.friend ? "friend" : draft.relation.known ? "known" : "stranger";
+  presetLabel.append(preset);
+  const knowsLabel = el("label", "profile-label", "开局已经知道对方账号"), knows = el("input");
+  knows.type = "checkbox";
+  knows.setAttribute("aria-label", "开局已经知道对方账号");
+  knowsLabel.append(knows);
+  function relationship() {
+    const friend = preset.value === "friend", known = preset.value !== "stranger";
+    knowsLabel.hidden = preset.value !== "known";
+    draft.relation = { friend, known, accountKnown: friend || known && knows.checked };
+  }
+  knows.checked = draft.relation.accountKnown;
+  preset.onchange = relationship;
+  knows.onchange = relationship;
+  relationship();
+  scroll.append(presetLabel, knowsLabel, el("p", "beauty-hint", "这里只登记开局状态，不发送申请、不自动产生聊天。"));
+  const preview = el("div", "profile-avatar-editor"), avatar = el("span", "profile-avatar"), avatarStatus = el("p", "beauty-hint");
+  preview.append(avatar, avatarStatus);
+  scroll.append(preview);
+  let revision = 0, busy = false;
+  const current = () => options.active() && page.isConnected;
+  function renderAvatar() {
+    avatar.replaceChildren();
+    avatar.textContent = name.input.value.slice(0, 1) || "人";
+    const source = host.avatar(draft);
+    if (!source) return;
+    const image = el("img");
+    image.alt = "联系人头像预览";
+    image.referrerPolicy = "no-referrer";
+    image.src = source;
+    image.onerror = () => {
+      if (!current()) return;
+      image.remove();
+      avatarStatus.textContent = "头像加载失败，已回退文字占位；可以恢复默认头像";
+    };
+    avatar.append(image);
+  }
+  const uploadLabel = el("label", "profile-label", "上传头像"), upload = el("input");
+  upload.type = "file";
+  upload.accept = "image/png,image/jpeg,image/webp";
+  upload.setAttribute("aria-label", "上传头像");
+  uploadLabel.append(upload);
+  upload.onchange = () => {
+    const file = upload.files?.[0];
+    upload.value = "";
+    if (!file) return;
+    const ticket = ++revision;
+    busy = true;
+    save.disabled = true;
+    avatarStatus.textContent = "正在本机处理头像…";
+    void readDecoration(file, document).then((value) => {
+      if (!current() || ticket !== revision) return;
+      draft.avatar = { kind: "upload", value };
+      avatarStatus.textContent = "头像已预览，保存资料后保留";
+      renderAvatar();
+    }).catch((error) => {
+      if (current() && ticket === revision) avatarStatus.textContent = String(error.message || "头像无法读取");
+    }).finally(() => {
+      if (current() && ticket === revision) {
+        busy = false;
+        save.disabled = false;
+      }
+    });
+  };
+  const url = field("头像图片 URL", "", 2048);
+  url.input.type = "url";
+  const applyUrl = button("加载此头像 URL", () => {
+    let source;
+    try {
+      source = validateAvatarUrl(url.input.value);
+    } catch {
+      avatarStatus.textContent = "请输入有效的 HTTP(S) 图片 URL";
+      return;
+    }
+    const ticket = ++revision;
+    busy = true;
+    save.disabled = true;
+    avatarStatus.textContent = "正在加载你指定的图片…";
+    const image = el("img");
+    image.referrerPolicy = "no-referrer";
+    image.onload = () => {
+      if (!current() || ticket !== revision) return;
+      busy = false;
+      save.disabled = false;
+      if (image.naturalWidth > 4096 || image.naturalHeight > 4096) {
+        avatarStatus.textContent = "图片尺寸请不超过4096×4096";
+        return;
+      }
+      draft.avatar = { kind: "url", value: source };
+      avatarStatus.textContent = "外链头像已预览，保存后保留地址";
+      renderAvatar();
+    };
+    image.onerror = () => {
+      if (!current() || ticket !== revision) return;
+      busy = false;
+      save.disabled = false;
+      avatarStatus.textContent = "外链加载失败，保留原头像；未保存失败地址";
+    };
+    image.src = source;
+  });
+  const resetAvatar = () => {
+    revision++;
+    busy = false;
+    save.disabled = false;
+    draft.avatar = { kind: "default", value: "" };
+    avatarStatus.textContent = "默认头像已预览，保存后保留";
+    renderAvatar();
+  };
+  scroll.append(uploadLabel, url.label, applyUrl, el("p", "beauty-hint", "仅加载你明确指定的外链，图片站点会收到请求；本地上传不会离开浏览器。"), button("恢复默认头像", resetAvatar), button("恢复联系人默认", () => {
+    remark.input.value = "";
+    resetAvatar();
+  }));
+  const status = el("p", "beauty-status");
+  status.setAttribute("role", "status");
+  const save = button("保存联系人", () => {
+    if (busy) return;
+    draft.name = name.input.value.trim();
+    draft.remark = remark.input.value.trim();
+    draft.description = description.input.value.trim();
+    draft.account = account.input.value.trim();
+    relationship();
+    save.disabled = true;
+    status.textContent = "正在确认存档并保存…";
+    const fields = scroll.querySelectorAll("input,button,select");
+    fields.forEach((field2) => field2.disabled = true);
+    void options.save(structuredClone(draft)).then(() => {
+      if (current()) status.textContent = "联系人已保存到本机";
+    }).catch((error) => {
+      if (current()) status.textContent = error.message || "保存失败";
+    }).finally(() => {
+      if (current()) {
+        save.disabled = false;
+        fields.forEach((field2) => field2.disabled = false);
+      }
+    });
+  });
+  page.oninput = () => {
+    status.textContent = "资料已修改，尚未保存";
+  };
+  const actions = el("div", "beauty-actions");
+  actions.append(save, button("取消资料修改", options.back));
+  page.append(header, scroll, actions, status);
+  renderAvatar();
+  return page;
+}
+
+// src/directory.ts
+function createDirectory(document, host, options) {
+  const { el, button, field } = ui(document);
+  const page = el("section", "workspace-page contacts-page");
+  page.hidden = true;
+  let session, revision = 0, mode = "contacts", dead = false;
+  let controller = new AbortController();
+  const failedImages = /* @__PURE__ */ new Set();
+  function cancelPending() {
+    revision++;
+    controller.abort();
+    controller = new AbortController();
+  }
+  function active(ticket) {
+    return !dead && !page.hidden && revision === ticket;
+  }
+  function base(title, back = options.home) {
+    cancelPending();
+    page.replaceChildren();
+    page.setAttribute("aria-label", title);
+    const header = el("header", "contact workspace-header"), returnButton = button("‹ 返回", back, "back");
+    if (back === options.home) returnButton.setAttribute("aria-label", "返回主屏幕");
+    header.append(returnButton, el("h2", "", title));
+    const scroll = el("div", "profile-scroll");
+    page.append(header, scroll);
+    return { header, scroll };
+  }
+  function avatar(person, top = false) {
+    const wrap = el("span", "profile-avatar", displayName(person).slice(0, 1));
+    if (top) wrap.dataset.topAvatar = "";
+    const source = host.avatar(person);
+    if (source && !failedImages.has(source)) {
+      const image = el("img");
+      image.alt = `${displayName(person)}的头像`;
+      image.referrerPolicy = "no-referrer";
+      image.onerror = () => {
+        failedImages.add(source);
+        image.remove();
+        wrap.title = "头像加载失败，已回退占位";
+      };
+      image.src = source;
+      wrap.append(image);
+    }
+    return wrap;
+  }
+  async function enter(next) {
+    mode = next;
+    page.hidden = false;
+    session = void 0;
+    const { scroll } = base(next === "contacts" ? "联系人" : "信息");
+    scroll.append(el("p", "empty-state", "正在读取本存档资料…"));
+    const ticket = revision;
+    try {
+      session = await host.load(controller.signal);
+      if (active(ticket)) list();
+    } catch (error) {
+      if (!active(ticket)) return;
+      scroll.replaceChildren(el("p", "empty-state", error.message));
+      if (next === "messages") demoEntry(scroll);
+      scroll.append(button("阅读设置", () => options.reading(() => void enter(next))));
+    }
+  }
+  function demoEntry(scroll) {
+    scroll.append(el("h3", "section-title", "独立演示 · 不属于本存档"));
+    const row = button("", options.demo, "contact-row");
+    row.setAttribute("aria-label", "打开与小桃的聊天");
+    const copy = el("span", "contact-copy");
+    copy.append(el("strong", "", "小桃 · 演示"), el("span", "contact-preview", options.demoPreview()));
+    row.append(el("span", "list-avatar", "桃"), copy, el("span", "chevron", "›"));
+    scroll.append(row);
+  }
+  function list() {
+    const { header, scroll } = base(mode === "contacts" ? "联系人" : "信息");
+    if (!session) return;
+    if (mode === "contacts") {
+      const add = button("＋", addMenu, "back");
+      add.setAttribute("aria-label", "添加人物");
+      header.append(add);
+      scroll.append(button("我的名片", myCard));
+    }
+    scroll.append(el("p", "beauty-hint", "本聊天专属 · 资料保存在本机；不保存真实消息"));
+    const friends = session.book.people.filter((p) => p.relation.friend), pending = session.book.people.filter((p) => !p.relation.friend);
+    function section(title, people, setup) {
+      const group = el("section", setup ? "people-setup" : "friend-list");
+      group.setAttribute("aria-label", title);
+      group.append(el("h3", "section-title", title));
+      if (!people.length) group.append(el("p", "empty-state", setup ? "尚未登记其他人物" : "暂无好友；可以在联系人中录入人物"));
+      for (const person of people) {
+        const row = button("", () => mode === "messages" ? chat(person.id) : edit(person.id, () => list()), "contact-row");
+        row.dataset.personId = person.id;
+        const copy = el("span", "contact-copy");
+        copy.append(el("strong", "person-name", displayName(person)), el("span", "contact-preview", setup ? person.relation.known ? "认识 · 未加好友" : "尚不认识 · 玩家设置" : "暂无消息 · 聊天尚未接入"));
+        row.append(avatar(person), copy, el("span", "chevron", "›"));
+        group.append(row);
+      }
+      scroll.append(group);
+    }
+    section(mode === "messages" ? "好友会话" : "已有好友", friends, false);
+    if (mode === "contacts") {
+      section("人物设置 · 仅玩家可见", pending, true);
+      scroll.append(el("p", "beauty-hint", "登记人物不代表你已认识或知道对方账号。"), button("阅读设置", () => options.reading(list)));
+    } else demoEntry(scroll);
+  }
+  function addMenu() {
+    const { scroll } = base("添加人物", list);
+    const card = button("从当前角色卡带入", () => {
+      const source = session?.snapshot.source;
+      if (!source) return;
+      editNew(newPerson({ kind: "card", name: source.name, avatarFile: source.avatarFile }, source.name));
+    });
+    card.disabled = !session?.snapshot.source;
+    scroll.append(card, button("手动创建人物", () => editNew(newPerson())), el("p", "beauty-hint", "先编辑并确认保存。角色卡标题可以改成人物名字，不改原卡；同一来源可以录入多人。"));
+    if (card.disabled) scroll.append(el("p", "beauty-hint", "当前没有单一来源角色卡，请手动创建人物。"));
+  }
+  function editNew(person) {
+    editor(person, list);
+  }
+  function edit(id, back) {
+    const person = session?.book.people.find((p) => p.id === id);
+    if (person) editor(person, back);
+  }
+  function editor(person, back) {
+    cancelPending();
+    const ticket = revision, captured = session;
+    const editor2 = editProfile(document, host, person, { active: () => active(ticket), back, save: async (draft) => {
+      if (!active(ticket)) throw new Error("资料编辑已失效");
+      const book = structuredClone(captured.book), index = book.people.findIndex((p) => p.id === draft.id);
+      if (index < 0) book.people.push(draft);
+      else book.people[index] = draft;
+      await host.save(captured, book, controller.signal);
+    } });
+    page.replaceChildren(editor2);
+  }
+  function chat(id) {
+    const person = session?.book.people.find((p) => p.id === id);
+    if (!person) return;
+    const { header, scroll } = base("会话", list);
+    header.replaceChildren(button("‹ 信息", list, "back"));
+    const name = button(displayName(person), () => edit(id, () => chat(id)), "identity profile-name");
+    name.setAttribute("aria-label", "打开联系人资料");
+    const picture = button("", () => edit(id, () => chat(id)), "profile-avatar-button");
+    picture.setAttribute("aria-label", "打开头像资料");
+    picture.dataset.topAvatar = "";
+    picture.append(avatar(person));
+    header.append(name, picture);
+    scroll.classList.add("messages");
+    scroll.append(el("p", "empty-state", "暂无消息。此联系人的聊天功能尚未接入，不会产生回复或历史记录。"));
+    const form = el("div", "composer"), input = el("textarea", "message-input");
+    input.disabled = true;
+    input.placeholder = "聊天功能尚未接入";
+    input.setAttribute("aria-label", "联系人消息输入框");
+    const send = button("发送", () => {
+    }, "send");
+    send.disabled = true;
+    form.append(input, send);
+    page.append(form);
+  }
+  function myCard() {
+    const { scroll } = base("我的名片", list), captured = session, ticket = revision;
+    const account = field("我的虚构账号", captured.book.self.account || newAccount(), 40), status = el("p", "beauty-status");
+    status.setAttribute("role", "status");
+    const save = button("保存我的名片", () => {
+      const book = structuredClone(captured.book);
+      book.self.account = account.input.value.trim();
+      try {
+        validateAccount(book.self.account, book);
+      } catch (error) {
+        status.textContent = error.message;
+        return;
+      }
+      save.disabled = true;
+      status.textContent = "正在确认存档并保存…";
+      account.input.disabled = true;
+      void host.save(captured, book, controller.signal).then(() => {
+        if (active(ticket)) status.textContent = "我的名片已保存";
+      }).catch((error) => {
+        if (active(ticket)) status.textContent = error.message;
+      }).finally(() => {
+        if (active(ticket)) {
+          save.disabled = false;
+          account.input.disabled = false;
+        }
+      });
+    });
+    scroll.append(account.label, button("生成我的虚构账号", () => {
+      account.input.value = newAccount();
+    }), el("p", "beauty-hint", "仅在本存档使用，不提供真实通讯服务。保存后账号固定；不会发出申请。"));
+    const actions = el("div", "beauty-actions");
+    actions.append(save);
+    page.append(actions, status);
+  }
+  const unsubscribe = host.subscribe(() => {
+    cancelPending();
+    session = void 0;
+    if (!page.hidden) void enter(mode);
+  });
+  return {
+    page,
+    enter,
+    leave() {
+      cancelPending();
+      page.hidden = true;
+    },
+    dispose() {
+      dead = true;
+      cancelPending();
+      unsubscribe();
+      page.remove();
+    },
+    demoProfile(back) {
+      page.hidden = false;
+      const { scroll } = base("演示人物资料", back);
+      scroll.append(el("p", "empty-state", "小桃是独立演示人物，不属于本存档通讯录；示例资料不保存。"), button("阅读设置", () => options.reading(() => this.demoProfile(back))));
+    }
+  };
+}
+
+// src/reading.ts
+var defaults2 = () => ({ version: 1, showAvatar: true, avatarSize: 36, radius: 22, fontSize: 14, lineHeight: 1.65 });
+var KEY = "yui-pocket.reading.v1";
+function normalize(raw) {
+  const next = defaults2();
+  if (raw.version !== 1) return next;
+  next.showAvatar = typeof raw.showAvatar === "boolean" ? raw.showAvatar : true;
+  for (const [key, min, max] of [["avatarSize", 24, 64], ["radius", 0, 50], ["fontSize", 12, 24], ["lineHeight", 1.2, 2.4]]) {
+    const value = raw[key];
+    if (typeof value === "number" && Number.isFinite(value)) next[key] = Math.max(min, Math.min(max, value));
+  }
+  return next;
+}
+function createReading(document, panel, back) {
+  const { el, button } = ui(document);
+  let saved = defaults2();
+  try {
+    const raw = document.defaultView.localStorage.getItem(KEY);
+    if (raw) saved = normalize(JSON.parse(raw));
+  } catch {
+  }
+  let draft = { ...saved };
+  const page = el("section", "workspace-page");
+  page.hidden = true;
+  page.setAttribute("aria-label", "阅读设置");
+  const header = el("header", "contact workspace-header");
+  header.append(button("‹ 返回", cancel, "back"), el("strong", "", "阅读设置"));
+  const scroll = el("div", "profile-scroll"), status = el("p", "reading-status");
+  status.setAttribute("role", "status");
+  const toggle = el("input");
+  toggle.type = "checkbox";
+  toggle.setAttribute("aria-label", "显示顶部头像");
+  const label = el("label", "profile-label", "显示顶部头像");
+  label.append(toggle);
+  scroll.append(label);
+  const controls = [];
+  for (const [key, name, min, max, step, unit] of [
+    ["avatarSize", "头像大小", 24, 64, 1, "px"],
+    ["radius", "头像圆角", 0, 50, 1, "%"],
+    ["fontSize", "消息字号", 12, 24, 1, "px"],
+    ["lineHeight", "消息行距", 1.2, 2.4, 0.05, "倍"]
+  ]) {
+    const label2 = el("label", "beauty-label", name), output = el("output"), input = el("input", "beauty-range");
+    input.id = `yui-reading-${key}`;
+    label2.htmlFor = input.id;
+    input.type = "range";
+    input.min = String(min);
+    input.max = String(max);
+    input.step = String(step);
+    input.setAttribute("aria-label", name);
+    input.oninput = () => {
+      draft[key] = Number(input.value);
+      output.textContent = input.value + unit;
+      apply();
+    };
+    label2.append(output, input);
+    controls.push({ key, input, output });
+    scroll.append(label2);
+  }
+  const preview = el("div", "reading-preview"), top = el("div", "contact");
+  const avatar = el("span", "profile-avatar", "预");
+  avatar.dataset.topAvatar = "";
+  top.append(el("strong", "", "阅读效果预览"), avatar);
+  preview.append(top, el("p", "reading-bubble", "这是一段阅读预览。调整字号和行距，看看是否舒服。\n只影响 Yui 内的信息气泡。"));
+  scroll.append(el("p", "beauty-hint", "圆角0%为方形，50%为圆形。恢复默认仅预览，点保存才保留。"), preview);
+  const actions = el("div", "beauty-actions");
+  actions.append(button("保存阅读设置", () => {
+    try {
+      const encoded = JSON.stringify(draft);
+      document.defaultView.localStorage.setItem(KEY, encoded);
+      if (document.defaultView.localStorage.getItem(KEY) !== encoded) throw new Error();
+      saved = { ...draft };
+      status.textContent = "阅读设置已保存到本机";
+    } catch {
+      status.textContent = "阅读设置保存失败，请检查本机存储空间";
+    }
+  }), button("取消", cancel), button("恢复阅读默认", () => {
+    draft = defaults2();
+    sync();
+    apply();
+    status.textContent = "默认效果已预览，保存后保留";
+  }));
+  page.append(header, scroll, actions, status);
+  function apply() {
+    panel.dataset.showAvatar = String(draft.showAvatar);
+    panel.style.setProperty("--reading-avatar", `${draft.avatarSize}px`);
+    panel.style.setProperty("--reading-radius", `${draft.radius}%`);
+    panel.style.setProperty("--reading-size", `${draft.fontSize}px`);
+    panel.style.setProperty("--reading-line", String(draft.lineHeight));
+  }
+  function sync() {
+    toggle.checked = draft.showAvatar;
+    controls.forEach(({ key, input, output }) => {
+      input.value = String(draft[key]);
+      output.textContent = input.value + (key === "radius" ? "%" : key === "lineHeight" ? "倍" : "px");
+    });
+  }
+  function cancel() {
+    draft = { ...saved };
+    apply();
+    back();
+  }
+  toggle.onchange = () => {
+    draft.showAvatar = toggle.checked;
+    apply();
+  };
+  apply();
+  return { page, open() {
+    draft = { ...saved };
+    sync();
+    apply();
+    page.hidden = false;
+    status.textContent = "实时预览，保存后保留";
+  }, cancelPreview() {
+    draft = { ...saved };
+    apply();
+    page.hidden = true;
+  } };
+}
+
 // src/phone.ts
 function mountPhone(document, root) {
   const shadow = root.attachShadow({ mode: "open" });
   const lifetime = createLifetime();
   const demo = createDemo();
+  const profiles = createProfileHost(document.defaultView);
   const storage = appearanceStorage(document.defaultView);
   let appearance = storage.load();
   let closePanel;
@@ -680,28 +1393,17 @@ function mountPhone(document, root) {
     beautyImage.draggable = false;
     beautyApp.append(beautyImage, element("span", "app-label", "美化"));
     dock.append(beautyApp);
+    const peopleApp = button("app-icon", "", "打开联系人");
+    peopleApp.append(element("span", "people-icon", "♧"), element("span", "app-label", "联系人"));
+    dock.insertBefore(peopleApp, beautyApp);
     homePage.append(wallpaperArt, element("div", "page-dots", "●"), dock);
-    const contactsPage = element("div", "contacts-page");
-    contactsPage.setAttribute("aria-label", "联系人列表");
-    contactsPage.hidden = true;
-    const contactsHeader = element("header", "contact contacts-header");
-    const contactsBack = button("back", "‹ 主屏", "返回主屏幕");
-    contactsHeader.append(contactsBack, element("h2", "", "信息"));
-    const contactList = element("div", "contact-list");
-    const contactRow = button("contact-row", "", "打开与小桃的聊天");
-    const contactCopy = element("span", "contact-copy");
-    const preview = element("span", "contact-preview");
-    contactCopy.append(element("strong", "", "小桃"), preview);
-    contactRow.append(element("span", "list-avatar", "桃"), contactCopy, element("span", "contact-meta", "示例"), element("span", "chevron", "›"));
-    contactList.append(contactRow);
-    contactsPage.append(contactsHeader, contactList, element("p", "contacts-footnote", "1 位虚构联系人"));
     const chatPage = element("div", "chat-page");
     chatPage.hidden = true;
     const back = button("back", "‹ 信息", "返回联系人列表");
     const header = element("header", "contact");
-    const avatar = element("div", "avatar", "桃");
-    avatar.setAttribute("aria-hidden", "true");
-    const identity = element("div", "identity");
+    const avatar = button("avatar profile-avatar", "桃", "打开演示人物头像资料");
+    avatar.dataset.topAvatar = "";
+    const identity = button("identity profile-name", "", "打开演示人物资料");
     identity.append(element("h2", "", "小桃"), element("p", "", "虚构联系人 · 示例聊天"));
     header.append(back, identity, avatar);
     const log = element("div", "messages");
@@ -745,7 +1447,27 @@ function mountPhone(document, root) {
       reset: () => storage.clear(),
       back: showHome
     });
-    screen.append(brand, notice, homePage, contactsPage, chatPage, beauty.page);
+    let readingBack = showHome;
+    const reading = createReading(document, panel, () => {
+      reading.page.hidden = true;
+      directory.page.hidden = false;
+      readingBack();
+    });
+    const directory = createDirectory(document, profiles, {
+      home: showHome,
+      demo: showMessages,
+      demoPreview: () => {
+        const latest = demo.list().at(-1);
+        return latest ? `${latest.sender === "self" ? "我：" : ""}${latest.text}` : "暂无演示消息";
+      },
+      reading: (back2) => {
+        readingBack = back2;
+        directory.leave();
+        chatPage.hidden = true;
+        reading.open();
+      }
+    });
+    screen.append(brand, notice, homePage, chatPage, beauty.page, directory.page, reading.page);
     const bottom = element("div", "shell-bottom");
     const home = button("home", "", "Home · 返回主屏幕");
     home.append(element("span", "home-square"));
@@ -757,6 +1479,7 @@ function mountPhone(document, root) {
     function closeNow(restoreFocus = true) {
       panelLife.dispose();
       beauty.dispose();
+      directory.dispose();
       panel.remove();
       closePanel = void 0;
       launcher.hidden = false;
@@ -765,25 +1488,26 @@ function mountPhone(document, root) {
     }
     closePanel = () => closeNow(false);
     function showHome() {
+      directory.leave();
+      reading.cancelPreview();
       beauty.page.hidden = true;
       chatPage.hidden = true;
-      contactsPage.hidden = true;
       homePage.hidden = false;
       messagesApp.focus({ preventScroll: true });
     }
     function showContacts() {
+      directory.leave();
+      reading.cancelPreview();
       beauty.page.hidden = true;
       homePage.hidden = true;
       chatPage.hidden = true;
-      contactsPage.hidden = false;
-      const latest = demo.list().at(-1);
-      preview.textContent = latest ? `${latest.sender === "self" ? "我：" : ""}${latest.text}` : "暂无演示消息";
-      contactRow.focus({ preventScroll: true });
+      void directory.enter("messages");
     }
     function showMessages() {
+      directory.leave();
+      reading.cancelPreview();
       beauty.page.hidden = true;
       homePage.hidden = true;
-      contactsPage.hidden = true;
       chatPage.hidden = false;
       back.focus({ preventScroll: true });
       log.scrollTop = log.scrollHeight;
@@ -791,14 +1515,25 @@ function mountPhone(document, root) {
     panelLife.listen(close, "click", () => closeNow());
     panelLife.listen(home, "click", showHome);
     panelLife.listen(back, "click", showContacts);
-    panelLife.listen(contactsBack, "click", showHome);
     panelLife.listen(messagesApp, "click", showContacts);
+    panelLife.listen(peopleApp, "click", () => {
+      homePage.hidden = chatPage.hidden = beauty.page.hidden = true;
+      reading.cancelPreview();
+      void directory.enter("contacts");
+    });
+    const showDemoProfile = () => {
+      chatPage.hidden = true;
+      directory.demoProfile(showMessages);
+    };
+    panelLife.listen(avatar, "click", showDemoProfile);
+    panelLife.listen(identity, "click", showDemoProfile);
     panelLife.listen(beautyApp, "click", () => {
-      homePage.hidden = contactsPage.hidden = chatPage.hidden = true;
+      directory.leave();
+      reading.cancelPreview();
+      homePage.hidden = chatPage.hidden = true;
       beauty.page.hidden = false;
       beauty.focus();
     });
-    panelLife.listen(contactRow, "click", showMessages);
     panelLife.listen(panel, "keydown", (event) => {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -828,6 +1563,7 @@ function mountPhone(document, root) {
     if (disposed) return;
     disposed = true;
     closePanel?.();
+    profiles.dispose();
     lifetime.dispose();
     demo.clear();
     shadow.replaceChildren();
