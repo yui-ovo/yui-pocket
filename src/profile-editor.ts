@@ -22,8 +22,9 @@ export function editProfile(document: Document, host: ProfileHost, original: Per
   function relationship(){const friend=preset.value==='friend',known=preset.value!=='stranger';knowsLabel.hidden=preset.value!=='known';draft.relation={friend,known,accountKnown:friend||(known&&knows.checked)};}
   knows.checked=draft.relation.accountKnown; preset.onchange=relationship;knows.onchange=relationship;relationship();
   scroll.append(presetLabel,knowsLabel,el('p','beauty-hint','这里只登记开局状态，不发送申请、不自动产生聊天。'));
-  const preview=el('div','profile-avatar-editor'), avatar=el('span','profile-avatar'), avatarStatus=el('p','beauty-hint');
-  preview.append(avatar,avatarStatus);scroll.append(preview);
+  const preview=el('div','profile-avatar-editor'), avatar=el('button','profile-avatar'), avatarStatus=el('p','beauty-hint','点击头像可选择本地图片');
+  avatar.type='button';avatar.setAttribute('aria-label','更换联系人头像');
+  preview.append(avatar,avatarStatus);scroll.prepend(preview);
   let revision=0, busy=false;
   const current=()=>options.active() && page.isConnected;
   function renderAvatar(){avatar.replaceChildren();avatar.textContent=name.input.value.slice(0,1)||'人';const source=host.avatar(draft);if(!source)return;
@@ -31,6 +32,7 @@ export function editProfile(document: Document, host: ProfileHost, original: Per
     image.onerror=()=>{if(!current())return;image.remove();avatarStatus.textContent='头像加载失败，已回退文字占位；可以恢复默认头像';};avatar.append(image);
   }
   const uploadLabel=el('label','profile-label','上传头像'), upload=el('input');upload.type='file';upload.accept='image/png,image/jpeg,image/webp';upload.setAttribute('aria-label','上传头像');uploadLabel.append(upload);
+  avatar.onclick=()=>upload.click();
   upload.onchange=()=>{const file=upload.files?.[0];upload.value='';if(!file)return;const ticket=++revision;busy=true;save.disabled=true;avatarStatus.textContent='正在本机处理头像…';
     void readDecoration(file,document).then(value=>{if(!current()||ticket!==revision)return;draft.avatar={kind:'upload',value};avatarStatus.textContent='头像已预览，保存资料后保留';renderAvatar();})
       .catch(error=>{if(current()&&ticket===revision)avatarStatus.textContent=String(error.message||'头像无法读取');})

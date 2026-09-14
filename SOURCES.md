@@ -112,3 +112,7 @@ SillyTavern：访问[官方仓库](https://github.com/SillyTavern/SillyTavern)�
 - [mobile-ime-surface-controller.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/compat/mobile/mobile-ime-surface-controller.js)：focus处理使用event.target而非composedPath。Yui保留Shadow DOM隔离，因此真机键盘识别不能只凭布局快照模拟声称通过；没有调用私有insets桥或改宿主DOM。
 
 ExtensionDEV 的部分历史说明与当前 Chat.md 对完整消息数组的表述不一致。本补丁以实际源码为准且不读取消息数组，不将旧说明作为消息阶段的依据。TT 模拟只覆盖上述 ABI 子集；真实安装、设备与原生文件行为仍待验证。
+
+## 2026-09-15 · 聊天布局与嫩粉方向
+
+用户提供52e10af37cf1e4fc640e486e825dbdc5.jpg用于理解顶部更多按钮、左右头像与粉白气泡的视觉方向。未复制照片中的角色素材、背景、标志或日文文案，未下载其他手机源码。使用本项目原生DOM/CSS独立实现，保留已有4S外壳和供图美化素材。新增message-view为本工程演示与明确标注的样式预览共用组件；未新增平台API、运行依赖或外部素材请求，沿用上轮核实的ST/TT接口。

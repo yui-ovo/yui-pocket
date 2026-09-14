@@ -9,6 +9,7 @@ import beautyIcon from './assets/stickers/bow.png';
 import { createProfileHost } from './profile-host';
 import { createDirectory } from './directory';
 import { createReading } from './reading';
+import { messageView } from './message-view';
 
 export function mountPhone(document: Document, root: HTMLElement): () => void {
   const shadow = root.attachShadow({ mode: 'open' });
@@ -135,12 +136,11 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     const chatPage = element('div', 'chat-page');
     chatPage.hidden = true;
     const back = button('back', '‹ 信息', '返回联系人列表');
-    const header = element('header', 'contact');
-    const avatar = button('avatar profile-avatar', '桃', '打开演示人物头像资料');
-    avatar.dataset.topAvatar = '';
+    const header = element('header', 'contact chat-header');
+    const more = button('chat-more', '⋯', '打开聊天设置');
     const identity = button('identity profile-name', '', '打开演示人物资料');
     identity.append(element('h2', '', '小桃'), element('p', '', '虚构联系人 · 示例聊天'));
-    header.append(back, identity, avatar);
+    header.append(back, identity, more);
     const log = element('div', 'messages');
     log.setAttribute('role', 'log');
     log.setAttribute('aria-label', '演示消息');
@@ -149,10 +149,9 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     log.tabIndex = 0;
     log.append(element('p', 'day-label', '一段虚构的小日常'));
     function renderMessage(message: DemoMessage) {
-      const row = element('div', `message ${message.sender}`);
-      row.dataset.messageId = message.id;
       const meta = message.sample ? `${message.sender === 'self' ? '我' : '小桃'} · 预置示例` : '我 · 仅本次演示';
-      row.append(element('span', 'message-meta', meta), element('p', 'bubble', message.text));
+      const row = messageView(document,message.sender,message.text,{name:message.sender==='self'?'我':'小桃'},meta);
+      row.dataset.messageId = message.id;
       log.append(row);
     }
     demo.list().forEach(renderMessage);
@@ -182,8 +181,10 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     const directory = createDirectory(document, profiles, {
       home: showHome, demo: showMessages,
       demoPreview: () => { const latest=demo.list().at(-1);return latest ? `${latest.sender==='self'?'我：':''}${latest.text}` : '暂无演示消息'; },
-      reading: back => { readingBack=back; directory.leave(); chatPage.hidden=true; reading.open(); },
+      reading: (back,target) => { readingBack=back; directory.leave(); chatPage.hidden=true; reading.open(target); },
+      useReading: target => reading.use(target),
     });
+    const stopProfileChanges=profiles.subscribe(()=>{if(!reading.page.hidden){reading.cancelPreview();showContacts();}});
     screen.append(brand, notice, homePage, chatPage, beauty.page, directory.page, reading.page);
     const bottom = element('div', 'shell-bottom');
     const home = button('home', '', 'Home · 返回主屏幕');
@@ -198,6 +199,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
       panelLife.dispose();
       beauty.dispose();
       directory.dispose();
+      stopProfileChanges();
       panel.remove();
       closePanel = undefined;
       launcher.hidden = false;
@@ -221,6 +223,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     }
     function showMessages() {
       directory.leave(); reading.cancelPreview();
+      reading.use();
       beauty.page.hidden = true;
       homePage.hidden = true;
       chatPage.hidden = false;
@@ -235,7 +238,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
       homePage.hidden=chatPage.hidden=beauty.page.hidden=true;reading.cancelPreview();void directory.enter('contacts');
     });
     const showDemoProfile=()=>{chatPage.hidden=true;directory.demoProfile(showMessages);};
-    panelLife.listen(avatar,'click',showDemoProfile);panelLife.listen(identity,'click',showDemoProfile);
+    panelLife.listen(more,'click',()=>{chatPage.hidden=true;directory.demoSettings(showMessages);});panelLife.listen(identity,'click',showDemoProfile);
     panelLife.listen(beautyApp, 'click', () => {
       directory.leave(); reading.cancelPreview();
       homePage.hidden = chatPage.hidden = true;

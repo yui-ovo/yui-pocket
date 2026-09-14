@@ -2,9 +2,10 @@ import { ui } from './ui';
 import { displayName, newAccount, newPerson, validateAccount, type Person } from './contacts';
 import { editProfile } from './profile-editor';
 import type { ProfileHost, ProfileSession } from './profile-host';
+import type { ReadingTarget } from './reading';
 
 export function createDirectory(document: Document, host: ProfileHost, options: {
-  home(): void; demo(): void; demoPreview(): string; reading(back: () => void): void;
+  home(): void; demo(): void; demoPreview(): string; reading(back: () => void, target?: ReadingTarget): void; useReading(target?: ReadingTarget): void;
 }) {
   const {el,button,field}=ui(document);
   const page=el('section','workspace-page contacts-page');page.hidden=true;
@@ -19,8 +20,8 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
     if(back===options.home)returnButton.setAttribute('aria-label','返回主屏幕');header.append(returnButton,el('h2','',title));
     const scroll=el('div','profile-scroll');page.append(header,scroll);return {header,scroll};
   }
-  function avatar(person:Person,top=false){
-    const wrap=el('span','profile-avatar',displayName(person).slice(0,1));if(top)wrap.dataset.topAvatar='';
+  function avatar(person:Person){
+    const wrap=el('span','profile-avatar',displayName(person).slice(0,1));
     const source=host.avatar(person);if(source&&!failedImages.has(source)){
       const image=el('img');image.alt=`${displayName(person)}的头像`;image.referrerPolicy='no-referrer';
       image.onerror=()=>{failedImages.add(source);image.remove();wrap.title='头像加载失败，已回退占位';};image.src=source;wrap.append(image);
@@ -32,7 +33,6 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
     try{session=await host.load(controller.signal);if(active(ticket))list();}
     catch(error){if(!active(ticket))return;scroll.replaceChildren(el('p','empty-state',(error as Error).message));
       if(next==='messages')demoEntry(scroll);
-      scroll.append(button('阅读设置',()=>options.reading(()=>void enter(next))));
     }
   }
   function demoEntry(scroll:HTMLElement){
@@ -60,7 +60,7 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
       }scroll.append(group);
     }
     section(mode==='messages'?'好友会话':'已有好友',friends,false);
-    if(mode==='contacts'){section('人物设置 · 仅玩家可见',pending,true);scroll.append(el('p','beauty-hint','登记人物不代表你已认识或知道对方账号。'),button('阅读设置',()=>options.reading(list)));}
+    if(mode==='contacts'){section('人物设置 · 仅玩家可见',pending,true);scroll.append(el('p','beauty-hint','登记人物不代表你已认识或知道对方账号。'));}
     else demoEntry(scroll);
   }
   function addMenu(){
@@ -85,13 +85,29 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
   }
   function chat(id:string){
     const person=session?.book.people.find(p=>p.id===id);if(!person)return;
-    const {header,scroll}=base('会话',list);header.replaceChildren(button('‹ 信息',list,'back'));
+    const {header,scroll}=base('会话',list);header.classList.add('chat-header');header.replaceChildren(button('‹ 信息',list,'back'));
     const name=button(displayName(person),()=>edit(id,()=>chat(id)),'identity profile-name');name.setAttribute('aria-label','打开联系人资料');
-    const picture=button('',()=>edit(id,()=>chat(id)),'profile-avatar-button');picture.setAttribute('aria-label','打开头像资料');picture.dataset.topAvatar='';picture.append(avatar(person));
-    header.append(name,picture);scroll.classList.add('messages');
+    const more=button('⋯',()=>chatSettings(id),'chat-more');more.setAttribute('aria-label','打开聊天设置');
+    header.append(name,more);options.useReading(readingTarget(person));scroll.classList.add('messages');
     scroll.append(el('p','empty-state','暂无消息。此联系人的聊天功能尚未接入，不会产生回复或历史记录。'));
     const form=el('div','composer'),input=el('textarea','message-input');input.disabled=true;input.placeholder='聊天功能尚未接入';input.setAttribute('aria-label','联系人消息输入框');
     const send=button('发送',()=>{},'send');send.disabled=true;form.append(input,send);page.append(form);
+  }
+  function readingTarget(person:Person):ReadingTarget {
+    const captured=session!;
+    return {key:JSON.stringify([captured.account,captured.book.id,person.id]),identity:{name:displayName(person),source:host.avatar(person)||undefined},active:()=>!dead&&session===captured};
+  }
+  function settingsView(person:Person|undefined,back:()=>void,full:()=>void,appearance:()=>void){
+    const {scroll}=base('聊天设置',back);
+    scroll.append(el('h3','section-title','联系人资料'));
+    const summary=el('div','settings-person'),copy=el('div','contact-copy');
+    copy.append(el('strong','',person?displayName(person):'小桃 · 演示'),el('span','profile-source',person?`人物名字：${person.name}\n手机备注：${person.remark||'未设置'}`:'虚构人物 · 无存档资料'));
+    summary.append(person?avatar(person):el('span','profile-avatar','桃'),copy);
+    scroll.append(summary,button('完整人物资料',full),el('h3','section-title','聊天外观'),el('p','beauty-hint','消息两侧的头像、气泡文字大小和行距。顶部更多按钮始终保留。'),button('聊天外观',appearance));
+  }
+  function chatSettings(id:string){
+    const person=session?.book.people.find(p=>p.id===id);if(!person)return;
+    settingsView(person,()=>chat(id),()=>edit(id,()=>chatSettings(id)),()=>options.reading(()=>chatSettings(id),readingTarget(person)));
   }
   function myCard(){
     const {scroll}=base('我的名片',list),captured=session!,ticket=revision;
@@ -104,6 +120,7 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
   }
   const unsubscribe=host.subscribe(()=>{cancelPending();session=undefined;if(!page.hidden)void enter(mode);});
   return {page,enter,leave(){cancelPending();page.hidden=true;},dispose(){dead=true;cancelPending();unsubscribe();page.remove();},
-    demoProfile(back:()=>void){page.hidden=false;const {scroll}=base('演示人物资料',back);scroll.append(el('p','empty-state','小桃是独立演示人物，不属于本存档通讯录；示例资料不保存。'),button('阅读设置',()=>options.reading(()=>this.demoProfile(back))));},
+    demoSettings(back:()=>void){page.hidden=false;settingsView(undefined,back,()=>this.demoProfile(()=>this.demoSettings(back)),()=>options.reading(()=>this.demoSettings(back)));},
+    demoProfile(back:()=>void){page.hidden=false;const {scroll}=base('演示人物资料',back);scroll.append(el('p','empty-state','小桃是独立演示人物，不属于本存档通讯录；示例资料不保存。'));},
   };
 }

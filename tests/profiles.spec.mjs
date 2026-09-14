@@ -36,7 +36,7 @@ test('card preview is editable, same source yields two stable identities, remark
   await page.locator('.friend-list .contact-row').click();await expect(button(page,'打开联系人资料')).toHaveText('阿棠');
   await expect(page.locator('.workspace-page:visible .empty-state')).toContainText('暂无消息');
   await expect(button(page,'发送')).toBeDisabled();
-  await button(page,'打开头像资料').click();await expect(page.getByLabel('人物名字',{exact:true})).toHaveValue('花店老板');
+  await button(page,'打开联系人资料').click();await expect(page.getByLabel('人物名字',{exact:true})).toHaveValue('花店老板');
   await page.screenshot({path:'outputs/preview-profile.png'});
   await page.getByLabel('手机备注',{exact:true}).fill('老板娘');await save(page);await list(page);
   await expect(button(page,'打开联系人资料')).toHaveText('老板娘');
@@ -131,22 +131,27 @@ test('avatar upload while switching archives cannot edit the new archive',async(
   await expect(page.locator('.friend-list .contact-row')).toHaveCount(0);
 });
 
-for(const [width,height] of [[320,568],[375,340]])test(`reading ${width}x${height}: largest text, hidden avatar, save/cancel/default leave decorations intact`,async({page})=>{
+for(const [width,height] of [[320,568],[375,340]])test(`reading ${width}x${height}: message appearance preserves navigation and decorations`,async({page})=>{
   await page.setViewportSize({width,height});await open(page);await add(page,'字号测试');await save(page);await list(page);
+  await expect(button(page,'阅读设置')).toHaveCount(0);
   await page.evaluate(()=>localStorage.setItem('yui-pocket.appearance.v1',JSON.stringify({version:1,marker:'keep'})));
-  await button(page,'阅读设置').click();await page.getByLabel('显示顶部头像').uncheck();await page.getByLabel('消息字号').fill('24');await page.getByLabel('消息行距').fill('2.4');await page.getByLabel('头像大小').fill('64');await page.getByLabel('头像圆角').fill('50');
-  await page.screenshot({path:`outputs/preview-reading-settings-${width}x${height}.png`});
-  await button(page,'保存阅读设置').click();await button(page,'取消').click();
   await button(page,'Home · 返回主屏幕').click();await button(page,'打开信息').click();await page.locator('.friend-list .contact-row').click();
-  await expect(button(page,'打开头像资料')).toBeHidden();await button(page,'打开联系人资料').click();await expect(page.getByLabel('人物名字',{exact:true})).toHaveValue('字号测试');await list(page);
+  const headerHeight=(await page.locator('.workspace-page:visible .chat-header').boundingBox()).height;
+  await button(page,'打开聊天设置').click();await button(page,'聊天外观').click();await page.getByLabel('应用范围').selectOption('all');
+  await page.getByLabel('显示消息头像').uncheck();await page.getByLabel('气泡文字大小').fill('24');await page.getByLabel('气泡文字行距').fill('2.4');await page.getByLabel('消息头像大小').fill('64');await page.getByLabel('消息头像圆角').fill('50');
+  await page.screenshot({path:`outputs/preview-reading-settings-${width}x${height}.png`});
+  await button(page,'保存聊天外观').click();await button(page,'取消').click();await button(page,'‹ 返回').click();
+  await expect(button(page,'打开聊天设置')).toBeVisible();expect((await page.locator('.workspace-page:visible .chat-header').boundingBox()).height).toBe(headerHeight);
+  await button(page,'打开联系人资料').click();await expect(page.getByLabel('人物名字',{exact:true})).toHaveValue('字号测试');await list(page);
   await button(page,'Home · 返回主屏幕').click();await button(page,'打开信息').click();await button(page,'打开与小桃的聊天').click();
-  await expect(page.locator('.bubble').first()).toHaveCSS('font-size','24px');await expect(page.locator('.bubble').first()).toHaveCSS('line-height','57.6px');
+  await expect(page.locator('.chat-page .bubble').first()).toHaveCSS('font-size','24px');await expect(page.locator('.chat-page .bubble').first()).toHaveCSS('line-height','57.6px');
+  await expect(page.locator('.chat-page .message-avatar').first()).toBeHidden();await expect(button(page,'打开聊天设置')).toBeVisible();
   await page.getByLabel('演示消息输入框').fill('大字仍能发送');await button(page,'发送').click();
   const box=await button(page,'发送').boundingBox();expect(box.y+box.height).toBeLessThanOrEqual(height);
   await page.screenshot({path:`outputs/preview-reading-${width}x${height}.png`});
-  await button(page,'打开演示人物资料').click();await button(page,'阅读设置').click();await button(page,'恢复阅读默认').click();await button(page,'取消').click();await button(page,'‹ 返回').click();
-  await expect(page.locator('.bubble').first()).toHaveCSS('font-size','24px');
+  await button(page,'打开聊天设置').click();await button(page,'聊天外观').click();await button(page,'恢复聊天外观默认').click();await button(page,'取消').click();await button(page,'‹ 返回').click();
+  await expect(page.locator('.chat-page .bubble').first()).toHaveCSS('font-size','24px');
   expect(await page.evaluate(()=>JSON.parse(localStorage.getItem('yui-pocket.appearance.v1')).marker)).toBe('keep');
   await page.reload();await button(page,'打开 Yui 演示手机').click();await button(page,'打开信息').click();await button(page,'打开与小桃的聊天').click();
-  await expect(page.locator('.bubble').first()).toHaveCSS('font-size','24px');await expect(button(page,'打开演示人物头像资料')).toBeHidden();
+  await expect(page.locator('.chat-page .bubble').first()).toHaveCSS('font-size','24px');await expect(button(page,'打开聊天设置')).toBeVisible();
 });
