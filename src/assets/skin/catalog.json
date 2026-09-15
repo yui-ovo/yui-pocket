@@ -811,6 +811,14 @@
         98
       ],
       "processing": "map original RGB luminance into charcoal palette; retain original alpha and geometry"
+    },
+    "shell-knit": {
+      "source": "generated image; 2026-09-16 built-in imagegen",
+      "size": [
+        384,
+        384
+      ],
+      "processing": "downsample soft flat scanned cable-knit print, not photorealistic yarn; Lanczos to 384px; CSS handles low-contrast theme tint"
     }
   }
 }

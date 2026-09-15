@@ -243,7 +243,7 @@ for (const [name, width, height] of [['desktop', 1280, 900], ['narrow', 375, 667
 test('Yui Dock opens contacts first; back/Home preserve draft and message preview; embedded stickers decode', async ({ page }) => {
   await page.getByRole('button', { name: '打开 Yui 演示手机' }).click();
   await expect(page.locator('.home-page')).toBeVisible();
-  expect(await page.locator(root).evaluate(node => node.shadowRoot.textContent)).not.toMatch(/ruru/i);
+  expect(await page.locator(root).evaluate(node => [...node.shadowRoot.children].filter(el=>el.tagName!=='STYLE').map(el=>el.textContent).join(' '))).not.toMatch(/ruru/i);
   const alpha = await page.locator('.strap-image').evaluate(async img => {
     await img.decode();
     const canvas = document.createElement('canvas');

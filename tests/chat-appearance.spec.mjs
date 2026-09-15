@@ -20,9 +20,9 @@ test('per-contact styles use stable identity, all overrides reset explicitly, an
   await expect(page.getByLabel('应用范围')).toHaveValue('contact');
   await expect(page.locator('.reading-preview .friend .message-avatar img')).toHaveAttribute('src',/thumbnail/);
   await expect(page.locator('.reading-preview .self .message-avatar img')).toHaveCount(0);
-  await page.getByLabel('气泡文字大小').fill('22');await b(page,'保存聊天外观').click();await returnChat(page);
-  await expect(page.locator('.phone')).toHaveCSS('--reading-size','22px');
-  await chat(page,'乙');await expect(page.locator('.phone')).toHaveCSS('--reading-size','14px');
+  await page.getByLabel('气泡上下留白').fill('1');await page.getByLabel('气泡文字大小').fill('22');await b(page,'保存聊天外观').click();await returnChat(page);
+  await expect(page.locator('.phone')).toHaveCSS('--reading-padding','1px');await expect(page.locator('.phone')).toHaveCSS('--reading-size','22px');
+  await chat(page,'乙');await expect(page.locator('.phone')).toHaveCSS('--reading-padding','4px');await expect(page.locator('.phone')).toHaveCSS('--reading-size','14px');
   await chat(page,'甲');await b(page,'打开联系人资料').click();await page.getByLabel('手机备注',{exact:true}).fill('新备注'.repeat(20));await b(page,'保存联系人').click();await expect(page.getByRole('status').filter({visible:true})).toContainText('已保存');await b(page,'取消资料修改').click();
   await expect(page.locator('.phone')).toHaveCSS('--reading-size','22px');
   await page.reload();await b(page,'打开 Yui 演示手机').click();await chat(page,'新备注');await expect(page.locator('.phone')).toHaveCSS('--reading-size','22px');

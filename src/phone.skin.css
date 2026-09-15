@@ -197,3 +197,13 @@
 :host([data-compact]) .phone .directory-root > .directory-header,:host([data-compact]) .phone .chat-header {min-height:40px;flex-basis:40px;}
 :host([data-compact]) .phone .directory-header .back,:host([data-compact]) .phone .chat-header > .back,:host([data-compact]) .phone .chat-more,:host([data-compact]) .phone .directory-header .header-more {width:30px;height:30px;min-width:30px;min-height:30px;}
 .phone[data-theme='night'] .identity h2,.phone[data-theme='night'] .back,.phone[data-theme='night'] .app-label,.phone[data-theme='night'] .wallpaper-word {text-shadow:none;}
+/* The old maximum was 27px total vertical framing. 0..9px only reduces it. */
+.phone .message .bubble,.phone .message.self .bubble {
+ min-height:0;
+ padding-top:var(--reading-padding,4px);padding-bottom:calc(var(--reading-padding,4px) + 1px);
+ border-top-width:4px;border-bottom-width:4px;
+ border-image-width:calc(8px + var(--reading-padding,4px)) 20px;
+}
+.phone {--kit-knit:asset(shell-knit);--shell-wash:#fafbfc99;background:linear-gradient(var(--shell-wash),var(--shell-wash)),var(--kit-knit) center top/170px 170px repeat;}
+.phone[data-theme='pink'] {--shell-wash:#fff4f9b0;}
+.phone[data-theme='night'] {--shell-wash:#242934ed;}

@@ -156,3 +156,8 @@ ExtensionDEV 的部分历史说明与当前 Chat.md 对完整消息数组的表�
 继续使用已获公开授权的银白素材及原淡粉气泡，不裁用本轮截图中的个人数据。深色气泡bubble-night.png由silver-white原始RGB亮度映射至炭灰色调，保留alpha和几何；catalog.json记录派生关系。顶栏框体与独立圆形按钮改用项目CSS，按用户明确要求修复原素材拉伸和残留底块；星点装饰沿用原图。发送纸飞机为本项目简单内联SVG线条图标，不加载外部代码。主题只通过Yui内部变量改变各页面和机身配色，不对整机或头像施加滤镜。主题持久化集中在appearance.ts，独立键yui-pocket.theme.v1，仅保存三个枚举值。
 
 夜间检查发现旧默认光环含白色纸底，新增halo-transparent.png：只截取已公开的lace-bandage.png底部光环区域，按近白背景生成alpha并去除白色边缘预混；不替换用户自定义图片。
+
+
+## 2026-09-16 · 平面印花针织机身（alpha.10）
+按用户参考中的低对比针织方向，使用内置imagegen生成原创材质片；用户指出首次纹理过于写实后，最终使用近白、微灰、柔糊扫描印花风格的细针织辫纹。不是参考截图裁片，没有使用截图的人物、文字或挂饰。最终源图exec-a5902e61-42b1-46c3-bccc-9a61a5f362d9.png为1254×1254，Lanczos缩为384×384存入src/assets/skin/shell-knit.png；CSS约170px重复铺设并按主题淡化。原生成文件保留在工作环境，不上传多余大图。
+最终生成提示：flat scanned print of hand-drawn cable knit, near-white matte paper, tiny softly pencilled loops and narrow vertical braids, very low contrast, slightly blurred, no physical yarn/fibres/3D relief, no vector outlines/text/objects。纹理构建时内嵌，运行时没有新增网络或模型接口。气泡仅修改CSS内边距与框体绘制宽度，继续使用既有圆角原图。

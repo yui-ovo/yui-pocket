@@ -1,14 +1,14 @@
 import { ui } from './ui';
 import { messageView, type MessageIdentity } from './message-view';
-export type Reading = { version: 1; showAvatar: boolean; avatarSize: number; radius: number; fontSize: number; lineHeight: number };
+export type Reading = { version: 1; showAvatar: boolean; avatarSize: number; radius: number; fontSize: number; lineHeight: number; bubblePadding: number };
 export type ReadingTarget = { key: string; identity: MessageIdentity; active(): boolean };
 type Settings = { version: 2; global: Reading; contacts: Record<string,Reading> };
-const defaults = (): Reading => ({ version: 1, showAvatar: true, avatarSize: 36, radius: 50, fontSize: 14, lineHeight: 1.65 });
+const defaults = (): Reading => ({ version: 1, showAvatar: true, avatarSize: 36, radius: 50, fontSize: 14, lineHeight: 1.65, bubblePadding: 4 });
 const KEY='yui-pocket.reading.v2', LEGACY='yui-pocket.reading.v1';
 function normalize(raw: Partial<Reading>): Reading {
   const next=defaults();if(!raw||raw.version!==1)return next;
   next.showAvatar=typeof raw.showAvatar==='boolean'?raw.showAvatar:true;
-  for(const [key,min,max] of [['avatarSize',24,64],['radius',0,50],['fontSize',12,24],['lineHeight',1.2,2.4]] as const){const value=raw[key];if(typeof value==='number'&&Number.isFinite(value))next[key]=Math.max(min,Math.min(max,value));}
+  for(const [key,min,max] of [['avatarSize',24,64],['radius',0,50],['fontSize',12,24],['lineHeight',1.2,2.4],['bubblePadding',0,9]] as const){const value=raw[key];if(typeof value==='number'&&Number.isFinite(value))next[key]=Math.max(min,Math.min(max,value));}
   return next;
 }
 export function createReading(document: Document,panel:HTMLElement,back:()=>void){
@@ -31,12 +31,13 @@ export function createReading(document: Document,panel:HTMLElement,back:()=>void
   const scopeLabel=el('label','profile-label','应用范围'),scope=el('select');scope.setAttribute('aria-label','应用范围');scopeLabel.append(scope);scroll.append(scopeLabel);
   const hint=el('p','beauty-hint');scroll.append(hint);
   const toggle=el('input');toggle.type='checkbox';toggle.setAttribute('aria-label','显示消息头像');const label=el('label','profile-label','显示消息头像');label.append(toggle);scroll.append(label);
-  const controls:{key:'avatarSize'|'radius'|'fontSize'|'lineHeight';input:HTMLInputElement;output:HTMLOutputElement}[]=[];
-  for(const [key,name,min,max,step] of [['avatarSize','消息头像大小',24,64,1],['radius','消息头像圆角',0,50,1],['fontSize','气泡文字大小',12,24,1],['lineHeight','气泡文字行距',1.2,2.4,.05]] as const){
+  const controls:{key:'avatarSize'|'radius'|'fontSize'|'lineHeight'|'bubblePadding';input:HTMLInputElement;output:HTMLOutputElement}[]=[];
+  for(const [key,name,min,max,step] of [['avatarSize','消息头像大小',24,64,1],['radius','消息头像圆角',0,50,1],['fontSize','气泡文字大小',12,24,1],['lineHeight','气泡文字行距',1.2,2.4,.05],['bubblePadding','气泡上下留白',0,9,1]] as const){
     const label=el('label','beauty-label',name),output=el('output'),input=el('input','beauty-range');input.id=`yui-reading-${key}`;label.htmlFor=input.id;
     input.type='range';input.min=String(min);input.max=String(max);input.step=String(step);input.setAttribute('aria-label',name);
     input.oninput=()=>{inherit=false;draft[key]=Number(input.value);sync();apply(draft);};label.append(output,input);controls.push({key,input,output});scroll.append(label);
   }
+  scroll.append(el('p','beauty-hint','上下留白只调整气泡内侧的空白，0 最紧凑，9 为原版上限；字号、行距和横向宽度不随之缩放。'));
   scroll.append(el('p','beauty-hint','圆角只作用于消息头像：0%方形，50%圆形。字号和行距只改变气泡文字；“我”为待接入名片头像的占位。'));
   function canSave(){return !page.hidden&&page.isConnected&&(!editing||editing.active());}
   function write(next:Settings){
@@ -52,7 +53,7 @@ export function createReading(document: Document,panel:HTMLElement,back:()=>void
   const follow=button('跟随所有联系人样式',()=>{if(!editing||!canSave())return;inherit=true;draft={...settings.global};sync();apply(draft);status.textContent='跟随效果已预览，点保存后保留';});scroll.append(follow);
   const actions=el('div','beauty-actions');actions.append(save,button('取消',cancel),button('恢复聊天外观默认',()=>{inherit=false;draft=defaults();sync();apply(draft);status.textContent='默认效果已预览，保存后保留';}));page.append(header,scroll,actions,status);
   function selected(target=current){return target&&settings.contacts[target.key]?settings.contacts[target.key]:settings.global;}
-  function apply(value:Reading){panel.dataset.showAvatar=String(value.showAvatar);panel.style.setProperty('--reading-avatar',`${value.avatarSize}px`);panel.style.setProperty('--reading-radius',`${value.radius}%`);panel.style.setProperty('--reading-size',`${value.fontSize}px`);panel.style.setProperty('--reading-line',String(value.lineHeight));}
+  function apply(value:Reading){panel.dataset.showAvatar=String(value.showAvatar);panel.style.setProperty('--reading-avatar',`${value.avatarSize}px`);panel.style.setProperty('--reading-radius',`${value.radius}%`);panel.style.setProperty('--reading-size',`${value.fontSize}px`);panel.style.setProperty('--reading-line',String(value.lineHeight));panel.style.setProperty('--reading-padding',`${value.bubblePadding}px`);}
   function sync(){toggle.checked=draft.showAvatar;controls.forEach(({key,input,output})=>{input.value=String(draft[key]);output.textContent=input.value+(key==='radius'?'%':key==='lineHeight'?'倍':'px');});}
   function scopeChanged(){inherit=false;draft={...(scope.value==='contact'?selected(editing):settings.global)};hint.textContent=scope.value==='contact'?'仅当前存档的此联系人；按稳定身份保存。':'保存到所有联系人将统一样式，覆盖此前的单独设置。';follow.hidden=scope.value!=='contact';sync();apply(draft);}
   function cancel(){apply(selected());back();}
