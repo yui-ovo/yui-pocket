@@ -803,6 +803,14 @@
         75
       ],
       "processing": "crop; remove printed placeholder with blank source strip"
+    },
+    "bubble-night": {
+      "derivedFrom": "silver-white",
+      "size": [
+        376,
+        98
+      ],
+      "processing": "map original RGB luminance into charcoal palette; retain original alpha and geometry"
     }
   }
 }

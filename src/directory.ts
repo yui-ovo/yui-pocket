@@ -6,7 +6,7 @@ import type { ReadingTarget } from './reading';
 import { createChatControls } from './chat-controls';
 
 export function createDirectory(document: Document, host: ProfileHost, options: {
-  home(): void; demo(): void; demoPreview(): string; reading(back: () => void, target?: ReadingTarget): void; useReading(target?: ReadingTarget): void;
+  home(): void; theme(back:()=>void): void; demo(): void; demoPreview(): string; reading(back: () => void, target?: ReadingTarget): void; useReading(target?: ReadingTarget): void;
 }) {
   const {el,button,field}=ui(document);
   const page=el('section','workspace-page contacts-page');page.hidden=true;
@@ -26,10 +26,7 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
     const title=mode==='contacts'?'通讯录':mode==='me'?'我':'信息';
     const view=base(title);page.classList.add('directory-root');
     view.header.classList.add('directory-header');
-    const more=button('⋯',()=>{
-      const {scroll}=base('页面导航',list);
-      for(const [key,label] of [['messages','信息'],['contacts','通讯录'],['me','我']] as const)scroll.append(button(label,()=>void enter(key)));
-    },'header-more');more.setAttribute('aria-label','打开页面导航');view.header.append(more);
+    const more=button('⋯',()=>options.theme(()=>void enter(mode)),'header-more');more.setAttribute('aria-label','打开主题美化');view.header.append(more);
     const nav=el('nav','directory-tabs');nav.setAttribute('aria-label','信息应用导航');
     for(const [key,label] of [['messages','信息'],['contacts','通讯录'],['me','我']] as const){
       const tab=button('',()=>{if(mode!==key)void enter(key);},'directory-tab');tab.setAttribute('aria-label',label);

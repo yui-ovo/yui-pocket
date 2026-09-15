@@ -93,3 +93,16 @@ export async function readDecoration(file: File, document: Document): Promise<st
     return result;
   } finally { URL.revokeObjectURL(url); }
 }
+
+export const THEME_KEY = 'yui-pocket.theme.v1';
+export type Theme = 'gray' | 'pink' | 'night';
+export function themeStorage(host: Window) {
+  return {
+    load(): Theme {
+      try {const raw=host.localStorage.getItem(THEME_KEY);return raw==='pink'||raw==='night'?raw:'gray';}catch{return 'gray';}
+    },
+    save(theme: Theme): boolean {
+      try {host.localStorage.setItem(THEME_KEY,theme);return host.localStorage.getItem(THEME_KEY)===theme;}catch{return false;}
+    },
+  };
+}

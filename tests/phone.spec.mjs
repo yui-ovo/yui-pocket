@@ -160,7 +160,7 @@ test('product makes zero network or chat-storage calls; only owned appearance re
       }
       for (const key of ['getItem', 'setItem', 'removeItem', 'clear']) {
         realm.Storage.prototype[key] = function(name) {
-          if (key === 'getItem' && ['yui-pocket.appearance.v1','yui-pocket.reading.v1','yui-pocket.reading.v2'].includes(name)) return null;
+          if (key === 'getItem' && ['yui-pocket.appearance.v1','yui-pocket.reading.v1','yui-pocket.reading.v2','yui-pocket.theme.v1'].includes(name)) return null;
           window.__forbidden.push('storage.' + key); throw new Error('forbidden');
         };
       }

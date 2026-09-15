@@ -4,6 +4,7 @@ import css from './phone.css';
 import skinCss from './phone.skin.css';
 import messageIcon from './assets/message-icon.jpg';
 import bandageSticker from './assets/lace-bandage.png';
+import haloCutout from './assets/halo-transparent.png';
 import { appearanceStorage, corners, imageSource } from './appearance';
 import { createBeautify } from './beautify';
 import beautyIcon from './assets/stickers/bow.png';
@@ -12,6 +13,7 @@ import { createDirectory } from './directory';
 import { createReading } from './reading';
 import { messageView } from './message-view';
 import { createChatControls } from './chat-controls';
+import { createTheme } from './theme';
 
 export function mountPhone(document: Document, root: HTMLElement): () => void {
   const shadow = root.attachShadow({ mode: 'open' });
@@ -87,7 +89,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
         const value = appearance.corners[corner], node = cornerNodes[i];
         node.replaceChildren(); node.hidden = value.image === 'none'; node.dataset.asset = value.image.startsWith('data:') ? 'custom' : value.image;
         node.style.transform = `translate(${value.offsetX}px, ${value.offsetY}px) rotate(${value.angle}deg) scale(${value.size / 100})`;
-        if (value.image === 'halo') node.append(sticker('corner-halo'));
+        if (value.image === 'halo') node.append(sticker('corner-halo',haloCutout));
         else {
           const source = imageSource(value.image);
           if (source) { const image = element('img', 'corner-image'); image.src = source; image.alt = ''; image.draggable = false; node.append(image); }
@@ -117,7 +119,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     homePage.setAttribute('aria-label', '手机主屏幕');
     const wallpaperArt = element('div', 'wallpaper-art');
     wallpaperArt.setAttribute('aria-hidden', 'true');
-    wallpaperArt.append(sticker('wallpaper-sticker'), element('span', 'wallpaper-word', 'dear little days'), element('span', 'wallpaper-sub', '♡  Yui  ♡'));
+    wallpaperArt.append(sticker('wallpaper-sticker',haloCutout), element('span', 'wallpaper-word', 'dear little days'), element('span', 'wallpaper-sub', '♡  Yui  ♡'));
     const messagesApp = button('app-icon', '', '打开信息');
     const icon = element('img', 'envelope-icon');
     icon.src = messageIcon;
@@ -163,14 +165,16 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     });
     let readingBack: () => void = showHome;
     const reading = createReading(document, panel, () => { reading.page.hidden = true; directory.page.hidden = false; readingBack(); });
+    const theme = createTheme(document,panel);
     const directory = createDirectory(document, profiles, {
       home: showHome, demo: showMessages,
+      theme: back => { directory.leave(); homePage.hidden=chatPage.hidden=true; theme.open(back); },
       demoPreview: () => { const latest=demo.list().at(-1);return latest ? `${latest.sender==='self'?'我：':''}${latest.text}` : '暂无演示消息'; },
       reading: (back,target) => { readingBack=back; directory.leave(); chatPage.hidden=true; reading.open(target); },
       useReading: target => reading.use(target),
     });
-    const stopProfileChanges=profiles.subscribe(()=>{if(!reading.page.hidden){reading.cancelPreview();showContacts();}});
-    screen.append(brand, notice, homePage, chatPage, beauty.page, directory.page, reading.page);
+    const stopProfileChanges=profiles.subscribe(()=>{if(!theme.page.hidden){theme.cancel();showContacts();}if(!reading.page.hidden){reading.cancelPreview();showContacts();}});
+    screen.append(brand, notice, homePage, chatPage, beauty.page, directory.page, reading.page, theme.page);
     const bottom = element('div', 'shell-bottom');
     const home = button('home', '', 'Home · 返回主屏幕');
     home.append(element('span', 'home-square'));
@@ -181,6 +185,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     launcher.setAttribute('aria-expanded', 'true');
 
     function closeNow(restoreFocus = true) {
+      theme.cancel();
       panelLife.dispose();
       beauty.dispose();
       directory.dispose();
@@ -193,6 +198,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     }
     closePanel = () => closeNow(false);
     function showHome() {
+      theme.cancel();
       directory.leave(); reading.cancelPreview();
       beauty.page.hidden = true;
       chatPage.hidden = true;
@@ -200,6 +206,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
       messagesApp.focus({ preventScroll: true });
     }
     function showContacts() {
+      theme.cancel();
       directory.leave(); reading.cancelPreview();
       beauty.page.hidden = true;
       homePage.hidden = true;
@@ -207,6 +214,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
       void directory.enter('messages');
     }
     function showMessages() {
+      theme.cancel();
       directory.leave(); reading.cancelPreview();
       reading.use();
       beauty.page.hidden = true;
@@ -222,6 +230,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     const showDemoProfile=()=>{chatPage.hidden=true;directory.demoProfile(showMessages);};
     panelLife.listen(more,'click',()=>{chatPage.hidden=true;directory.demoSettings(showMessages);});panelLife.listen(identity,'click',showDemoProfile);
     panelLife.listen(beautyApp, 'click', () => {
+      theme.cancel();
       directory.leave(); reading.cancelPreview();
       homePage.hidden = chatPage.hidden = true;
       beauty.page.hidden = false; beauty.focus();

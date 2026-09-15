@@ -17,7 +17,7 @@
   }
   for (const method of ['setItem', 'getItem', 'removeItem', 'clear']) {
     Storage.prototype[method] = function (key) {
-      if (method === 'getItem' && ['yui-pocket.appearance.v1','yui-pocket.reading.v1','yui-pocket.reading.v2'].includes(key)) return null;
+      if (method === 'getItem' && ['yui-pocket.appearance.v1','yui-pocket.reading.v1','yui-pocket.reading.v2','yui-pocket.theme.v1'].includes(key)) return null;
       window.calls.push(method); throw new Error('Forbidden storage');
     };
   }
@@ -40,3 +40,4 @@
 </script>
 </body>
 </html>
+

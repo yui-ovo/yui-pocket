@@ -115,3 +115,85 @@
 .beauty-button {border-color:#c3cfdc;color:#5b6f86;background:linear-gradient(#fbfdff,#dde5f0);}
 .beauty-actions {border-color:#d5dee8;}
 .workspace-header .back,.beauty-header .back {border-color:#c5cfdb;background:linear-gradient(#fff,#e2e8f0);color:#687a91;}
+/* Whole-phone palette; user avatars and lanyard/sticker images keep their colours. */
+.phone {
+ --theme-bg:#f6f8fa;--theme-surface:#fff;--theme-soft:#eef1f5;--theme-bar:#dfe5eb;--theme-ink:#566271;--theme-muted:#8692a1;--theme-line:#d5dce5;--theme-accent:#7a8fa8;--theme-sheet:#ffffffac;--theme-shell:#fafbfc;--theme-art:none;
+ --kit-pink:asset(silver-white);
+ color:var(--theme-ink);
+}
+.phone[data-theme='pink'] {
+ --theme-bg:#fff5f8;--theme-surface:#fffafb;--theme-soft:#fce7ef;--theme-bar:#f5cfdf;--theme-ink:#75535f;--theme-muted:#aa8292;--theme-line:#ebcbd8;--theme-accent:#ce8ca7;--theme-sheet:#fff5f8c9;--theme-shell:#fff8fb;
+ --kit-white:asset(silver-pink);--kit-pink:asset(silver-pink);--theme-art:sepia(.18) saturate(.8) hue-rotate(285deg);
+}
+.phone[data-theme='night'] {
+ --theme-bg:#171a21;--theme-surface:#272c36;--theme-soft:#303744;--theme-bar:#353e4c;--theme-ink:#e5eaf2;--theme-muted:#a8b4c5;--theme-line:#465163;--theme-accent:#97accb;--theme-sheet:#171a21f5;--theme-shell:#242934;
+ --kit-white:asset(bubble-night);--kit-pink:asset(bubble-night);--theme-art:invert(.8) hue-rotate(180deg) brightness(.85);
+ color-scheme:dark;
+}
+.phone {background:radial-gradient(circle at 1px 1px,var(--theme-line) .5px,transparent .8px) 0 0/7px 7px,var(--theme-shell);border-color:var(--theme-line);box-shadow:inset 0 0 0 2px var(--theme-surface),inset 0 0 0 4px var(--theme-line),0 12px 38px #0003;}
+.phone .close,.phone .home {color:var(--theme-muted);background:var(--theme-surface);border-color:var(--theme-line);}
+.phone .screen {background:var(--theme-bg);}
+.phone .brand,.phone .dock {background:linear-gradient(var(--theme-surface),var(--theme-bar));color:var(--theme-ink);text-shadow:none;}
+.phone .demo-notice {background:var(--theme-bg);color:var(--theme-muted);border-color:var(--theme-line);}
+.phone .home-page {background:linear-gradient(var(--theme-sheet),var(--theme-sheet)),var(--kit-wallpaper) center/cover;}
+.phone .wallpaper-art,.phone .app-icon {color:var(--theme-muted);}
+.phone .directory-root,.phone .chat-page,.phone .workspace-page,.phone .beautify-page {background:var(--theme-bg);color:var(--theme-ink);}
+.phone .messages,.phone .directory-root > .profile-scroll {background:linear-gradient(var(--theme-sheet),var(--theme-sheet)),var(--kit-pattern) center/230px auto repeat;}
+.phone .workspace-header,.phone .beauty-header {background:linear-gradient(var(--theme-surface),var(--theme-bar));border-color:var(--theme-line);color:var(--theme-ink);}
+.phone .directory-root > .directory-header,.phone .chat-header {
+ position:relative;display:block;min-height:47px;flex-basis:47px;padding:0;
+ background:linear-gradient(130deg,var(--theme-surface),var(--theme-bar));border:1px solid var(--theme-line);border-radius:12px;
+ box-shadow:inset 0 1px 1px var(--theme-surface);
+}
+.phone .directory-root > .directory-header::before,.phone .chat-header::before {content:'';position:absolute;right:48px;top:8px;width:22px;height:22px;opacity:.4;background:var(--kit-star) center/contain no-repeat;pointer-events:none;}
+.phone .directory-header .back,.phone .chat-header > .back,.phone .chat-more,.phone .directory-header .header-more,.phone .directory-header .back[aria-label='添加人物'] {
+ display:grid;place-items:center;position:absolute;left:7px;right:auto;top:50%;transform:translateY(-50%);
+ width:32px;height:32px;min-width:32px;min-height:32px;aspect-ratio:1;padding:0;border:1px solid var(--theme-line);border-radius:50%;
+ background:linear-gradient(140deg,var(--theme-surface),var(--theme-bar));box-shadow:inset 0 1px 1px var(--theme-surface),0 1px 2px #0001;color:var(--theme-ink);font:22px/1 Arial,sans-serif;
+}
+.phone .directory-header .back,.phone .chat-header > .back {font-size:0;}
+.phone .directory-header .back::after,.phone .chat-header > .back::after {content:'‹';font:26px/1 Arial,sans-serif;margin-top:-2px;}
+.phone .chat-more,.phone .directory-header .header-more,.phone .directory-header .back[aria-label='添加人物'] {left:auto;right:7px;}
+.phone .directory-header .back[aria-label='添加人物']::after {content:'+';font-size:23px;margin:0;}
+.phone .directory-root .directory-header h2,.phone .chat-header .identity {left:19%;width:62%;color:var(--theme-ink);}
+.phone .directory-root .contact-row,.phone .my-card-link {
+ min-height:62px;padding:9px 12px;gap:12px;border:1px solid var(--theme-line);border-image:none;border-radius:15px;background:linear-gradient(120deg,var(--theme-surface),var(--theme-bg));box-shadow:0 2px 4px #00000008;color:var(--theme-ink);
+}
+.phone .directory-root .contact-row .contact-preview {overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;}
+.phone .directory-root .contact-row .profile-avatar,.phone .directory-root .contact-row .list-avatar {width:34px;height:34px;flex-basis:34px;background:var(--theme-soft);color:var(--theme-muted);}
+.phone .directory-root .contact-row .profile-avatar::after,.phone .directory-root .contact-row .list-avatar::after {filter:var(--theme-art);}
+.phone .directory-tabs,.phone .chat-controls {background:var(--theme-soft);border:0;border-image:none;}
+.phone .directory-tabs {border-top:1px solid var(--theme-line);}
+.phone .directory-tab,.phone .directory-tab[aria-current='page'] {color:var(--theme-ink);}
+.phone .directory-tab[aria-current='page'] {background:var(--theme-bar);}
+.phone .tab-art,.phone .composer-tool,.phone .chat-tool .tool-symbol,.phone .self-card-avatar {filter:var(--theme-art);}
+.phone .chat-tools {scrollbar-color:var(--theme-line) transparent;}
+.phone .chat-tool {color:var(--theme-ink);background:var(--theme-surface);border-color:var(--theme-line);}
+.phone .chat-tool small,.phone .chat-controls .status {color:var(--theme-muted);}
+.phone .chat-controls .composer {background:linear-gradient(var(--theme-surface),var(--theme-soft));border:1px solid var(--theme-line);border-image:none;border-radius:12px;}
+.phone .chat-controls .message-input,.phone .directory-search {background:var(--theme-surface);border:1px solid var(--theme-line);border-radius:18px;color:var(--theme-ink);box-shadow:inset 0 1px 3px #0001;}
+.phone .directory-search {padding:5px 14px;height:35px;}
+.phone .directory-search input,.phone .profile-label input,.phone .profile-label select,.phone .beauty-select {color:var(--theme-ink);background:var(--theme-surface);border-color:var(--theme-line);}
+.phone input::placeholder,.phone .chat-controls .message-input::placeholder,.phone .directory-search input::placeholder {color:var(--theme-muted);}
+.phone .chat-controls .send,.phone .chat-controls .send:disabled {background:linear-gradient(var(--theme-surface),var(--theme-bar));color:var(--theme-accent);border-color:var(--theme-line);}
+.phone .send svg {width:18px;height:18px;display:block;}
+.phone .message .bubble,.phone .message.self .bubble {color:var(--theme-ink);}
+.phone .message-avatar,.phone .profile-avatar {color:var(--theme-ink);background:var(--theme-soft);border-color:var(--theme-line);box-shadow:inset 0 0 0 2px var(--theme-surface);}
+.phone .message-meta,.phone .message-time,.phone .profile-source,.phone .section-title,.phone .beauty-status,.phone .beauty-label,.phone .beauty-hint,.phone .directory-caption,.phone .directory-root .section-title,.phone .directory-root .contact-preview,.phone .directory-root .empty-state,.phone .me-kicker {color:var(--theme-muted);}
+.phone .day-label,.phone .beauty-button,.phone .workspace-header .back,.phone .beauty-header .back {color:var(--theme-ink);background:linear-gradient(var(--theme-surface),var(--theme-soft));border-color:var(--theme-line);box-shadow:none;}
+.phone .day-label {border:1px solid var(--theme-line);}
+.phone .reading-preview {background:var(--theme-bg);border-color:var(--theme-line);}
+.phone .chat-controls .status {background:var(--theme-bg);}
+.phone .beauty-actions,.phone .people-setup {border-color:var(--theme-line);}
+.phone .beauty-range,.phone .profile-label input[type='checkbox'] {accent-color:var(--theme-accent);}
+.phone .profile-scroll,.phone .beauty-scroll,.phone .messages {scrollbar-color:var(--theme-line) var(--theme-bg);}
+.phone .messages::-webkit-scrollbar-thumb,.phone .profile-scroll::-webkit-scrollbar-thumb {background:var(--theme-line);}
+.theme-choices {display:grid;gap:12px;margin:14px 0;}
+.theme-choice {display:grid;grid-template-columns:42px 1fr;gap:2px 12px;text-align:left;align-items:center;padding:12px;border:1px solid var(--theme-line);border-radius:14px;background:var(--theme-surface);color:var(--theme-ink);}
+.theme-choice small {grid-column:2;color:var(--theme-muted);}.theme-choice[aria-pressed='true'] {outline:2px solid var(--theme-accent);outline-offset:1px;}
+.theme-swatch {grid-row:span 2;width:40px;height:40px;border-radius:50%;border:1px solid #b9c2cf;background:linear-gradient(135deg,#fff,#cfd7e1);}
+[data-theme-choice='pink'] .theme-swatch {background:linear-gradient(135deg,#fff5f9,#f3c4d7);}[data-theme-choice='night'] .theme-swatch {background:linear-gradient(135deg,#454f60,#161922);}
+.theme-status {font-size:10px;text-align:center;margin:0;padding:6px;color:var(--theme-muted);}
+:host([data-compact]) .phone .directory-root > .directory-header,:host([data-compact]) .phone .chat-header {min-height:40px;flex-basis:40px;}
+:host([data-compact]) .phone .directory-header .back,:host([data-compact]) .phone .chat-header > .back,:host([data-compact]) .phone .chat-more,:host([data-compact]) .phone .directory-header .header-more {width:30px;height:30px;min-width:30px;min-height:30px;}
+.phone[data-theme='night'] .identity h2,.phone[data-theme='night'] .back,.phone[data-theme='night'] .app-label,.phone[data-theme='night'] .wallpaper-word {text-shadow:none;}

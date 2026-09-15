@@ -25,7 +25,9 @@ export function createChatControls(document: Document, demo: boolean) {
   input.placeholder = demo ? '写一条小消息…' : '聊天尚未接入';input.disabled = !demo;
   input.setAttribute('aria-label', demo ? '演示消息输入框' : '联系人消息输入框');
   input.setAttribute('enterkeyhint', 'enter');
-  const send = el('button', 'send', '↑');send.type = 'submit';send.disabled = true;
+  const send = el('button', 'send');
+  const plane=document.createElementNS('http://www.w3.org/2000/svg','svg');plane.setAttribute('viewBox','0 0 24 24');plane.setAttribute('aria-hidden','true');
+  const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('d','M3 10.5 21 3l-7.5 18-3-7.5L3 10.5Zm7.5 3L21 3');path.setAttribute('fill','none');path.setAttribute('stroke','currentColor');path.setAttribute('stroke-width','1.6');path.setAttribute('stroke-linejoin','round');plane.append(path);send.append(plane);send.type = 'submit';send.disabled = true;
   send.setAttribute('aria-label', '发送');send.title = demo ? '发送到本次演示' : '聊天尚未接入';
   form.append(pending('mic-symbol', '语音', 'composer-tool'), input,
     pending('smile-symbol', '表情', 'composer-tool'), pending('＋', '更多工具', 'composer-tool'), send);
