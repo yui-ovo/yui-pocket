@@ -139,9 +139,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     const more = button('chat-more', '⋯', '打开聊天设置');
     const identity = button('identity profile-name', '', '打开演示人物资料');
     identity.append(element('h2', '', '小桃'), element('p', '', '虚构联系人 · 示例聊天'));
-    const search = button('header-search', '', '聊天搜索（待接入）');
-    search.disabled = true; search.title = '聊天搜索尚未接入';
-    header.append(back, identity, search, more);
+    header.append(back, identity, more);
     const log = element('div', 'messages');
     log.setAttribute('role', 'log');
     log.setAttribute('aria-label', '演示消息');

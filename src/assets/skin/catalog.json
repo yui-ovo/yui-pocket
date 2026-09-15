@@ -1,7 +1,9 @@
 {
   "sources": [
     "codex-clipboard-2336e7e0-0c61-46d8-b730-b6caf71f0ae0.png",
-    "codex-clipboard-e0ee8dc9-6fd6-4636-88c7-bf00835750b9.png"
+    "codex-clipboard-e0ee8dc9-6fd6-4636-88c7-bf00835750b9.png",
+    "codex-clipboard-b2242b1e-b5b0-422b-bdcb-7e9d4b7f6309.png",
+    "codex-clipboard-20912177-75e2-4c24-87c3-f1703a6636ad.png"
   ],
   "assets": {
     "header": {
@@ -521,6 +523,286 @@
         144
       ],
       "processing": "original centred crest header; only Messages lettering replaced with adjacent original blank pink strip for live contact name"
+    },
+    "silver-header": {
+      "source": 3,
+      "box": [
+        27,
+        125,
+        1136,
+        250
+      ],
+      "size": [
+        1109,
+        125
+      ],
+      "processing": "crop; replace centre heart/symbols with blank source strip for live title"
+    },
+    "silver-row": {
+      "source": 3,
+      "box": [
+        27,
+        367,
+        676,
+        507
+      ],
+      "size": [
+        649,
+        140
+      ],
+      "processing": "crop; clear sample portrait/text/status with same-row blank strip"
+    },
+    "silver-white": {
+      "source": 2,
+      "box": [
+        160,
+        258,
+        537,
+        356
+      ],
+      "size": [
+        376,
+        98
+      ],
+      "processing": "crop; clear printed message using blank source strip; mirror clean upper contour to remove tails; fixed star overlay; mirror clean left corner to remove residual right decorations"
+    },
+    "silver-pink": {
+      "source": 2,
+      "box": [
+        695,
+        258,
+        1004,
+        356
+      ],
+      "size": [
+        309,
+        98
+      ],
+      "processing": "crop; clear printed message using blank source strip; mirror clean upper contour to remove tails; fixed star overlay"
+    },
+    "silver-frame": {
+      "source": 3,
+      "box": [
+        690,
+        319,
+        836,
+        470
+      ],
+      "size": [
+        146,
+        151
+      ],
+      "processing": "crop; preserve supplied alpha"
+    },
+    "silver-heart": {
+      "source": 3,
+      "box": [
+        697,
+        497,
+        804,
+        597
+      ],
+      "size": [
+        107,
+        100
+      ],
+      "processing": "crop; preserve supplied alpha"
+    },
+    "silver-star": {
+      "source": 3,
+      "box": [
+        778,
+        851,
+        862,
+        939
+      ],
+      "size": [
+        84,
+        88
+      ],
+      "processing": "crop; preserve supplied alpha"
+    },
+    "silver-search": {
+      "source": 3,
+      "box": [
+        28,
+        253,
+        678,
+        350
+      ],
+      "size": [
+        650,
+        97
+      ],
+      "processing": "crop; preserve supplied alpha"
+    },
+    "silver-pattern": {
+      "source": 3,
+      "box": [
+        40,
+        1078,
+        378,
+        1320
+      ],
+      "size": [
+        338,
+        242
+      ],
+      "processing": "crop; preserve supplied alpha"
+    },
+    "silver-wallpaper": {
+      "source": 3,
+      "box": [
+        411,
+        1077,
+        748,
+        1320
+      ],
+      "size": [
+        337,
+        243
+      ],
+      "processing": "crop; preserve supplied alpha"
+    },
+    "silver-mic": {
+      "source": 2,
+      "box": [
+        1017,
+        996,
+        1097,
+        1080
+      ],
+      "size": [
+        80,
+        84
+      ],
+      "processing": "crop; preserve supplied alpha; antialiased circular clipping removes panel corners"
+    },
+    "silver-smile": {
+      "source": 2,
+      "box": [
+        710,
+        996,
+        794,
+        1080
+      ],
+      "size": [
+        84,
+        84
+      ],
+      "processing": "crop; preserve supplied alpha; antialiased circular clipping removes panel corners"
+    },
+    "silver-plus": {
+      "source": 2,
+      "box": [
+        48,
+        997,
+        134,
+        1081
+      ],
+      "size": [
+        86,
+        84
+      ],
+      "processing": "crop; preserve supplied alpha; antialiased circular clipping removes panel corners"
+    },
+    "silver-photo": {
+      "source": 2,
+      "box": [
+        811,
+        996,
+        895,
+        1080
+      ],
+      "size": [
+        84,
+        84
+      ],
+      "processing": "crop; preserve supplied alpha; antialiased circular clipping removes panel corners"
+    },
+    "silver-camera": {
+      "source": 2,
+      "box": [
+        912,
+        996,
+        996,
+        1080
+      ],
+      "size": [
+        84,
+        84
+      ],
+      "processing": "crop; preserve supplied alpha; antialiased circular clipping removes panel corners"
+    },
+    "silver-messages": {
+      "source": 3,
+      "box": [
+        244,
+        961,
+        331,
+        1046
+      ],
+      "size": [
+        87,
+        85
+      ],
+      "processing": "crop; preserve supplied alpha; antialiased circular clipping removes panel corners; replace sample status dot with mirrored clean top rim"
+    },
+    "silver-contacts": {
+      "source": 3,
+      "box": [
+        408,
+        960,
+        493,
+        1045
+      ],
+      "size": [
+        85,
+        85
+      ],
+      "processing": "crop; preserve supplied alpha; antialiased circular clipping removes panel corners"
+    },
+    "silver-me": {
+      "source": 2,
+      "box": [
+        487,
+        1142,
+        575,
+        1225
+      ],
+      "size": [
+        88,
+        83
+      ],
+      "processing": "crop; preserve supplied alpha; antialiased circular clipping removes panel corners"
+    },
+    "silver-composer": {
+      "source": 2,
+      "box": [
+        23,
+        978,
+        1126,
+        1096
+      ],
+      "size": [
+        1103,
+        118
+      ],
+      "processing": "crop; blank supplied panel strip, real controls rendered separately"
+    },
+    "silver-input": {
+      "source": 2,
+      "box": [
+        154,
+        998,
+        679,
+        1073
+      ],
+      "size": [
+        525,
+        75
+      ],
+      "processing": "crop; remove printed placeholder with blank source strip"
     }
   }
 }
