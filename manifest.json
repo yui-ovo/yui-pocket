@@ -6,7 +6,7 @@
   "dependencies": [],
   "js": "extension.js",
   "author": "yui-ovo",
-  "version": "0.2.0-alpha.10",
+  "version": "0.2.0-alpha.11",
   "homePage": "https://github.com/yui-ovo/yui-pocket",
   "auto_update": false,
   "hooks": {

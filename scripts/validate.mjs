@@ -18,11 +18,11 @@ export function validateScript(data) {
   const executable = data.content.replaceAll('http://www.w3.org/2000/svg', '').replace(/url\(#rp-[a-z-]+\)/g, '')
     .replace(/url\(\\?"data:image\/png;base64,[A-Za-z0-9+/=]+\\?"\)/g, 'embeddedPng');
   assert.doesNotMatch(executable, /asset\(/);
-  // v0.2 step 1 permits exactly the verified same-origin identity GET in profile-host.
+  // Own HTTP is limited to identity GET; worldbooks use the verified host read facade.
   const limited = executable.replace('host.fetch("/api/users/me",', 'host.identityRequest(').replace(/\bnew URL\(/g, 'parseUrl(');
   assert.doesNotMatch(limited, /\b(?:fetch|XMLHttpRequest|WebSocket|EventSource|sendBeacon|importScripts|eval)\s*\(|\bimport\s*(?:\(|["'])|https?:\/\/|@import|\burl\s*\((?!#rp-)/i);
   assert.doesNotMatch(data.content, /\b(?:sessionStorage|indexedDB|TavernHelper)\b/);
-  assert.doesNotMatch(data.content, /\.(?:saveChat|saveMetadata|saveSettingsDebounced|generate|setChatMessages)\s*\(/);
+  assert.doesNotMatch(data.content, /\.(?:saveChat|saveMetadata|saveSettingsDebounced|generate|setChatMessages|saveWorldInfo|getWorldInfoPrompt|updateWorldInfoList|executeSlashCommands)\s*\(/);
   assert.match(data.content, /yui-pocket\.appearance\.v1/);
   assert.doesNotMatch(data.content, /innerHTML|outerHTML|insertAdjacentHTML|document\.write|setInterval|setTimeout/);
   return data;

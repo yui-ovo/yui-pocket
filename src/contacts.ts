@@ -1,7 +1,9 @@
+import { validateMaterials, type WorldMaterial } from './worldbook';
 /** Yui profile data only: no host messages, rendered HTML or model context. */
 export type Person = {
   id: string;
-  source: { kind: 'card' | 'manual'; name: string; avatarFile?: string };
+  source: { kind: 'card' | 'manual' | 'worldbook'; name: string; avatarFile?: string };
+  roleplayMaterials?: WorldMaterial[];
   name: string; remark: string; description: string;
   avatar: { kind: 'default' | 'upload' | 'url'; value: string };
   relation: { known: boolean; accountKnown: boolean; friend: boolean };
@@ -28,7 +30,8 @@ export function validateBook(book: AddressBook) {
   for (const person of book.people) {
     if (!person.id || ids.has(person.id) || !person.name?.trim() || person.name.length > 80 || person.remark.length > 80 || person.description.length > 1000) throw new Error('人物资料无效或超长');
     ids.add(person.id);
-    if (!['card','manual'].includes(person.source.kind) || typeof person.source.name !== 'string') throw new Error('人物来源无效');
+    if (!['card','manual','worldbook'].includes(person.source.kind) || typeof person.source.name !== 'string') throw new Error('人物来源无效');
+    if (person.roleplayMaterials !== undefined) validateMaterials(person.roleplayMaterials);
     const rel = person.relation;
     if (![rel.known,rel.accountKnown,rel.friend].every(x => typeof x === 'boolean') || (rel.friend && (!rel.known || !rel.accountKnown)) || (!rel.known && rel.accountKnown)) throw new Error('关系设置不一致');
     const avatar = person.avatar;

@@ -4,6 +4,7 @@ import { editProfile } from './profile-editor';
 import type { ProfileHost, ProfileSession } from './profile-host';
 import type { ReadingTarget } from './reading';
 import { createChatControls } from './chat-controls';
+import { worldbookPicker } from './worldbook-picker';
 
 export function createDirectory(document: Document, host: ProfileHost, options: {
   home(): void; theme(back:()=>void): void; demo(): void; demoPreview(): string; reading(back: () => void, target?: ReadingTarget): void; useReading(target?: ReadingTarget): void;
@@ -101,6 +102,10 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
       editNew(newPerson({kind:'card',name:source.name,avatarFile:source.avatarFile},source.name));
     });card.disabled=!session?.snapshot.source;
     scroll.append(card,button('手动创建人物',()=>editNew(newPerson())),el('p','beauty-hint','先编辑并确认保存。角色卡标题可以改成人物名字，不改原卡；同一来源可以录入多人。'));
+    scroll.append(button('从世界书选择',()=>{
+      if(!session)return;cancelPending();const ticket=revision;
+      page.replaceChildren(worldbookPicker(document,host,session,{signal:controller.signal,active:()=>active(ticket),back:addMenu,edit:editNew}));
+    }));
     if(card.disabled)scroll.append(el('p','beauty-hint','当前没有单一来源角色卡，请手动创建人物。'));
   }
   function editNew(person:Person){editor(person,list);}

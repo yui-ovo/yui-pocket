@@ -278,3 +278,8 @@ button:focus-visible, textarea:focus-visible, [tabindex]:focus-visible { outline
 :host([data-compact]) .chat-tools { padding-block: 3px; }
 :host([data-compact]) .chat-tool { height: 26px; }
 :host([data-compact]) .chat-controls .message-input { height: 32px; padding-block: 6px; }
+/* Only the new worldbook selection and material-preview controls. */
+.world-original { white-space:pre-wrap; overflow-wrap:anywhere; font:inherit; max-height:220px; overflow:auto; }
+.worldbook-picker textarea,.world-materials textarea { box-sizing:border-box; width:100%; min-width:0; resize:vertical; font:inherit; color:inherit; background:transparent; }
+.world-entry { padding:8px 0; overflow-wrap:anywhere; }
+.world-materials .profile-source { overflow-wrap:anywhere; }

@@ -1,11 +1,14 @@
 import { newBook, validateBook, type AddressBook, type Person } from './contacts';
 import { ttHost, ttStore, sameStoredJson, type TTStore } from './tt-host';
+import { normalizeWorld } from './worldbook';
 
 // Verified subset of SillyTavern 1.18.0 getContext; indices are used only to read the selected card.
 type Context = {
   characterId?: string | number; groupId?: string | number; chatId?: string;
-  characters: Record<string, { name: string; avatar: string }>;
-  chatMetadata?: { integrity?: string };
+  characters: Record<string, { name: string; avatar: string; data?: {extensions?: {world?: string}} }>;
+  chatMetadata?: { integrity?: string; world_info?: string };
+  getWorldInfoNames?(): string[];
+  loadWorldInfo?(name: string): Promise<unknown>;
   getRequestHeaders(): Record<string,string>;
   getThumbnailUrl(type: string, file: string): string;
   eventTypes: Record<string,string>;
@@ -93,6 +96,28 @@ export function createProfileHost(host: Window) {
     });
   }
   return {
+    worldBooks(session: ProfileSession, signal: AbortSignal) {
+      ensure(session,generation,signal);
+      const ctx=context()!;
+      if(typeof ctx.getWorldInfoNames!=='function'||typeof ctx.loadWorldInfo!=='function') throw new Error(`${ttHost(host)?'TT':'ST'} 宿主能力暂不支持世界书选择，请更新宿主；已有联系人不受影响`);
+      const names=ctx.getWorldInfoNames();
+      if(!Array.isArray(names)||!names.every(n=>typeof n==='string'&&!!n))throw new Error('世界书目录读取失败');
+      const card=!ctx.groupId?ctx.characters[String(ctx.characterId)]?.data?.extensions?.world:undefined;
+      const chat=ctx.chatMetadata?.world_info;
+      const bound=[...new Set([card,chat].filter((n):n is string=>typeof n==='string'&&!!n))];
+      return {bound:bound.map(name=>({name,origin:[name===card?'当前角色卡主绑定':'',name===chat?'当前聊天绑定':''].filter(Boolean).join(' / ')})),other:[...new Set(names)].filter(n=>!bound.includes(n))};
+    },
+    async readWorld(session:ProfileSession,name:string,signal:AbortSignal){
+      const epoch=generation;ensure(session,epoch,signal);
+      const ctx=context()!;
+      // Both hosts export this read-only facade. TT owns its native interception;
+      // Yui does not issue ST HTTP requests or use TT activation/scan APIs.
+      if(typeof ctx.loadWorldInfo!=='function'||typeof ctx.getWorldInfoNames!=='function')throw new Error('宿主能力暂不支持世界书读取');
+      if(!ctx.getWorldInfoNames().includes(name))throw new Error('世界书读取失败：目录中已找不到此书，请检查绑定或重新打开选择器');
+      const data=await ctx.loadWorldInfo(name);ensure(session,epoch,signal);
+      if(!data)throw new Error('世界书读取失败，请重试；未改变已有联系人');
+      const entries=await normalizeWorld(name,data);ensure(session,epoch,signal);return entries;
+    },
     valid: () => !!snapshot(),
     subscribe(fn: () => void) { subscribers.add(fn); return () => subscribers.delete(fn); },
     async load(signal: AbortSignal): Promise<ProfileSession> {

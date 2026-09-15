@@ -46,7 +46,8 @@ test('persistence and host access stay within the authorized adapters', async ()
   for (const path of Object.keys(meta.inputs).filter(p => p.endsWith('.ts'))) {
     const code = await readFile(path, 'utf8');
     if (!['src/appearance.ts','src/profile-host.ts','src/reading.ts'].includes(path)) assert.doesNotMatch(code, /localStorage/);
-    if (path !== 'src/profile-host.ts') assert.doesNotMatch(code, /SillyTavern|\.fetch\(/);
+    if (path !== 'src/profile-host.ts') assert.doesNotMatch(code, /SillyTavern|\.fetch\(|\.loadWorldInfo\(|\.getWorldInfoNames\(/);
+    assert.doesNotMatch(code, /\.(?:saveWorldInfo|getWorldInfoPrompt|updateWorldInfoList|executeSlashCommands)\s*\(/);
     assert.doesNotMatch(code, /localStorage\.clear\(/);
   }
   const code = await readFile('src/appearance.ts', 'utf8');

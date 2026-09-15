@@ -161,3 +161,13 @@ ExtensionDEV 的部分历史说明与当前 Chat.md 对完整消息数组的表�
 ## 2026-09-16 · 平面印花针织机身（alpha.10）
 按用户参考中的低对比针织方向，使用内置imagegen生成原创材质片；用户指出首次纹理过于写实后，最终使用近白、微灰、柔糊扫描印花风格的细针织辫纹。不是参考截图裁片，没有使用截图的人物、文字或挂饰。最终源图exec-a5902e61-42b1-46c3-bccc-9a61a5f362d9.png为1254×1254，Lanczos缩为384×384存入src/assets/skin/shell-knit.png；CSS约170px重复铺设并按主题淡化。原生成文件保留在工作环境，不上传多余大图。
 最终生成提示：flat scanned print of hand-drawn cable knit, near-white matte paper, tiny softly pencilled loops and narrow vertical braids, very low contrast, slightly blurred, no physical yarn/fibres/3D relief, no vector outlines/text/objects。纹理构建时内嵌，运行时没有新增网络或模型接口。气泡仅修改CSS内边距与框体绘制宽度，继续使用既有圆角原图。
+
+## 2026-09-16 · 世界书只读选择（alpha.11）
+
+沿用并实际下载阅读固定版本，未运行真实宿主，也未读取其他小手机代码。
+
+- ST 1.18.0，commit 8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8：[st-context.js](https://github.com/SillyTavern/SillyTavern/blob/8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8/public/scripts/st-context.js) 导出getWorldInfoNames和loadWorldInfo；[world-info.js](https://github.com/SillyTavern/SillyTavern/blob/8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8/public/scripts/world-info.js) 2036行读取所选书，1128行主绑定data.extensions.world，METADATA_KEY为world_info，条目使用uid/comment/key/keysecondary/content。额外charLore并未暴露于context，本轮由其他世界书明确选择。
+- ST [worldinfo.js](https://github.com/SillyTavern/SillyTavern/blob/8172dcd0ee672d3cd9a5e5f7af134f91a45cd2b8/src/endpoints/worldinfo.js) get只读所选文件，但缺失文件返回entries空对象。没有调用list（它会读取每本书文件）、settings/get、saveWorldInfo、updateWorldInfoList、getWorldInfoPrompt或Slash命令。
+- TT 2.2.0，commit 9693a4ec47cd4552f90878bccab453f176de0f18：[st-context.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/scripts/st-context.js) 283/289行分别导出TT自己的loadWorldInfo/getWorldInfoNames；[world-info.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/scripts/world-info.js) 2236行只读单书与缓存/在途去重；[worldinfo-routes.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/routes/worldinfo-routes.js) get路由调用本机broker，未找到也返回空entries。Yui只调用TT导出的读取函数，不自行拼HTTP、invoke或使用批量预载。
+- TT [WorldInfo API文档](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/docs/API/WorldInfo.md) 和 [实现](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/api/world-info.js) 仅提供激活查询、订阅、openEntry，不提供全文读取；故未使用或虚构此API的读取能力。
+- 指纹由所选条目原始JSON的SHA-256计算，只保存指纹和经用户确认的文本，不复制整本书。fingerprint是原条目版本证据，不等于用户编辑文本摘要；同内容不同JSON字段顺序也可能产生新指纹，本轮不自动比较/合并。
