@@ -1,12 +1,13 @@
 import { build } from 'esbuild';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { validateScript } from './validate.mjs';
+import { skinCss } from './skin-css.mjs';
 
 const result = await build({
   entryPoints: ['src/index.ts'], bundle: true, write: false,
   format: 'iife', platform: 'browser', target: ['es2022'],
   loader: { '.css': 'text', '.jpg': 'dataurl', '.png': 'dataurl' }, charset: 'utf8', legalComments: 'none',
-  minify: false, metafile: true,
+  minify: false, metafile: true, plugins: [skinCss],
 });
 const content = result.outputFiles[0].text;
 const script = validateScript({
@@ -26,7 +27,7 @@ const extension = await build({
   entryPoints: ['src/extension.ts'], bundle: true, write: false,
   format: 'esm', platform: 'browser', target: ['es2022'],
   loader: { '.css': 'text', '.jpg': 'dataurl', '.png': 'dataurl' }, charset: 'utf8', legalComments: 'none',
-  minify: false, metafile: true,
+  minify: false, metafile: true, plugins: [skinCss],
 });
 // Apply the same no-network/no-storage guards to both delivery formats.
 validateScript({ ...script, content: extension.outputFiles[0].text });

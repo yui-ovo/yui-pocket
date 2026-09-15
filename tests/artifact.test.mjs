@@ -15,6 +15,8 @@ test('validator rejects missing or invented fields', async () => {
   assert.throws(() => validateScript({ ...data, type: 'extension' }));
   assert.throws(() => validateScript({ ...data, content: undefined }));
   assert.throws(() => validateScript({ ...data, remote_url: 'bad' }));
+  assert.throws(() => validateScript({ ...data, content: data.content + '\n/* background: url("https://image.test/a.png") */' }));
+  assert.throws(() => validateScript({ ...data, content: data.content + '\n/* background: url("data:image/svg+xml;abc") */' }));
 });
 test('build graph has only local runtime sources', async () => {
   const meta = JSON.parse(await readFile('work/build-meta.json', 'utf8'));

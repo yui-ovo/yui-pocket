@@ -27,8 +27,8 @@ export function createChatControls(document: Document, demo: boolean) {
   input.setAttribute('enterkeyhint', 'enter');
   const send = el('button', 'send', '↑');send.type = 'submit';send.disabled = true;
   send.setAttribute('aria-label', '发送');send.title = demo ? '发送到本次演示' : '聊天尚未接入';
-  form.append(pending('camera-symbol', '拍照', 'composer-tool'), input,
-    pending('photo-symbol', '相册', 'composer-tool'), pending('＋', '更多工具', 'composer-tool'), send);
+  form.append(pending('mic-symbol', '语音', 'composer-tool'), input,
+    pending('smile-symbol', '表情', 'composer-tool'), pending('＋', '更多工具', 'composer-tool'), send);
   // Also prevent the disabled real-contact composer from ever submitting a page.
   if (!demo) form.onsubmit = event => event.preventDefault();
   container.append(tools, form, status);

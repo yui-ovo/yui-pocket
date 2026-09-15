@@ -1,6 +1,7 @@
 import { createDemo, type DemoMessage } from './demo';
 import { createLifetime } from './lifetime';
 import css from './phone.css';
+import skinCss from './phone.skin.css';
 import messageIcon from './assets/message-icon.jpg';
 import bandageSticker from './assets/lace-bandage.png';
 import { appearanceStorage, corners, imageSource } from './appearance';
@@ -45,7 +46,7 @@ export function mountPhone(document: Document, root: HTMLElement): () => void {
     return wrapper;
   }
   const style = element('style', '');
-  style.textContent = css;
+  style.textContent = css + skinCss;
   const launcher = button('launcher', '', '打开 Yui 演示手机');
   launcher.title = 'Yui · 演示手机';
   launcher.setAttribute('aria-expanded', 'false');

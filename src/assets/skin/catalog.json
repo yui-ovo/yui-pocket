@@ -1,0 +1,512 @@
+{
+  "sources": [
+    "codex-clipboard-2336e7e0-0c61-46d8-b730-b6caf71f0ae0.png",
+    "codex-clipboard-e0ee8dc9-6fd6-4636-88c7-bf00835750b9.png"
+  ],
+  "assets": {
+    "header": {
+      "source": 0,
+      "box": [
+        20,
+        37,
+        738,
+        177
+      ],
+      "size": [
+        718,
+        140
+      ],
+      "processing": "crop; original alpha retained"
+    },
+    "bubble-white": {
+      "source": 0,
+      "box": [
+        23,
+        183,
+        389,
+        283
+      ],
+      "size": [
+        366,
+        100
+      ],
+      "processing": "crop, horizontal flip so tail faces sender"
+    },
+    "bubble-pink": {
+      "source": 0,
+      "box": [
+        405,
+        181,
+        774,
+        286
+      ],
+      "size": [
+        369,
+        105
+      ],
+      "processing": "crop, horizontal flip so tail faces sender"
+    },
+    "lace": {
+      "source": 0,
+      "box": [
+        498,
+        787,
+        1110,
+        891
+      ],
+      "size": [
+        612,
+        104
+      ],
+      "processing": "crop; original alpha retained"
+    },
+    "lace-top": {
+      "source": 0,
+      "box": [
+        421,
+        705,
+        1098,
+        776
+      ],
+      "size": [
+        677,
+        71
+      ],
+      "processing": "crop; original alpha retained"
+    },
+    "bow": {
+      "source": 1,
+      "box": [
+        570,
+        157,
+        678,
+        236
+      ],
+      "size": [
+        108,
+        79
+      ],
+      "processing": "crop; original alpha retained"
+    },
+    "tab-messages": {
+      "source": 1,
+      "box": [
+        705,
+        1212,
+        800,
+        1308
+      ],
+      "size": [
+        95,
+        96
+      ],
+      "processing": "crop; original alpha retained; mask outside component boundary to exclude neighbouring sprites"
+    },
+    "tab-contacts": {
+      "source": 1,
+      "box": [
+        801,
+        1212,
+        902,
+        1308
+      ],
+      "size": [
+        101,
+        96
+      ],
+      "processing": "crop; original alpha retained; mask outside component boundary to exclude neighbouring sprites"
+    },
+    "tab-me": {
+      "source": 1,
+      "box": [
+        467,
+        1230,
+        551,
+        1292
+      ],
+      "size": [
+        84,
+        62
+      ],
+      "processing": "crop; original alpha retained"
+    },
+    "plus": {
+      "source": 1,
+      "box": [
+        897,
+        1208,
+        1001,
+        1312
+      ],
+      "size": [
+        104,
+        104
+      ],
+      "processing": "crop; original alpha retained"
+    },
+    "heart": {
+      "source": 1,
+      "box": [
+        623,
+        1080,
+        697,
+        1140
+      ],
+      "size": [
+        74,
+        60
+      ],
+      "processing": "crop; original alpha retained"
+    },
+    "kitten": {
+      "source": 1,
+      "box": [
+        16,
+        1052,
+        181,
+        1216
+      ],
+      "size": [
+        165,
+        164
+      ],
+      "processing": "crop; original alpha retained; mask outside component boundary to exclude neighbouring sprites"
+    },
+    "sleepy": {
+      "source": 1,
+      "box": [
+        320,
+        1060,
+        514,
+        1212
+      ],
+      "size": [
+        194,
+        152
+      ],
+      "processing": "crop; original alpha retained"
+    },
+    "wing-heart": {
+      "source": 1,
+      "box": [
+        770,
+        165,
+        910,
+        233
+      ],
+      "size": [
+        140,
+        68
+      ],
+      "processing": "crop; original alpha retained"
+    },
+    "mic": {
+      "source": 0,
+      "box": [
+        39,
+        592,
+        115,
+        670
+      ],
+      "size": [
+        76,
+        78
+      ],
+      "processing": "crop; original alpha retained; mask outside component boundary to exclude neighbouring sprites"
+    },
+    "smile": {
+      "source": 0,
+      "box": [
+        592,
+        594,
+        670,
+        670
+      ],
+      "size": [
+        78,
+        76
+      ],
+      "processing": "crop; original alpha retained; mask outside component boundary to exclude neighbouring sprites"
+    },
+    "send": {
+      "source": 0,
+      "box": [
+        748,
+        595,
+        857,
+        670
+      ],
+      "size": [
+        109,
+        75
+      ],
+      "processing": "crop; original alpha retained; mask outside component boundary to exclude neighbouring sprites"
+    },
+    "plus-small": {
+      "source": 0,
+      "box": [
+        673,
+        594,
+        750,
+        670
+      ],
+      "size": [
+        77,
+        76
+      ],
+      "processing": "crop; original alpha retained; mask outside component boundary to exclude neighbouring sprites"
+    },
+    "pattern": {
+      "source": 1,
+      "box": [
+        150,
+        1320,
+        272,
+        1379
+      ],
+      "size": [
+        122,
+        59
+      ],
+      "processing": "crop; original alpha retained"
+    },
+    "list-row": {
+      "source": 1,
+      "box": [
+        12,
+        395,
+        620,
+        495
+      ],
+      "size": [
+        608,
+        100
+      ],
+      "processing": "original left/right edges and text-free vertical centre strip assembled"
+    },
+    "search": {
+      "source": 1,
+      "box": [
+        13,
+        263,
+        446,
+        320
+      ],
+      "size": [
+        433,
+        57
+      ],
+      "processing": "original left/right edges and text-free vertical centre strip assembled"
+    },
+    "input": {
+      "source": 0,
+      "box": [
+        122,
+        597,
+        578,
+        667
+      ],
+      "size": [
+        456,
+        70
+      ],
+      "processing": "original left/right edges and text-free vertical centre strip assembled"
+    },
+    "composer": {
+      "source": 0,
+      "box": [
+        20,
+        581,
+        871,
+        684
+      ],
+      "size": [
+        851,
+        103
+      ],
+      "processing": "original left/right edges and text-free vertical centre strip assembled"
+    },
+    "date": {
+      "source": 1,
+      "box": [
+        681,
+        1004,
+        957,
+        1060
+      ],
+      "size": [
+        276,
+        56
+      ],
+      "processing": "original edges assembled with text-free centre strip; no generated/redrawn artwork"
+    },
+    "avatar-frame": {
+      "source": 1,
+      "box": [
+        624,
+        382,
+        798,
+        554
+      ],
+      "size": [
+        174,
+        172
+      ],
+      "processing": "crop; transparent elliptical opening in blank portrait centre; mask outside component boundary to exclude neighbouring sprites"
+    },
+    "bubble-white-base": {
+      "source": 0,
+      "box": [
+        62,
+        488,
+        215,
+        570
+      ],
+      "size": [
+        153,
+        82
+      ],
+      "processing": "original edges assembled with text-free centre strip; no generated/redrawn artwork"
+    },
+    "bubble-pink-base": {
+      "source": 0,
+      "box": [
+        461,
+        488,
+        608,
+        571
+      ],
+      "size": [
+        147,
+        83
+      ],
+      "processing": "original edges assembled with text-free centre strip; no generated/redrawn artwork"
+    },
+    "bubble-bow-original": {
+      "source": 0,
+      "box": [
+        23,
+        183,
+        389,
+        283
+      ],
+      "size": [
+        366,
+        100
+      ],
+      "processing": "original crop; polygon excludes adjoining bubble fill where applicable"
+    },
+    "bubble-wing-original": {
+      "source": 0,
+      "box": [
+        28,
+        382,
+        405,
+        486
+      ],
+      "size": [
+        377,
+        104
+      ],
+      "processing": "original crop; polygon excludes adjoining bubble fill where applicable"
+    },
+    "bubble-bow-body": {
+      "source": 0,
+      "box": [
+        23,
+        183,
+        389,
+        283
+      ],
+      "size": [
+        366,
+        100
+      ],
+      "processing": "selected bubble border; mirrored right cap and clean original centre strip; ornaments separate"
+    },
+    "bubble-wing-body": {
+      "source": 0,
+      "box": [
+        86,
+        388,
+        404,
+        484
+      ],
+      "size": [
+        318,
+        96
+      ],
+      "processing": "selected wing bubble border and clean centre strip; ornaments separate"
+    },
+    "bubble-bow-ornament": {
+      "source": 0,
+      "box": [
+        31,
+        193,
+        118,
+        274
+      ],
+      "size": [
+        87,
+        81
+      ],
+      "processing": "original crop; polygon excludes adjoining bubble fill where applicable"
+    },
+    "bubble-wing-ornament": {
+      "source": 0,
+      "box": [
+        28,
+        381,
+        150,
+        479
+      ],
+      "size": [
+        122,
+        98
+      ],
+      "processing": "original crop; polygon excludes adjoining bubble fill where applicable"
+    },
+    "bubble-tiny-heart": {
+      "source": 0,
+      "box": [
+        339,
+        428,
+        379,
+        464
+      ],
+      "size": [
+        40,
+        36
+      ],
+      "processing": "original crop; polygon excludes adjoining bubble fill where applicable"
+    },
+    "header-title": {
+      "source": 0,
+      "box": [
+        20,
+        60,
+        738,
+        164
+      ],
+      "size": [
+        718,
+        104
+      ],
+      "processing": "original side controls/lace; central crest replaced by original clean bar strips for live title"
+    },
+    "header-crest": {
+      "source": 0,
+      "box": [
+        258,
+        37,
+        508,
+        174
+      ],
+      "size": [
+        250,
+        137
+      ],
+      "processing": "original crop; polygon excludes adjoining bubble fill where applicable"
+    }
+  }
+}

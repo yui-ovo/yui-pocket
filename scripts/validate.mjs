@@ -13,7 +13,11 @@ export function validateScript(data) {
   assert.deepEqual(Object.keys(data).sort(), ['type', 'enabled', 'name', 'id', 'content', 'info', 'button', 'data', 'export_with'].sort());
   // Policy guards for this stage. Runtime browser request interception is a separate check.
   // SVG namespace is an identifier, fragment paint servers are local, JPEG data is embedded.
-  const executable = data.content.replaceAll('http://www.w3.org/2000/svg', '').replace(/url\(#rp-[a-z-]+\)/g, '');
+  // The skin build embeds only validated PNGs. Strip those literal data URLs;
+  // remote CSS URLs, unresolved asset() calls and runtime URL expressions remain forbidden.
+  const executable = data.content.replaceAll('http://www.w3.org/2000/svg', '').replace(/url\(#rp-[a-z-]+\)/g, '')
+    .replace(/url\(\\?"data:image\/png;base64,[A-Za-z0-9+/=]+\\?"\)/g, 'embeddedPng');
+  assert.doesNotMatch(executable, /asset\(/);
   // v0.2 step 1 permits exactly the verified same-origin identity GET in profile-host.
   const limited = executable.replace('host.fetch("/api/users/me",', 'host.identityRequest(').replace(/\bnew URL\(/g, 'parseUrl(');
   assert.doesNotMatch(limited, /\b(?:fetch|XMLHttpRequest|WebSocket|EventSource|sendBeacon|importScripts|eval)\s*\(|\bimport\s*(?:\(|["'])|https?:\/\/|@import|\burl\s*\((?!#rp-)/i);

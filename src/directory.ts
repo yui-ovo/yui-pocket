@@ -26,12 +26,15 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
     const title=mode==='contacts'?'通讯录':mode==='me'?'我':'信息';
     const view=base(title);page.classList.add('directory-root');
     view.header.classList.add('directory-header');
-    const heart=el('span','header-heart','♥');heart.setAttribute('aria-hidden','true');view.header.append(heart);
+    const more=button('⋯',()=>{
+      const {scroll}=base('页面导航',list);
+      for(const [key,label] of [['messages','信息'],['contacts','通讯录'],['me','我']] as const)scroll.append(button(label,()=>void enter(key)));
+    },'header-more');more.setAttribute('aria-label','打开页面导航');view.header.append(more);
     const nav=el('nav','directory-tabs');nav.setAttribute('aria-label','信息应用导航');
     for(const [key,label] of [['messages','信息'],['contacts','通讯录'],['me','我']] as const){
       const tab=button('',()=>{if(mode!==key)void enter(key);},'directory-tab');tab.setAttribute('aria-label',label);
       if(mode===key)tab.setAttribute('aria-current','page');
-      const heart=el('span','tab-heart','♥');heart.setAttribute('aria-hidden','true');tab.append(heart,el('span','',label));nav.append(tab);
+      const heart=el('span',`tab-art tab-${key}`);heart.setAttribute('aria-hidden','true');tab.append(heart,el('span','',label));nav.append(tab);
     }
     page.append(nav);return view;
   }
@@ -63,12 +66,12 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
       const card=button('',myCard,'my-card-link'),copy=el('span','contact-copy');
       copy.append(el('strong','','我的名片'),el('span','contact-preview',session.book.self.account||'设置本存档的虚构账号'));
       card.setAttribute('aria-label','我的名片');card.append(el('span','self-card-avatar','我'),copy,el('span','chevron','›'));
-      scroll.append(el('p','me-kicker','a little space for me'),card,el('p','beauty-hint','本聊天专属的名片。头像暂用“我”占位。'),el('p','empty-state','把自己放进这一段故事里 ♡'));
+      scroll.append(el('p','me-kicker','a little space for me'),card,el('p','beauty-hint','本聊天专属的名片。图案为装饰占位，本人头像尚未接入。'),el('p','empty-state','把自己放进这一段故事里 ♡'));
       return;
     }
     if(mode==='contacts'){
       const add=button('＋',addMenu,'back');add.setAttribute('aria-label','添加人物');header.append(add);
-      header.querySelector('.header-heart')?.remove();
+      header.querySelector('.header-more')?.remove();
     }
     const queryMode=mode;
     const searchLabel=el('label','directory-search'),heart=el('span','','♡'),search=el('input');heart.setAttribute('aria-hidden','true');
