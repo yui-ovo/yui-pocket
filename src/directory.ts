@@ -122,7 +122,8 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
     const {header,scroll}=base('会话',list);header.classList.add('chat-header');header.replaceChildren(button('‹ 信息',list,'back'));
     const name=button(displayName(person),()=>edit(id,()=>chat(id)),'identity profile-name');name.setAttribute('aria-label','打开联系人资料');
     const more=button('⋯',()=>chatSettings(id),'chat-more');more.setAttribute('aria-label','打开聊天设置');
-    header.append(name,more);options.useReading(readingTarget(person));scroll.classList.add('messages');
+    const search=button('',()=>{},'header-search');search.disabled=true;search.setAttribute('aria-label','聊天搜索（待接入）');search.title='聊天搜索尚未接入';
+    name.title=displayName(person);header.append(name,search,more);options.useReading(readingTarget(person));scroll.classList.add('messages');
     scroll.append(el('p','empty-state','暂无消息。此联系人的聊天功能尚未接入，不会产生回复或历史记录。'));
     page.append(createChatControls(document,false).container);
   }

@@ -422,7 +422,7 @@
         366,
         100
       ],
-      "processing": "selected bubble border; mirrored right cap and clean original centre strip; ornaments separate"
+      "processing": "selected bubble border; mirrored right cap and clean original centre strip; ornaments separate; alpha.6: original smooth upper outline reflected into lower half to remove both tails; decorations unchanged"
     },
     "bubble-wing-body": {
       "source": 0,
@@ -436,7 +436,7 @@
         318,
         96
       ],
-      "processing": "selected wing bubble border and clean centre strip; ornaments separate"
+      "processing": "selected wing bubble border and clean centre strip; ornaments separate; alpha.6: original smooth upper outline reflected into lower half to remove both tails; decorations unchanged"
     },
     "bubble-bow-ornament": {
       "source": 0,
@@ -507,6 +507,20 @@
         137
       ],
       "processing": "original crop; polygon excludes adjoining bubble fill where applicable"
+    },
+    "header-centered": {
+      "source": 1,
+      "box": [
+        10,
+        0,
+        571,
+        144
+      ],
+      "size": [
+        561,
+        144
+      ],
+      "processing": "original centred crest header; only Messages lettering replaced with adjacent original blank pink strip for live contact name"
     }
   }
 }

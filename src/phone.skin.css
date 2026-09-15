@@ -1,6 +1,7 @@
 /* User-supplied raster UI kit. Each asset reference is resolved to embedded PNGs at build time. */
 :host {
   --kit-header: asset(header-title);
+  --kit-chat-header: asset(header-centered);
   --kit-crest: asset(header-crest);
   --kit-white: asset(bubble-bow-body);
   --kit-pink: asset(bubble-wing-body);
@@ -95,13 +96,14 @@
 .directory-root .my-card-link ~ .empty-state::after { content: ''; display: block; width: 95px; height: 72px; margin: 12px auto 0; opacity: .75; background: var(--kit-sleepy) center/contain no-repeat; }
 .messages { position: relative; padding: 9px 8px 12px; background: linear-gradient(#fffbfdeB,#fffbfdeB),var(--kit-pattern) 0 0/104px 52px repeat; }
 .day-label { width: fit-content; min-width: 138px; max-width: 90%; margin: 0 auto 14px; padding: 5px 19px; font-size: 9px; color: #947d8f; border: 0; background: var(--kit-date) center/100% 100% no-repeat; }
-.message, .message.self { gap: 6px; margin-bottom: 19px; }
+.message, .message.self { align-items: flex-end; gap: 6px; margin-bottom: 25px; }
 .message-meta { font-size: 9px; margin: 0 5px 3px; color: #a08496; }
 .message-copy { flex-shrink: 1; }
 .message-avatar { border-color: #dbc8d6; background: #fff5fa; box-shadow: none; }
-.message-side { position: relative; margin-top: 17px; }
+/* The raster bottom stroke ends about 5px inside its transparent image margin. */
+.message-side { position: relative; align-self: flex-end; margin-top: 0; margin-bottom: 5px; }
 .message-side::before { content: ''; position: absolute; width: 24px; height: 19px; margin: -10px 0 0 -5px; background: var(--kit-bow) center/contain no-repeat; z-index: 1; pointer-events: none; }
-.message-time { color: #a28b9c; font-size: 8px; }
+.message-time { position: absolute; top: 100%; left: 0; width: 100%; margin-top: 3px; color: #a28b9c; font-size: 8px; line-height: 12px; }
 .message .bubble {
   min-width: 94px; min-height: 53px; max-width: 100%; margin: 0; padding: 5px 3px 5px 19px;
   border: solid transparent; border-width: 9px 14px 11px 14px;
@@ -119,6 +121,7 @@
 .message.self .bubble::before { content: ''; position: absolute; width: 15px; height: 14px; left: auto; right: -9px; bottom: -2px; border: 0; border-radius: 0; transform: none; background: var(--kit-bubble-heart) center/contain no-repeat; pointer-events: none; }
 .reading-preview { background: #fffbfd; border: 1px dashed #dec3d4; padding: 8px 5px; }
 .reading-preview .bubble { min-width: 0; }
+.reading-preview .message:last-child { margin-bottom: 15px; }
 .chat-controls { border: 0; background: #fff6fb; padding-top: 0; }
 .chat-tools { gap: 5px; padding: 3px 5px 5px; }
 .chat-tool { height: 27px; padding: 3px 7px; border-color: #e9d5e2; background: #fffafd; color: #917387; font-size: 10px; }
@@ -148,4 +151,21 @@
 :host([data-compact]) .chat-tool { height: 23px; }
 :host([data-compact]) .chat-controls .composer { height: 40px; padding-block: 1px; }
 :host([data-compact]) .chat-controls .message-input { height: 28px; padding-block: 5px; }
+
+/* Live nickname replaces the printed Messages below the original centred heart. */
+.chat-header, :host([data-compact]) .chat-header {
+  width: 100%; aspect-ratio: 561 / 144; height: auto; min-height: 0; flex: 0 0 auto;
+  background: var(--kit-chat-header) center / 100% 100% no-repeat, #fff9fc;
+}
+.chat-header::before, :host([data-compact]) .chat-header::before { content: none; }
+.chat-header .identity, :host([data-compact]) .chat-header .identity {
+  top: 60%; left: 39%; width: 22%; height: 24%; min-height: 0;
+  padding: 0; font-size: 12px; line-height: 1.15; font-weight: 500;
+  overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+}
+.chat-header .identity h2, :host([data-compact]) .chat-header .identity h2 { font: inherit; line-height: inherit; }
+:host([data-compact]) .chat-header .identity { font-size: 10px; }
+.chat-header > .back, :host([data-compact]) .chat-header > .back { left: 2%; top: 34%; width: 12%; height: 40%; }
+.chat-header .chat-more, :host([data-compact]) .chat-header .chat-more { right: 2%; top: 33%; width: 12%; height: 40%; }
+.chat-header .header-search { position: absolute; left: 76%; top: 33%; width: 12%; height: 40%; padding: 0; border: 0; background: none; box-shadow: none; cursor: default; }
 
