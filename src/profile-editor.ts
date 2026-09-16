@@ -4,7 +4,7 @@ import { newAccount, validateAvatarUrl, type Person } from './contacts';
 import type { ProfileHost } from './profile-host';
 
 export function editProfile(document: Document, host: ProfileHost, original: Person, options: {
-  save(person: Person): Promise<void>; back(): void; active(): boolean;
+  save(person: Person): Promise<void>; back(): void; active(): boolean; draftOnly?: boolean;
 }) {
   const {el,button,field}=ui(document), draft=structuredClone(original);
   const page=el('section','workspace-page'), header=el('header','contact workspace-header');
@@ -62,9 +62,9 @@ export function editProfile(document: Document, host: ProfileHost, original: Per
   const resetAvatar=()=>{revision++;busy=false;save.disabled=false;draft.avatar={kind:'default',value:''};avatarStatus.textContent='默认头像已预览，保存后保留';renderAvatar();};
   scroll.append(uploadLabel,url.label,applyUrl,el('p','beauty-hint','仅加载你明确指定的外链，图片站点会收到请求；本地上传不会离开浏览器。'),button('恢复默认头像',resetAvatar),button('恢复联系人默认',()=>{remark.input.value='';resetAvatar();}));
   const status=el('p','beauty-status');status.setAttribute('role','status');
-  const save=button('保存联系人',()=>{if(busy||saving)return;saving=true;draft.name=name.input.value.trim();draft.remark=remark.input.value.trim();draft.description=description.input.value.trim();draft.account=account.input.value.trim();relationship();save.disabled=true;status.textContent='正在确认存档并保存…';
+  const save=button(options.draftOnly?'确认此人物草稿':'保存联系人',()=>{if(busy||saving)return;saving=true;draft.name=name.input.value.trim();draft.remark=remark.input.value.trim();draft.description=description.input.value.trim();draft.account=account.input.value.trim();relationship();save.disabled=true;status.textContent=options.draftOnly?'正在检查人物草稿…':'正在确认存档并保存…';
     const fields=scroll.querySelectorAll<HTMLInputElement|HTMLButtonElement|HTMLSelectElement|HTMLTextAreaElement>('input,button,select,textarea');fields.forEach(field=>field.disabled=true);
-    void options.save(structuredClone(draft)).then(()=>{if(current())status.textContent='联系人已保存到本机';}).catch(error=>{if(current())status.textContent=error.message||'保存失败';}).finally(()=>{saving=false;if(current()){save.disabled=false;fields.forEach(field=>field.disabled=false);}});});
+    void options.save(structuredClone(draft)).then(()=>{if(current())status.textContent=options.draftOnly?'草稿已确认，尚未保存到通讯录':'联系人已保存到本机';}).catch(error=>{if(current())status.textContent=error.message||'保存失败';}).finally(()=>{saving=false;if(current()){save.disabled=false;fields.forEach(field=>field.disabled=false);}});});
   page.oninput=()=>{status.textContent='资料已修改，尚未保存';};
   const actions=el('div','beauty-actions');actions.append(save,button('取消资料修改',options.back));page.append(header,scroll,actions,status);
   renderAvatar();return page;

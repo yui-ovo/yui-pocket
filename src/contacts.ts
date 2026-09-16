@@ -12,7 +12,7 @@ export type Person = {
 export type AddressBook = { version: 1; id: string; revision: number; people: Person[]; self: { account: string } };
 export const displayName = (person: Person) => person.remark.trim() || person.name;
 export const newBook = (): AddressBook => ({ version: 1, id: crypto.randomUUID(), revision: 0, people: [], self: { account: '' } });
-export const newAccount = () => `yui-${crypto.randomUUID().replaceAll('-', '').slice(0, 12)}`;
+export const newAccount = () => crypto.randomUUID().replaceAll('-', '').slice(0, 12);
 export function newPerson(source?: Person['source'], name = ''): Person {
   return { id: crypto.randomUUID(), source: source ?? { kind: 'manual', name: '手动创建' }, name, remark: '', description: '',
     avatar: { kind: 'default', value: '' }, relation: { known: false, accountKnown: false, friend: false }, account: newAccount() };

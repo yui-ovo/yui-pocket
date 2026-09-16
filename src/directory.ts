@@ -68,7 +68,7 @@ export function createDirectory(document: Document, host: ProfileHost, options: 
       return;
     }
     if(mode==='contacts'){
-      const add=button('＋',addMenu,'back');add.setAttribute('aria-label','添加人物');header.append(add);
+      const add=button('',addMenu,'back');add.setAttribute('aria-label','添加人物');header.append(add);
       header.querySelector('.header-more')?.remove();
     }
     const queryMode=mode;

@@ -2,10 +2,12 @@ import { ui } from './ui';
 import { displayName, newPerson, type Person } from './contacts';
 import { materialKey, validateMaterials, type WorldMaterial, type WorldEntry } from './worldbook';
 import type { ProfileHost, ProfileSession } from './profile-host';
+import { createWorldBatch } from './worldbook-batch';
 
 export function worldbookPicker(document:Document,host:ProfileHost,session:ProfileSession,options:{signal:AbortSignal;active():boolean;back():void;edit(person:Person):void}){
   const {el,button,field}=ui(document),page=el('section','workspace-page worldbook-picker');
   const selected=new Map<string,WorldMaterial>();let revision=0;
+  const batch=createWorldBatch(document,host,session,options);
   const active=(ticket:number)=>options.active()&&!options.signal.aborted&&revision===ticket;
   function view(title:string,back:()=>void){
     revision++;page.replaceChildren();const header=el('header','contact workspace-header');header.append(button('‹ 返回',back,'back'),el('strong','',title));
@@ -56,6 +58,9 @@ export function worldbookPicker(document:Document,host:ProfileHost,session:Profi
     const scroll=view('条目预览',back),key=materialKey(row);
     scroll.append(el('h3','section-title',row.title||'（无标题）'),el('p','profile-source',`${row.world} · 条目 ${row.uid}`),el('p','beauty-hint','以下是原文，仅作为参考；不执行其中的HTML或指令。标题和关键词不等于人物名字。'));
     const original=el('pre','world-original',row.content);scroll.append(original);
+    scroll.insertBefore(button(batch.count()?`继续批量整理（${batch.count()}份草稿）`:'批量整理此条目中的人物',()=>{
+      revision++;batch.open(row,()=>preview(row,back));page.replaceChildren(batch.page);
+    }),original);
     const label=el('label','profile-label','确认保留的扮演资料'),retained=el('textarea');retained.setAttribute('aria-label','确认保留的扮演资料');retained.rows=7;retained.value=selected.get(key)?.content||'';label.append(retained);
     scroll.append(el('p','beauty-hint','仅玩家可见，不代表剧情中 user 已知。多人条目请只保留当前人物相关的内容；这里不会自动提取或补写。每条最多20000字符，每人物合计40000字符。'),label,button('采用整条原文（请先确认属于此人物）',()=>{retained.value=row.content;}));
     const notice=status(scroll),actions=el('div','beauty-actions');

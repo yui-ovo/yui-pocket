@@ -171,3 +171,7 @@ ExtensionDEV 的部分历史说明与当前 Chat.md 对完整消息数组的表�
 - TT 2.2.0，commit 9693a4ec47cd4552f90878bccab453f176de0f18：[st-context.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/scripts/st-context.js) 283/289行分别导出TT自己的loadWorldInfo/getWorldInfoNames；[world-info.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/scripts/world-info.js) 2236行只读单书与缓存/在途去重；[worldinfo-routes.js](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/routes/worldinfo-routes.js) get路由调用本机broker，未找到也返回空entries。Yui只调用TT导出的读取函数，不自行拼HTTP、invoke或使用批量预载。
 - TT [WorldInfo API文档](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/docs/API/WorldInfo.md) 和 [实现](https://github.com/Darkatse/TauriTavern/blob/9693a4ec47cd4552f90878bccab453f176de0f18/src/tauri/main/api/world-info.js) 仅提供激活查询、订阅、openEntry，不提供全文读取；故未使用或虚构此API的读取能力。
 - 指纹由所选条目原始JSON的SHA-256计算，只保存指纹和经用户确认的文本，不复制整本书。fingerprint是原条目版本证据，不等于用户编辑文本摘要；同内容不同JSON字段顺序也可能产生新指纹，本轮不自动比较/合并。
+
+## 2026-09-16 · 批量NPC草稿（alpha.12）
+
+本轮没有新增宿主API、依赖或图片。沿用alpha.11已核实的ST/TT只读世界书门面和分档资料保存。worldbook-sections.ts是本项目独立的纯文本标题分段规则，只提供候选、不做语义提取、不执行指令、不调用AI；正文片段保留原文，须逐人核对。批量共用原文由用户明确填写与勾选，额外背景不自动继承。新增账号只移除生成前缀，不修改已有账号或持久化身份。
